@@ -66,7 +66,7 @@ get_song_path(gchar *song_filename) {
         static gchar song_path[PATH_MAX];
         gint i = 0;
         gchar *pos;
-        
+
         if ((pos = strrchr(song_filename, '/'))) {
                 for (i=0; song_filename <= pos; i++) {
                         song_path[i] = *song_filename++;
@@ -90,8 +90,8 @@ entry_filter(const struct dirent *entry) {
                 return FALSE;
 
         if ((ext = strrchr(entry->d_name, '.'))) {
- 
-                ext++; 
+
+                ext++;
 
                 /* filter candidates for cover */
 
@@ -100,7 +100,7 @@ entry_filter(const struct dirent *entry) {
                 for (i = 0; i < n_extensions; i++) {
 
                         str2 = g_utf8_casefold(cover_extensions[i], -1);
-                        
+
                         if (!g_utf8_collate(str1, str2)) {
                                 g_free(str1);
                                 g_free(str2);
@@ -108,7 +108,7 @@ entry_filter(const struct dirent *entry) {
                                 arr_strlcpy(temp_filename, entry->d_name);
                                 return TRUE;
                         }
-                
+
                         g_free (str2);
                 }
 
@@ -196,7 +196,7 @@ find_cover_filename(gchar *song_filename) {
                 }
 
                 arr_strlcpy(cover_filename, base_path);
- 
+
                 if (ext_flag == TRUE) {
                         arr_strlcat(cover_filename, temp_filename);
                         cover_filename_reasonable = TRUE;
@@ -230,7 +230,7 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
 
         if ((c = strrchr(options.skin, '/')) != NULL) {
                 ++c;
-                
+
                 if (strcasecmp(c, "plain") == 0 || strcasecmp(c, "no_skin") == 0) {
 
                         bc1 = bc2 = bc3 = bc4 = 0;      /* dark edges */
@@ -275,7 +275,7 @@ cover_window_close_cb(GtkWidget * widget, GdkEvent * event, gpointer data) {
 gint
 cover_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
-	if (kevent->keyval == GDK_Escape) {
+	if (kevent->keyval == GDK_KEY_Escape) {
                 cover_window_close_cb(widget, NULL, NULL);
 		return TRUE;
         }
@@ -290,7 +290,7 @@ create_zoomed_cover_window(gint * size, GtkWidget * window, GtkWidget ** image_a
 	if (*size == -1) {
 		*size = cover_widths[options.cover_width-1];
 	}
-	
+
 	cover_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(cover_window), "button_press_event",
 			 G_CALLBACK(cover_window_close_cb), NULL);
@@ -300,14 +300,14 @@ create_zoomed_cover_window(gint * size, GtkWidget * window, GtkWidget ** image_a
 	gtk_widget_set_events(cover_window, GDK_BUTTON_PRESS_MASK);
 	gtk_window_set_transient_for(GTK_WINDOW(cover_window), GTK_WINDOW(window));
 	gtk_window_set_decorated(GTK_WINDOW(cover_window), FALSE);
-	
+
 	*image_area = gtk_image_new();
 	gtk_widget_show(*image_area);
 	gtk_container_add (GTK_CONTAINER (cover_window), *image_area);
 }
 
 
-void 
+void
 display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filename) {
 
         GtkWidget * image_area;
@@ -324,7 +324,7 @@ display_zoomed_cover(GtkWidget *window, GtkWidget *event_area, gchar *song_filen
 }
 
 
-void 
+void
 display_zoomed_cover_from_binary(GtkWidget *window, GtkWidget *event_area, void * data, int length) {
 
         GtkWidget * image_area;
@@ -341,7 +341,7 @@ display_zoomed_cover_from_binary(GtkWidget *window, GtkWidget *event_area, void 
 }
 
 
-void 
+void
 display_cover_from_pixbuf(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 			  gint dest_width, gint dest_height,
 			  GdkPixbuf * cover_pixbuf, gboolean hide, gboolean bevel) {
@@ -359,33 +359,33 @@ display_cover_from_pixbuf(GtkWidget *image_area, GtkWidget *event_area, GtkWidge
         calculated_height = dest_height;
 
 	/* don't scale when orginal size is smaller than cover defaults */
-	
+
 	scaled_width =  dest_width;
 	scaled_height = dest_height;
-	
+
 	if (width >= height) {
 		scaled_height = (height * dest_height) / width;
 	} else {
 		scaled_width = (width * dest_width) / height;
 	}
-	
+
 	cover_pixbuf_scaled = gdk_pixbuf_scale_simple(cover_pixbuf,
 						      scaled_width, scaled_height,
 						      GDK_INTERP_TILES);
 	if (cover_pixbuf_scaled == NULL) {
 		return;
 	}
-	
+
 	draw_cover_frame(cover_pixbuf_scaled, scaled_width, scaled_height, bevel);
-	
+
 	calculated_width = scaled_width;
 	calculated_height = scaled_height;
-	
+
 	gtk_image_set_from_pixbuf(GTK_IMAGE(image_area), cover_pixbuf_scaled);
 	g_object_unref(cover_pixbuf_scaled);
-	
+
 	if (!cover_show_flag && hide == TRUE) {
-		cover_show_flag = 1;      
+		cover_show_flag = 1;
 		gtk_widget_show(image_area);
 		gtk_widget_show(event_area);
 		if (align) {
@@ -407,7 +407,7 @@ hide_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align) {
 	}
 }
 
-void 
+void
 display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 	      gint dest_width, gint dest_height,
               gchar *song_filename, gboolean hide, gboolean bevel) {
@@ -443,7 +443,7 @@ display_cover(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 }
 
 
-void 
+void
 display_cover_from_binary(GtkWidget *image_area, GtkWidget *event_area, GtkWidget *align,
 			  gint dest_width, gint dest_height,
 			  void * data, int length, gboolean hide, gboolean bevel) {
@@ -532,7 +532,7 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
 	k = cover_widths[options.cover_width % N_COVER_WIDTHS];
 
 	if (k == -1) {
-		d_cover_width = d_cover_height = options.browser_size_x - SCROLLBAR_WIDTH;      
+		d_cover_width = d_cover_height = options.browser_size_x - SCROLLBAR_WIDTH;
 	} else {
 		d_cover_width = d_cover_height = k;
 	}
@@ -569,7 +569,7 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
 		} else {
 			scaled_width = width;
 			scaled_height = height;
-		}                               
+		}
 	}
 
 	draw_cover_frame(pixbuf, scaled_width, scaled_height, FALSE);
@@ -583,4 +583,3 @@ insert_cover(GtkTreeIter * tree_iter, GtkTextIter * text_iter, GtkTextBuffer * b
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-

@@ -338,9 +338,9 @@ gint
 fxbuilder_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) {
 
         switch (event->keyval) {
-	case GDK_q:
-	case GDK_Q:
-	case GDK_Escape:
+	case GDK_KEY_q:
+	case GDK_KEY_Q:
+	case GDK_KEY_Escape:
 		fxbuilder_close(NULL, NULL, NULL);
 		return TRUE;
 	};
@@ -628,7 +628,7 @@ update_plugin_outputs(gpointer data) {
 
 			while (plugin_lock)
 				;
-			instance->adjustments[k]->value = instance->knobs[k];
+			gtk_adjustment_set_value(instance->adjustments[k], instance->knobs[k]);
 		}
 	}
 
@@ -677,8 +677,8 @@ plugin_window_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * da
 	plugin_instance * instance = (plugin_instance *) data;
 
         switch (event->keyval) {
-        case GDK_Shift_L:
-        case GDK_Shift_R:
+        case GDK_KEY_Shift_L:
+        case GDK_KEY_Shift_R:
                 instance->shift_pressed = 1;
                 break;
         }
@@ -693,8 +693,8 @@ plugin_window_key_released(GtkWidget * widget, GdkEventKey * event, gpointer * d
 	plugin_instance * instance = (plugin_instance *) data;
 
         switch (event->keyval) {
-        case GDK_Shift_L:
-        case GDK_Shift_R:
+        case GDK_KEY_Shift_L:
+        case GDK_KEY_Shift_R:
                 instance->shift_pressed = 0;
                 break;
         }
@@ -727,7 +727,7 @@ plugin_scale_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * 
 		return FALSE;
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(widget));
-	adj->value = btnpdata->start;
+	gtk_adjustment_set_value(adj, btnpdata->start);
 	gtk_adjustment_value_changed(adj);
 
         return TRUE;
@@ -1064,13 +1064,14 @@ build_plugin_window(plugin_instance * instance) {
 			defs = lrdf_get_scale_values(plugin->UniqueID, k);
 			if ((defs) && (defs->count > 0)) { /* have scale values */
 
-                                combo = gtk_combo_box_new_text (); 
+                                combo = gtk_combo_box_text_new ();
 				gtk_widget_set_name(combo, "plugin_combo");
 				gtk_table_attach(GTK_TABLE(table), combo, 1, 3, i, i+1,
 						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 
 				for (j = 0; j < defs->count; j++) {
-	                                gtk_combo_box_append_text (GTK_COMBO_BOX (combo), defs->items[j].label);
+	                                gtk_combo_box_text_append_text(
+                                           GTK_COMBO_BOX_TEXT (combo), defs->items[j].label);
 				}
 
 				gtk_widget_size_request(combo, &req);
@@ -1586,8 +1587,8 @@ gint
 running_list_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {
-	case GDK_Delete:
-	case GDK_KP_Delete:
+	case GDK_KEY_Delete:
+	case GDK_KEY_KP_Delete:
 		remove_clicked(NULL, NULL, NULL);
 		return TRUE;
 		break;
@@ -1664,8 +1665,8 @@ gint
 avail_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {
-	case GDK_a:
-	case GDK_A:
+	case GDK_KEY_a:
+	case GDK_KEY_A:
 		add_clicked(NULL, NULL, NULL);
 		return TRUE;
 		break;

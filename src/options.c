@@ -922,18 +922,19 @@ changed_listening_env(GtkWidget * widget, gpointer * data) {
 void
 draw_rva_diagram(void) {
 
-	int i;
-	int width = rva_viewport->allocation.width - 4;
-	int height = rva_viewport->allocation.height - 4;
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(rva_viewport, &allocation);
+	int width = allocation.width - 4;
+	int height = allocation.height - 4;
 	int dw = width / 24;
 	int dh = height / 24;
 	int xoffs = (width - 24*dw) / 2 - 1;
 	int yoffs = (height - 24*dh) / 2 - 1;
 	float volx, voly;
 	int px1, py1, px2, py2;
+	int i;
 
         cairo_t *rva_cr = NULL;
-
 
 	rva_cr = gdk_cairo_create(gtk_widget_get_window(rva_drawing_area));
 
@@ -1557,20 +1558,20 @@ setup_combo_with_label(GtkBox * box, char * label_text) {
 	hbox_s = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text_new ();
 	gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 
 	return combo;
 }
 
 void
-fill_mouse_wheel_combo(GtkComboBox * combo) {
+fill_mouse_wheel_combo(GtkComboBoxText * combo) {
 
-	gtk_combo_box_append_text (combo, _("Do nothing"));
-	gtk_combo_box_append_text (combo, _("Change volume"));
-	gtk_combo_box_append_text (combo, _("Change balance"));
-	gtk_combo_box_append_text (combo, _("Change song position"));
-	gtk_combo_box_append_text (combo, _("Change current song"));
+	gtk_combo_box_text_append_text (combo, _("Do nothing"));
+	gtk_combo_box_text_append_text (combo, _("Change volume"));
+	gtk_combo_box_text_append_text (combo, _("Change balance"));
+	gtk_combo_box_text_append_text (combo, _("Change song position"));
+	gtk_combo_box_text_append_text (combo, _("Change current song"));
 
 }
 
@@ -1698,11 +1699,11 @@ setup_get_mouse_button_window(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text_new ();
 	gtk_container_add(GTK_CONTAINER(vbox), combo);
 
 	for (i = 0; i < SYSTRAY_MB_CMD_LAST; i++) {
-		gtk_combo_box_append_text (GTK_COMBO_BOX(combo), systray_mb_cmd_names[i]);
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT(combo), systray_mb_cmd_names[i]);
 	}
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
@@ -2172,13 +2173,13 @@ create_options_window(void) {
 
 	combo_systray_mouse_wheel_vertical =
 		setup_combo_with_label(GTK_BOX(vbox), _("Vertical mouse wheel:"));
-	fill_mouse_wheel_combo(GTK_COMBO_BOX (combo_systray_mouse_wheel_vertical));
+	fill_mouse_wheel_combo(GTK_COMBO_BOX_TEXT (combo_systray_mouse_wheel_vertical));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_systray_mouse_wheel_vertical),
 	        options.systray_mouse_wheel_vertical);
 
 	combo_systray_mouse_wheel_horizontal =
 		setup_combo_with_label(GTK_BOX(vbox), _("Horizontal mouse wheel:"));
-	fill_mouse_wheel_combo(GTK_COMBO_BOX (combo_systray_mouse_wheel_horizontal));
+	fill_mouse_wheel_combo(GTK_COMBO_BOX_TEXT (combo_systray_mouse_wheel_horizontal));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_systray_mouse_wheel_horizontal),
 	        options.systray_mouse_wheel_horizontal);
 
@@ -2311,13 +2312,13 @@ create_options_window(void) {
         hbox_s = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
 
-	combo_cwidth = gtk_combo_box_new_text ();
+	combo_cwidth = gtk_combo_box_text_new ();
         gtk_box_pack_start(GTK_BOX(hbox_cwidth), combo_cwidth, FALSE, FALSE, 0);
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("50 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("100 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("200 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("300 pixels"));
-        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_cwidth), _("use browser window width"));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_cwidth), _("50 pixels"));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_cwidth), _("100 pixels"));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_cwidth), _("200 pixels"));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_cwidth), _("300 pixels"));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_cwidth), _("use browser window width"));
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_cwidth), options.cover_width);
 
@@ -2776,11 +2777,11 @@ create_options_window(void) {
 	gtk_container_add(GTK_CONTAINER(frame_ladspa), vbox_ladspa);
 
 #ifdef HAVE_LADSPA
-        combo_ladspa = gtk_combo_box_new_text ();
+        combo_ladspa = gtk_combo_box_text_new ();
         gtk_box_pack_start(GTK_BOX(vbox_ladspa), combo_ladspa, TRUE, TRUE, 0);
 
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Pre Fader (before Volume & Balance)"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_ladspa), _("Post Fader (after Volume & Balance)"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_ladspa), _("Pre Fader (before Volume & Balance)"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_ladspa), _("Post Fader (after Volume & Balance)"));
 
 	status = options.ladspa_is_postfader;
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_ladspa), status);
@@ -2804,14 +2805,14 @@ create_options_window(void) {
 	label_src = gtk_label_new("");
 
 #ifdef HAVE_SRC
-	combo_src = gtk_combo_box_new_text ();
+	combo_src = gtk_combo_box_text_new ();
 	gtk_box_pack_start(GTK_BOX(vbox_src), combo_src, TRUE, TRUE, 0);
 
 	{
 		int i = 0;
 
 		while (src_get_name(i)) {
-                        gtk_combo_box_append_text (GTK_COMBO_BOX (combo_src), src_get_name(i));
+                        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_src), src_get_name(i));
 			++i;
 		}
 
@@ -2871,15 +2872,15 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	combo_listening_env = gtk_combo_box_new_text ();
+	combo_listening_env = gtk_combo_box_text_new ();
         gtk_table_attach(GTK_TABLE(table_rva), combo_listening_env, 1, 2, 1, 2,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
 
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_listening_env), _("Audiophile"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_listening_env), _("Living room"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_listening_env), _("Office"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_listening_env), _("Noisy workshop"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_listening_env), _("Audiophile"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_listening_env), _("Living room"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_listening_env), _("Office"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_listening_env), _("Noisy workshop"));
 
 	rva_env_shadow = options.rva_env;
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_listening_env), options.rva_env);
@@ -2955,13 +2956,13 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 6, 7,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-	combo_threshold = gtk_combo_box_new_text ();
+	combo_threshold = gtk_combo_box_text_new ();
         gtk_table_attach(GTK_TABLE(table_rva), combo_threshold, 1, 2, 6, 7,
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 2);
 
         /* xgettext:no-c-format */
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo_threshold), _("% of standard deviation"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo_threshold), _("Linear threshold [dB]"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_threshold), _("% of standard deviation"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_threshold), _("Linear threshold [dB]"));
 
 	rva_use_linear_thresh_shadow = options.rva_use_linear_thresh;
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_threshold), options.rva_use_linear_thresh);
@@ -3045,11 +3046,11 @@ create_options_window(void) {
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 
-	combo_replaygain = gtk_combo_box_new_text ();
+	combo_replaygain = gtk_combo_box_text_new ();
         gtk_box_pack_start(GTK_BOX(hbox), combo_replaygain, FALSE, FALSE, 35);
 
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_replaygain), _("Replaygain_track_gain"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_replaygain), _("Replaygain_album_gain"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_replaygain), _("Replaygain_track_gain"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_replaygain), _("Replaygain_album_gain"));
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_replaygain), options.replaygain_tag_to_use);
 
@@ -3698,9 +3699,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.song_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].red;
-                color.green = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].green;
-                color.blue = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].blue;
+                color.red = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
+                color.green = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
+                color.blue = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 
@@ -3725,9 +3726,9 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-                color.red = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].red;
-                color.green = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].green;
-                color.blue = playlist_color_indicator->style->fg[GTK_STATE_SELECTED].blue;
+                color.red = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
+                color.green = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
+                color.blue = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
                 color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
         }
 
@@ -3871,7 +3872,9 @@ save_config(void) {
 	SAVE_INT(main_size_x);
 
 	if (options.playlist_is_embedded && !options.playlist_is_embedded_shadow && options.playlist_on) {
-		arr_snprintf(str, "%d", options.main_size_y - playlist_window->allocation.height - 6);
+		GtkAllocation allocation;
+		gtk_widget_get_allocation(playlist_window, &allocation);
+		arr_snprintf(str, "%d", options.main_size_y - allocation.height - 6);
 	} else {
 		arr_snprintf(str, "%d", options.main_size_y);
 	}

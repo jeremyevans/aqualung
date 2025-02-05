@@ -276,9 +276,13 @@ export_finish(gpointer user_data) {
 
 	export_t * export = (export_t *)user_data;
 
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(export_window, &allocation);
+	GtkAllocation slot_allocation;
+	gtk_widget_get_allocation(export->slot, &slot_allocation);
 	gtk_window_resize(GTK_WINDOW(export_window),
-			  export_window->allocation.width,
-			  export_window->allocation.height - export->slot->allocation.height);
+			  allocation.width,
+			  allocation.height - slot_allocation.height);
 
 	gtk_widget_destroy(export->slot);
 	export->slot = NULL;
@@ -734,26 +738,26 @@ export_browse_cb(GtkButton * button, gpointer data) {
 GtkWidget *
 export_create_format_combo(void) {
 
-	GtkWidget * combo = gtk_combo_box_new_text();
+	GtkWidget * combo = gtk_combo_box_text_new();
 	int n = -1;
 
 #ifdef HAVE_SNDFILE_ENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "WAV");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "WAV");
 	++n;
 #endif /* HAVE_SNDFILE_ENC */
 #ifdef HAVE_FLAC_ENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "FLAC");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "FLAC");
 	++n;
 #endif /* HAVE_FLAC_ENC */
 #ifdef HAVE_VORBISENC
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "Ogg Vorbis");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "Ogg Vorbis");
 	++n;
 #endif /* HAVE_VORBISENC */
 #ifdef HAVE_LAME
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), "MP3");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "MP3");
 	++n;
 #endif /* HAVE_LAME */
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("Copy"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), _("Copy"));
 	++n;
 
 	if (n >= options.export_file_format) {
@@ -771,7 +775,7 @@ int
 export_get_format_from_combo(GtkWidget * combo) {
 
 	int file_lib = -1;
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	if (strcmp(text, "WAV") == 0) {
 		file_lib = ENC_SNDFILE_LIB;
 	}
@@ -795,7 +799,7 @@ void
 export_format_combo_changed(GtkWidget * widget, gpointer data) {
 
 	export_t * export = (export_t *)data;
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 
 	if (strcmp(text, "WAV") == 0 || strcmp(text, _("Copy")) == 0) {
 		gtk_widget_hide(export->bitrate_scale);
@@ -848,7 +852,7 @@ export_bitrate_changed(GtkRange * range, gpointer data) {
 
 	export_t * export = (export_t *)data;
 	float val = gtk_range_get_value(range);
-	gchar * text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(export->format_combo));
+	gchar * text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(export->format_combo));
 
 	if (strcmp(text, "FLAC") == 0) {
 		int i = (int)val;

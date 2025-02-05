@@ -47,6 +47,21 @@
         snprintf((dest), CHAR_ARRAY_SIZE(dest), __VA_ARGS__)
 
 
+/* Moving towards Gtk3...
+
+   While still on Gtk2, compile Aqualung with
+
+   make CFLAGS+="-DGTK_DISABLE_SINGLE_INCLUDES -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+
+   Note, adding "-DGSEAL_ENABLE" breaks this...
+*/
+#define TVCOL_BUTTON(tvcol) tvcol->button
+
+/* ... and this is what we'd want to use, but Gtk2 does not yet have that.
+   So, when we build with Gtk3, we will do this:
+*/
+//#define TVCOL_BUTTON(tvcol) gtk_tree_view_column_get_button(tvcol)
+
 #endif /* AQUALUNG_COMMON_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  

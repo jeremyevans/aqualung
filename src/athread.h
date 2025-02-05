@@ -75,7 +75,7 @@ void set_thread_priority(pthread_t thread, const gchar * name,
 #define AQUALUNG_COND_INIT(cond) cond = NULL;
 #define AQUALUNG_COND_SIGNAL(cond) g_cond_signal(cond);
 #define AQUALUNG_COND_TIMEDWAIT(cond, mutex, timeout) \
-	g_cond_timed_wait(cond, mutex, timeout);
+	g_cond_wait_until(cond, mutex, timeout);
 #define AQUALUNG_COND_WAIT(cond, mutex) g_cond_wait(cond, mutex);
 
 void set_thread_priority(GThread * thread, const gchar * name,

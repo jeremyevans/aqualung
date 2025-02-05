@@ -290,7 +290,6 @@ parse_ymd(char * str) {
 unsigned
 parse_rss_date(char * str) {
 
-	GTimeVal tval;
 	unsigned val;
 
 	if ((val = parse_rfc822(str)) > 0) {
@@ -301,21 +300,16 @@ parse_rss_date(char * str) {
 		return val;
 	}
 
-	g_get_current_time(&tval);
-	return tval.tv_sec;
+	return g_get_real_time() / 1000000;
 }
 
 unsigned
 parse_atom_date(char * str) {
 
-	GTimeVal tval;
-
-	if (!g_time_val_from_iso8601(str, &tval))
-	{
-		g_get_current_time(&tval);
-	}
-
-	return tval.tv_sec;
+	GDateTime *dt = g_date_time_new_from_iso8601(str, NULL);
+	gint64 time_val = g_date_time_to_unix(dt);
+	g_date_time_unref(dt);
+	return time_val;
 }
 
 int
@@ -822,7 +816,6 @@ podcast_update_thread(void * arg) {
 	podcast_download_t * pd;
 
 	GSList * node;
-	GTimeVal tval;
 	GSList * list;
 
 	AQUALUNG_THREAD_DETACH();
@@ -839,8 +832,7 @@ podcast_update_thread(void * arg) {
 
 	list = g_slist_sort(list, podcast_item_compare_date);
 
-	g_get_current_time(&tval);
-	podcast->last_checked = tval.tv_sec;
+	podcast->last_checked = g_get_real_time() / 1000000;
 
 	podcast_apply_limits(podcast, &list);
 

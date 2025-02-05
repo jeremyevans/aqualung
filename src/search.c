@@ -223,7 +223,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				} else {
 					tmp = g_utf8_strup(artist_name, -1);
 				}
-				if (g_pattern_match_string(pattern, tmp)) {
+				if (g_pattern_spec_match_string(pattern, tmp)) {
 
 					GtkTreeIter iter;
 					GtkTreePath * path;
@@ -248,7 +248,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 				} else {
 					tmp = g_utf8_strup(artist_data->comment, -1);
 				}
-				if (g_pattern_match_string(pattern, tmp)) {
+				if (g_pattern_spec_match_string(pattern, tmp)) {
 
 					GtkTreeIter iter;
 					GtkTreePath * path;
@@ -284,7 +284,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 					} else {
 						tmp = g_utf8_strup(record_name, -1);
 					}
-					if (g_pattern_match_string(pattern, tmp)) {
+					if (g_pattern_spec_match_string(pattern, tmp)) {
 						
 						GtkTreeIter iter;
 						GtkTreePath * path;
@@ -309,7 +309,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 					} else {
 						tmp = g_utf8_strup(record_data->comment, -1);
 					}
-					if (g_pattern_match_string(pattern, tmp)) {
+					if (g_pattern_spec_match_string(pattern, tmp)) {
 						
 						GtkTreeIter iter;
 						GtkTreePath * path;
@@ -345,7 +345,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 						} else {
 							tmp = g_utf8_strup(track_name, -1);
 						}
-						if (g_pattern_match_string(pattern, tmp)) {
+						if (g_pattern_spec_match_string(pattern, tmp)) {
 							
 							GtkTreeIter iter;
 							GtkTreePath * path;
@@ -370,7 +370,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 						} else {
 							tmp = g_utf8_strup(track_data->comment, -1);
 						}
-						if (g_pattern_match_string(pattern, tmp)) {
+						if (g_pattern_spec_match_string(pattern, tmp)) {
 							
 							GtkTreeIter iter;
 							GtkTreePath * path;
@@ -438,13 +438,13 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 	switch (kevent->keyval) {
 
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		close_button_clicked(NULL, NULL);
 		return TRUE;
 		break;
 
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		search_button_clicked(NULL, NULL);
 		return TRUE;
 		break;

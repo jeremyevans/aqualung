@@ -159,7 +159,7 @@ search_foreach(playlist_t * pl, GPatternSpec * pattern, GtkTreeIter * list_iter,
 		tmp = g_utf8_strup(text, -1);
 	}
 
-	if (g_pattern_match_string(pattern, tmp)) {
+	if (g_pattern_spec_match_string(pattern, tmp)) {
 
 		GtkTreeIter iter;
 		GtkTreePath * path;
@@ -294,13 +294,13 @@ search_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 	switch (kevent->keyval) {
 
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		close_button_clicked(NULL, NULL);
 		return TRUE;
 		break;
 
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		search_button_clicked(NULL, NULL);
                 return TRUE;
 		break;

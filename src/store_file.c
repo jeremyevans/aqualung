@@ -226,56 +226,56 @@ void track__fileinfo_cb(gpointer data);
 static gboolean store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
 
 struct keybinds store_keybinds[] = {
-	{store__addlist_defmode, GDK_a, GDK_A, 0},
-	{store__add_cb, GDK_n, GDK_N, 0},
-	{store__build_cb, GDK_b, GDK_B, 0},
-	{store__edit_cb, GDK_e, GDK_E, 0},
-	{store__build_cb, GDK_u, GDK_U, 0},
-	{store__save_cb, GDK_s, GDK_S, 0},
-	{store__volume_unmeasured_cb, GDK_v, GDK_V, 0},
-	{store__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{store__addlist_defmode, GDK_KEY_a, GDK_KEY_A, 0},
+	{store__add_cb, GDK_KEY_n, GDK_KEY_N, 0},
+	{store__build_cb, GDK_KEY_b, GDK_KEY_B, 0},
+	{store__edit_cb, GDK_KEY_e, GDK_KEY_E, 0},
+	{store__build_cb, GDK_KEY_u, GDK_KEY_U, 0},
+	{store__save_cb, GDK_KEY_s, GDK_KEY_S, 0},
+	{store__volume_unmeasured_cb, GDK_KEY_v, GDK_KEY_V, 0},
+	{store__remove_cb, GDK_KEY_Delete, GDK_KEY_KP_Delete, 0},
 #ifdef HAVE_TRANSCODING
-	{store__export_cb, GDK_x, GDK_X, 0},
+	{store__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
-	{artist__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{artist__add_cb, GDK_KEY_n, GDK_KEY_N, GDK_CONTROL_MASK},
 	{NULL, 0, 0}
 };
 
 struct keybinds artist_keybinds[] = {
-	{artist__addlist_defmode, GDK_a, GDK_A, 0},
-	{artist__add_cb, GDK_n, GDK_N, 0},
-	{artist__edit_cb, GDK_e, GDK_E, 0},
-	{artist__volume_unmeasured_cb, GDK_v, GDK_V, 0},
-	{artist__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{artist__addlist_defmode, GDK_KEY_a, GDK_KEY_A, 0},
+	{artist__add_cb, GDK_KEY_n, GDK_KEY_N, 0},
+	{artist__edit_cb, GDK_KEY_e, GDK_KEY_E, 0},
+	{artist__volume_unmeasured_cb, GDK_KEY_v, GDK_KEY_V, 0},
+	{artist__remove_cb, GDK_KEY_Delete, GDK_KEY_KP_Delete, 0},
 #ifdef HAVE_TRANSCODING
-	{artist__export_cb, GDK_x, GDK_X, 0},
+	{artist__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
-	{record__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{record__add_cb, GDK_KEY_n, GDK_KEY_N, GDK_CONTROL_MASK},
 	{NULL, 0, 0}
 };
 
 struct keybinds record_keybinds[] = {
-	{record__addlist_defmode, GDK_a, GDK_A, 0},
-	{record__add_cb, GDK_n, GDK_N, 0},
-	{record__edit_cb, GDK_e, GDK_E, 0},
-	{record__volume_unmeasured_cb, GDK_v, GDK_V, 0},
-	{record__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{record__addlist_defmode, GDK_KEY_a, GDK_KEY_A, 0},
+	{record__add_cb, GDK_KEY_n, GDK_KEY_N, 0},
+	{record__edit_cb, GDK_KEY_e, GDK_KEY_E, 0},
+	{record__volume_unmeasured_cb, GDK_KEY_v, GDK_KEY_V, 0},
+	{record__remove_cb, GDK_KEY_Delete, GDK_KEY_KP_Delete, 0},
 #ifdef HAVE_TRANSCODING
-	{record__export_cb, GDK_x, GDK_X, 0},
+	{record__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
-	{track__add_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{track__add_cb, GDK_KEY_n, GDK_KEY_N, GDK_CONTROL_MASK},
 	{NULL, 0, 0}
 };
 
 struct keybinds track_keybinds[] = {
-	{track__addlist_cb, GDK_a, GDK_A, 0},
-	{track__add_cb, GDK_n, GDK_N, 0},
-	{track__edit_cb, GDK_e, GDK_E, 0},
-	{track__volume_unmeasured_cb, GDK_v, GDK_V, 0},
-	{track__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
-	{track__fileinfo_cb, GDK_i, GDK_I, 0},
+	{track__addlist_cb, GDK_KEY_a, GDK_KEY_A, 0},
+	{track__add_cb, GDK_KEY_n, GDK_KEY_N, 0},
+	{track__edit_cb, GDK_KEY_e, GDK_KEY_E, 0},
+	{track__volume_unmeasured_cb, GDK_KEY_v, GDK_KEY_V, 0},
+	{track__remove_cb, GDK_KEY_Delete, GDK_KEY_KP_Delete, 0},
+	{track__fileinfo_cb, GDK_KEY_i, GDK_KEY_I, 0},
 #ifdef HAVE_TRANSCODING
-	{track__export_cb, GDK_x, GDK_X, 0},
+	{track__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
 	{NULL, 0, 0}
 };
@@ -796,7 +796,8 @@ add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 	column = gtk_tree_view_column_new_with_attributes(_("Clear list"), cell, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tracklist_tree), GTK_TREE_VIEW_COLUMN(column));
 	gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tracklist_tree), TRUE);
-        g_signal_connect(G_OBJECT(column->button), "clicked", G_CALLBACK(clicked_tracklist_header), store);
+	g_signal_connect(G_OBJECT(TVCOL_BUTTON(column)),
+                         "clicked", G_CALLBACK(clicked_tracklist_header), store);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
 
 	browse_button = gui_stock_label_button(_("_Add files..."), GTK_STOCK_ADD);

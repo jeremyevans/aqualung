@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_PREREQ([2.60])
+AC_PREREQ([2.71])
 AC_INIT([aqualung],[git],[https://github.com/jeremyevans/aqualung])
 AM_INIT_AUTOMAKE(subdir-objects)
 AC_CONFIG_SRCDIR([src/core.c])
@@ -31,7 +31,7 @@ AM_PROG_AR
 m4_ifndef([AM_GNU_GETTEXT],
     [m4_fatal([GNU gettext is required to prepare the Aqualung build])])
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT_VERSION([0.19])
 m4_ifndef([PKG_PROG_PKG_CONFIG],
     [m4_fatal([pkg-config is required to prepare the Aqualung build])])
 PKG_PROG_PKG_CONFIG

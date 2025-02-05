@@ -634,10 +634,7 @@ disk_thread(void * arg) {
 		{
 			/* suspend thread, wake up after 100 ms */
 #ifndef HAVE_LIBPTHREAD
-			GTimeVal time;
-			GTimeVal * timeout = &time;
-			g_get_current_time(timeout);
-			g_time_val_add(timeout, 100000);
+			gint64 timeout = g_get_real_time() + 100000;
 #else /* HAVE_LIBPTHREAD */
 			struct timeval now;
 			struct timezone tz;

@@ -204,9 +204,9 @@ gint
 about_key_pressed(GtkWidget * widget, GdkEventKey * event, gpointer * data) {
 
         switch (event->keyval) {
-	case GDK_q:
-	case GDK_Q:
-	case GDK_Escape:
+	case GDK_KEY_q:
+	case GDK_KEY_Q:
+	case GDK_KEY_Escape:
 		ok(NULL, NULL);
 		return TRUE;
 	};

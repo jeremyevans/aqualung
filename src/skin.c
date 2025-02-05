@@ -129,15 +129,15 @@ skin_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 
 	switch (kevent->keyval) {
 
-	case GDK_q:
-	case GDK_Q:
-	case GDK_Escape:
+	case GDK_KEY_q:
+	case GDK_KEY_Q:
+	case GDK_KEY_Escape:
 		cancel(NULL, NULL);
 		return TRUE;
 		break;
 
-        case GDK_Return:
-	case GDK_KP_Enter:
+        case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		apply(NULL, NULL);
                 return TRUE;
 		break;

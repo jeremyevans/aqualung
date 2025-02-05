@@ -28,14 +28,7 @@
 #include "loop_bar.h"
 
 
-#define AQUALUNG_LOOP_BAR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AQUALUNG_TYPE_LOOP_BAR, AqualungLoopBarPrivate))
-
-G_DEFINE_TYPE (AqualungLoopBar, aqualung_loop_bar, GTK_TYPE_DRAWING_AREA);
-
-
-typedef struct _AqualungLoopBarPrivate AqualungLoopBarPrivate;
-
-struct _AqualungLoopBarPrivate {
+typedef struct {
 
 	float start;
 	float end;
@@ -49,7 +42,13 @@ struct _AqualungLoopBarPrivate {
 	gint prev_x;
 	gint width;
 	gint margin;
-};
+} AqualungLoopBarPrivate;
+
+G_DEFINE_TYPE_WITH_CODE(AqualungLoopBar, aqualung_loop_bar, GTK_TYPE_DRAWING_AREA,
+                        G_ADD_PRIVATE(AqualungLoopBar));
+
+#define AQUALUNG_LOOP_BAR_GET_PRIVATE(obj) \
+   ((AqualungLoopBarPrivate*)aqualung_loop_bar_get_instance_private(AQUALUNG_LOOP_BAR(obj)))
 
 enum {
 	RANGE_CHANGED,
@@ -99,7 +98,7 @@ aqualung_loop_bar_draw_marker(GtkWidget * widget, cairo_t * cr, int x, int heigh
 
 	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(widget);
 
-	GdkColor fg = widget->style->fg[hover ? GTK_STATE_PRELIGHT : GTK_STATE_NORMAL];
+	GdkColor fg = gtk_widget_get_style(widget)->fg[hover ? GTK_STATE_PRELIGHT : GTK_STATE_NORMAL];
 
 	double fg_r = fg.red / 65535.0;
 	double fg_g = fg.green / 65535.0;
@@ -129,9 +128,9 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 	int x_start;
 	int x_end;
 	int height;
-	
-	GdkColor bg = widget->style->bg[GTK_STATE_SELECTED];
-	GdkColor bg2 = widget->style->bg[GTK_STATE_ACTIVE];
+
+	GdkColor bg = gtk_widget_get_style(widget)->bg[GTK_STATE_SELECTED];
+	GdkColor bg2 = gtk_widget_get_style(widget)->bg[GTK_STATE_ACTIVE];
 
 	double bg_r = bg.red / 65535.0;
 	double bg_g = bg.green / 65535.0;
@@ -143,9 +142,11 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 
 	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(widget);
 
-	x_start = (widget->allocation.width - 2 * priv->margin) * priv->start + priv->margin;
-	x_end = (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin;
-	height = widget->allocation.height;
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(widget, &allocation);
+	x_start = (allocation.width - 2 * priv->margin) * priv->start + priv->margin;
+	x_end = (allocation.width - 2 * priv->margin) * priv->end + priv->margin;
+	height = allocation.height;
 
 	cr = gdk_cairo_create(gtk_widget_get_window(widget));
 
@@ -167,13 +168,13 @@ aqualung_loop_bar_expose(GtkWidget * widget, GdkEventExpose * event) {
 	cairo_new_path(cr);
 	cairo_move_to(cr, 0, height);
 	cairo_rel_line_to(cr, 0, -height);
-	cairo_rel_line_to(cr, widget->allocation.width, 0);
+	cairo_rel_line_to(cr, allocation.width, 0);
 	cairo_set_source_rgb(cr, bg2_r, bg2_g, bg2_b);
 	cairo_stroke(cr);
 
 	cairo_new_path(cr);
 	cairo_move_to(cr, 0, height);
-	cairo_rel_line_to(cr, widget->allocation.width, 0);
+	cairo_rel_line_to(cr, allocation.width, 0);
 	cairo_rel_line_to(cr, 0, -height);
 	cairo_set_source_rgb(cr,
 			     bg2_r * 2,
@@ -211,10 +212,12 @@ aqualung_loop_bar_update(GtkWidget * widget, int x) {
 	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(widget);
 	gboolean redraw = FALSE;
 
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(widget, &allocation);
 	if (priv->start_dragged ||
 	    (!priv->end_dragged &&
-	     x >= (widget->allocation.width - 2 * priv->margin) * priv->start + priv->margin - priv->width &&
-	     x <= (widget->allocation.width - 2 * priv->margin) * priv->start + priv->margin + priv->width)) {
+	     x >= (allocation.width - 2 * priv->margin) * priv->start + priv->margin - priv->width &&
+	     x <= (allocation.width - 2 * priv->margin) * priv->start + priv->margin + priv->width)) {
 		if (priv->start_hover == FALSE) {
 			priv->start_hover = TRUE;
 			priv->end_hover = FALSE;
@@ -229,8 +232,8 @@ aqualung_loop_bar_update(GtkWidget * widget, int x) {
 
 	if (priv->end_dragged ||
 	    (!priv->start_dragged &&
-	     x >= (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin - priv->width &&
-	     x <= (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin + priv->width)) {
+	     x >= (allocation.width - 2 * priv->margin) * priv->end + priv->margin - priv->width &&
+	     x <= (allocation.width - 2 * priv->margin) * priv->end + priv->margin + priv->width)) {
 		if (priv->end_hover == FALSE && priv->start_hover == FALSE) {
 			priv->end_hover = TRUE;
 			redraw = TRUE;
@@ -243,7 +246,7 @@ aqualung_loop_bar_update(GtkWidget * widget, int x) {
 	}
 
 	if (priv->start_dragged) {
-		priv->start += (float)(x - priv->prev_x) / (widget->allocation.width - 2 * priv->margin);
+		priv->start += (float)(x - priv->prev_x) / (allocation.width - 2 * priv->margin);
 		priv->start = priv->start < 0 ? 0 : priv->start;
 		priv->start = priv->start > priv->end ? priv->end : priv->start;
 
@@ -253,7 +256,7 @@ aqualung_loop_bar_update(GtkWidget * widget, int x) {
 
 	} else if (priv->end_dragged) {
 
-		priv->end += (float)(x - priv->prev_x) / (widget->allocation.width - 2 * priv->margin);
+		priv->end += (float)(x - priv->prev_x) / (allocation.width - 2 * priv->margin);
 		priv->end = priv->end < priv->start ? priv->start : priv->end;
 		priv->end = priv->end > 1 ? 1 : priv->end;
 
@@ -289,17 +292,19 @@ aqualung_loop_bar_button_press(GtkWidget * widget, GdkEventButton * event) {
 		return TRUE;
 	}
 
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(widget, &allocation);
 	if (event->button == 1) {
 
 		priv->prev_x = event->x;
 
-		if (event->x >= (widget->allocation.width - 2 * priv->margin) * priv->start + priv->margin - priv->width &&
-		    event->x <= (widget->allocation.width - 2 * priv->margin) * priv->start + priv->margin + priv->width) {
+		if (event->x >= (allocation.width - 2 * priv->margin) * priv->start + priv->margin - priv->width &&
+		    event->x <= (allocation.width - 2 * priv->margin) * priv->start + priv->margin + priv->width) {
 
 			priv->start_dragged = TRUE;
 
-		} else if (event->x >= (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin - priv->width &&
-			   event->x <= (widget->allocation.width - 2 * priv->margin) * priv->end + priv->margin + priv->width) {
+		} else if (event->x >= (allocation.width - 2 * priv->margin) * priv->end + priv->margin - priv->width &&
+			   event->x <= (allocation.width - 2 * priv->margin) * priv->end + priv->margin + priv->width) {
 
 			priv->end_dragged = TRUE;
 		}
@@ -342,8 +347,10 @@ aqualung_loop_bar_leave_notify(GtkWidget * widget, GdkEventCrossing * event) {
 
 	AqualungLoopBarPrivate * priv;
 
-	if (event->y >= 0 && event->y < widget->allocation.height &&
-	    event->x >= 0 && event->x < widget->allocation.width) {
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(widget, &allocation);
+	if (event->y >= 0 && event->y < allocation.height &&
+	    event->x >= 0 && event->x < allocation.width) {
 		/* before each button press event we receive a leave
 		 * notify event, which should be neglected. */
 		return FALSE;
@@ -386,8 +393,6 @@ aqualung_loop_bar_class_init(AqualungLoopBarClass * class) {
 	widget_class->motion_notify_event = aqualung_loop_bar_motion_notify;
 	widget_class->enter_notify_event = aqualung_loop_bar_enter_notify;
 	widget_class->leave_notify_event = aqualung_loop_bar_leave_notify;
-
-	g_type_class_add_private(obj_class, sizeof(AqualungLoopBarPrivate));
 }
 
 

@@ -168,8 +168,8 @@ void
 clicked_out_L_header(GtkWidget * widget, gpointer * data) {
 
 	out_selector = 0;
-	set_active(GTK_WIDGET(column_out_L->button), 1);
-	set_active(GTK_WIDGET(column_out_R->button), 0);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_L)), 1);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_R)), 0);
 }
 
 
@@ -177,8 +177,8 @@ void
 clicked_out_R_header(GtkWidget * widget, gpointer * data) {
 
 	out_selector = 1;
-	set_active(GTK_WIDGET(column_out_L->button), 0);
-	set_active(GTK_WIDGET(column_out_R->button), 1);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_L)), 0);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_R)), 1);
 }
 
 
@@ -208,8 +208,8 @@ tree_out_nb_selection_changed(GtkObject * tree, gpointer * data) {
 				gtk_list_store_clear(store_out_L);
 				scan_connections(out_L_port, store_out_L);
 				out_selector = 1;
-				set_active(GTK_WIDGET(column_out_L->button), 0);
-				set_active(GTK_WIDGET(column_out_R->button), 1);
+				set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_L)), 0);
+				set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_R)), 1);
 			}
 		} else {
 			if (jack_connect(jack_client, jack_port_name(out_R_port), fullname)) {
@@ -219,8 +219,8 @@ tree_out_nb_selection_changed(GtkObject * tree, gpointer * data) {
 				gtk_list_store_clear(store_out_R);
 				scan_connections(out_R_port, store_out_R);
 				out_selector = 0;
-				set_active(GTK_WIDGET(column_out_L->button), 1);
-				set_active(GTK_WIDGET(column_out_R->button), 0);
+				set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_L)), 1);
+				set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_R)), 0);
 			}
 		}
         }
@@ -508,11 +508,11 @@ port_setup_dialog(void) {
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_out_L), column_out_L);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_out_R), column_out_R);
 
-	g_signal_connect(G_OBJECT(column_out_L->button), "clicked", G_CALLBACK(clicked_out_L_header), NULL);
-	g_signal_connect(G_OBJECT(column_out_R->button), "clicked", G_CALLBACK(clicked_out_R_header), NULL);
+	g_signal_connect(G_OBJECT(TVCOL_BUTTON(column_out_L)), "clicked", G_CALLBACK(clicked_out_L_header), NULL);
+	g_signal_connect(G_OBJECT(TVCOL_BUTTON(column_out_R)), "clicked", G_CALLBACK(clicked_out_R_header), NULL);
 	
-	gtk_widget_set_name(column_out_L->button, "nostyle");
-	gtk_widget_set_name(column_out_R->button, "nostyle");
+	gtk_widget_set_name(TVCOL_BUTTON(column_out_L), "nostyle");
+	gtk_widget_set_name(TVCOL_BUTTON(column_out_R), "nostyle");
 	
 	select_out_L = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_out_L));
 	gtk_tree_selection_set_mode(select_out_L, GTK_SELECTION_SINGLE);
@@ -540,13 +540,13 @@ port_setup_dialog(void) {
 
 	setup_notebook_out();
 
-	set_active(GTK_WIDGET(column_out_L->button), TRUE);
-	set_active(GTK_WIDGET(column_out_R->button), FALSE);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_L)), TRUE);
+	set_active(GTK_WIDGET(TVCOL_BUTTON(column_out_R)), FALSE);
 
 	gtk_widget_show_all(ports_window);
 
-	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(column_out_L->button)));
-	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(column_out_R->button)));
+	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(TVCOL_BUTTON(column_out_L))));
+	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(TVCOL_BUTTON(column_out_R))));
 
 	hbox_L = gtk_hbox_new(FALSE, 0);
 	hbox_R = gtk_hbox_new(FALSE, 0);
@@ -554,8 +554,8 @@ port_setup_dialog(void) {
 	label_L = gtk_label_new(_(" out L"));
 	label_R = gtk_label_new(_(" out R"));
 
-	gtk_container_add(GTK_CONTAINER(column_out_L->button), hbox_L);
-	gtk_container_add(GTK_CONTAINER(column_out_R->button), hbox_R);
+	gtk_container_add(GTK_CONTAINER(TVCOL_BUTTON(column_out_L)), hbox_L);
+	gtk_container_add(GTK_CONTAINER(TVCOL_BUTTON(column_out_R)), hbox_R);
 
 	gtk_box_pack_start(GTK_BOX(hbox_L), label_L, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_R), label_R, FALSE, FALSE, 0);

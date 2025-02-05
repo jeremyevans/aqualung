@@ -158,9 +158,13 @@ volume_finalize(gpointer data) {
 
 	volume_t * vol = (volume_t *)data;
 
+	GtkAllocation win_allocation;
+	gtk_widget_get_allocation(vol_window, &win_allocation);
+	GtkAllocation slot_allocation;
+	gtk_widget_get_allocation(vol->slot, &slot_allocation);
 	gtk_window_resize(GTK_WINDOW(vol_window),
-			  vol_window->allocation.width,
-			  vol_window->allocation.height - vol->slot->allocation.height);
+			  win_allocation.width,
+			  win_allocation.height - slot_allocation.height);
 
 	gtk_widget_destroy(vol->slot);
 	vol->slot = NULL;

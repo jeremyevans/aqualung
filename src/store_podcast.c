@@ -118,32 +118,32 @@ void podcast_track__export_cb(gpointer data);
 static gboolean store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file);
 
 struct keybinds podcast_store_keybinds[] = {
-	{podcast_store__addlist_defmode, GDK_a, GDK_A, 0},
-	{podcast_store__update_cb, GDK_u, GDK_U, 0},
+	{podcast_store__addlist_defmode, GDK_KEY_a, GDK_KEY_A, 0},
+	{podcast_store__update_cb, GDK_KEY_u, GDK_KEY_U, 0},
 #ifdef HAVE_TRANSCODING
-	{podcast_store__export_cb, GDK_x, GDK_X, 0},
+	{podcast_store__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
-	{podcast_feed__subscribe_cb, GDK_n, GDK_N, GDK_CONTROL_MASK},
+	{podcast_feed__subscribe_cb, GDK_KEY_n, GDK_KEY_N, GDK_CONTROL_MASK},
 	{NULL, 0, 0}
 };
 
 struct keybinds podcast_feed_keybinds[] = {
-	{podcast_feed__addlist_defmode, GDK_a, GDK_A, 0},
-	{podcast_feed__subscribe_cb, GDK_n, GDK_N, 0},
-	{podcast_feed__edit_cb, GDK_e, GDK_E, 0},
-	{podcast_feed__update_cb, GDK_u, GDK_U, 0},
-	{podcast_feed__remove_cb, GDK_Delete, GDK_KP_Delete, 0},
+	{podcast_feed__addlist_defmode, GDK_KEY_a, GDK_KEY_A, 0},
+	{podcast_feed__subscribe_cb, GDK_KEY_n, GDK_KEY_N, 0},
+	{podcast_feed__edit_cb, GDK_KEY_e, GDK_KEY_E, 0},
+	{podcast_feed__update_cb, GDK_KEY_u, GDK_KEY_U, 0},
+	{podcast_feed__remove_cb, GDK_KEY_Delete, GDK_KEY_KP_Delete, 0},
 #ifdef HAVE_TRANSCODING
-	{podcast_feed__export_cb, GDK_x, GDK_X, 0},
+	{podcast_feed__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
 	{NULL, 0, 0}
 };
 
 struct keybinds podcast_track_keybinds[] = {
-	{podcast_track__addlist_cb, GDK_a, GDK_A, 0},
-	{podcast_track__fileinfo_cb, GDK_i, GDK_I, 0},
+	{podcast_track__addlist_cb, GDK_KEY_a, GDK_KEY_A, 0},
+	{podcast_track__fileinfo_cb, GDK_KEY_i, GDK_KEY_I, 0},
 #ifdef HAVE_TRANSCODING
-	{podcast_track__export_cb, GDK_x, GDK_X, 0},
+	{podcast_track__export_cb, GDK_KEY_x, GDK_KEY_X, 0},
 #endif /* HAVE_TRANSCODING */
 	{NULL, 0, 0}
 };
@@ -847,7 +847,7 @@ podcast_store__update_cb(gpointer data) {
 	podcast_t * podcast;
 	GtkTreeIter store_iter;
 	GtkTreeIter iter;
-	GTimeVal tval;
+	gint64 now;
 	int i = 0;
 
 	if (store_podcast_get_store_iter(&store_iter) != 0) {
@@ -855,7 +855,7 @@ podcast_store__update_cb(gpointer data) {
 	}
 
 	if (data != NULL) {
-		g_get_current_time(&tval);
+		now = g_get_real_time() / 1000000;
 	}
 
 	for (i = 0; gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(music_store), &iter, &store_iter, i); ++i) {
@@ -873,7 +873,7 @@ podcast_store__update_cb(gpointer data) {
 				continue;
 			}
 
-			if (tval.tv_sec - podcast->last_checked < podcast->check_interval) {
+			if (now - podcast->last_checked < podcast->check_interval) {
 				/* too young to be updated */
 				continue;
 			}

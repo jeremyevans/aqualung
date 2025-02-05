@@ -584,12 +584,12 @@ capitalize_gui_new(capitalize_t * model, GtkWidget * target_vbox) {
 	g_signal_connect(G_OBJECT(gui->check), "toggled",
 			 G_CALLBACK(capitalize_check_toggled), gui);
 
-	gui->combo = gtk_combo_box_new_text();
+	gui->combo = gtk_combo_box_text_new();
 	gtk_table_attach(GTK_TABLE(table), gui->combo, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gui->combo), _("All words"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(gui->combo), _("First word only"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gui->combo), _("All words"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gui->combo), _("First word only"));
 
 	gui->check_pre = gtk_check_button_new_with_label(_("Force case: "));
 	gtk_widget_set_name(gui->check_pre, "check_on_notebook");
@@ -1755,15 +1755,15 @@ build_dialog(build_store_t * data) {
 		gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 				 GTK_FILL, GTK_FILL, 0, 0);
 
-		gen_depth_combo = gtk_combo_box_new_text();
-		gtk_combo_box_append_text(GTK_COMBO_BOX(gen_depth_combo),
-					  _("root / record / track"));
-		gtk_combo_box_append_text(GTK_COMBO_BOX(gen_depth_combo),
-					  _("root / artist / record / track"));
-		gtk_combo_box_append_text(GTK_COMBO_BOX(gen_depth_combo),
-					  _("root / artist / artist / record / track"));
-		gtk_combo_box_append_text(GTK_COMBO_BOX(gen_depth_combo),
-					  _("root / artist / artist / artist / record / track"));
+		gen_depth_combo = gtk_combo_box_text_new();
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
+                                               _("root / record / track"));
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
+                                               _("root / artist / record / track"));
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
+                                               _("root / artist / artist / record / track"));
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
+                                               _("root / artist / artist / artist / record / track"));
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_depth_combo), data->artist_dir_depth);
 		gtk_table_attach(GTK_TABLE(table), gen_depth_combo, 1, 3, 1, 2,
 				 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
@@ -1884,13 +1884,13 @@ build_dialog(build_store_t * data) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-	art_sort_combo = gtk_combo_box_new_text();
+	art_sort_combo = gtk_combo_box_text_new();
         gtk_box_pack_start(GTK_BOX(vbox), art_sort_combo, FALSE, FALSE, 0);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(art_sort_combo), _("Artist name"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(art_sort_combo), _("Artist name (lowercase)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(art_sort_combo), _("Directory name"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(art_sort_combo), _("Directory name (lowercase)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(art_sort_combo), _("Artist name"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(art_sort_combo), _("Artist name (lowercase)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(art_sort_combo), _("Directory name"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(art_sort_combo), _("Directory name (lowercase)"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(art_sort_combo), data->artist_sort_by);
 
 
@@ -1939,14 +1939,14 @@ build_dialog(build_store_t * data) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-	rec_sort_combo = gtk_combo_box_new_text();
+	rec_sort_combo = gtk_combo_box_text_new();
         gtk_box_pack_start(GTK_BOX(vbox), rec_sort_combo, FALSE, FALSE, 0);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(rec_sort_combo), _("Record name"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(rec_sort_combo), _("Record name (lowercase)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(rec_sort_combo), _("Directory name"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(rec_sort_combo), _("Directory name (lowercase)"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(rec_sort_combo), _("Year"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(rec_sort_combo), _("Record name"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(rec_sort_combo), _("Record name (lowercase)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(rec_sort_combo), _("Directory name"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(rec_sort_combo), _("Directory name (lowercase)"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(rec_sort_combo), _("Year"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(rec_sort_combo), data->record_sort_by);
 
 

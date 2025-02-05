@@ -99,9 +99,9 @@ gint
 browser_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {
-	case GDK_q:
-	case GDK_Q:
-	case GDK_Escape:
+	case GDK_KEY_q:
+	case GDK_KEY_Q:
+	case GDK_KEY_Escape:
 		browser_window_close(NULL, NULL, NULL);
 		return TRUE;
 	}
@@ -208,8 +208,8 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 		GdkEventKey * kevent = (GdkEventKey *)event;
 
 		switch (kevent->keyval) {
-		case GDK_KP_Enter:
-		case GDK_Return:
+		case GDK_KEY_KP_Enter:
+		case GDK_KEY_Return:
 			if (gtk_tree_selection_get_selected(music_select, &model, &iter)) {
 
 				GtkTreePath * path = gtk_tree_model_get_path(model, &iter);
@@ -222,12 +222,12 @@ music_tree_event_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data) {
 				gtk_tree_path_free(path);
 			}
 			return TRUE;
-		case GDK_w:
-		case GDK_W:
+		case GDK_KEY_w:
+		case GDK_KEY_W:
 			toolbar__collapse_cb(NULL);
 			return TRUE;
-		case GDK_f:
-		case GDK_F:
+		case GDK_KEY_f:
+		case GDK_KEY_F:
 			toolbar__search_cb(NULL);
 			return TRUE;
 		}

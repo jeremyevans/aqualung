@@ -675,8 +675,10 @@ save_window_position(void) {
 	if (!options.playlist_is_embedded) {
 		gtk_window_get_size(GTK_WINDOW(playlist_window), &options.playlist_size_x, &options.playlist_size_y);
 	} else {
-		options.playlist_size_x = playlist_window->allocation.width;
-		options.playlist_size_y = playlist_window->allocation.height;
+		GtkAllocation allocation;
+		gtk_widget_get_allocation(playlist_window, &allocation);
+		options.playlist_size_x = allocation.width;
+		options.playlist_size_y = allocation.height;
 	}
 
 	if (!options.hide_comment_pane) {
@@ -813,9 +815,10 @@ void
 main_window_resize(void) {
 
         if (options.playlist_is_embedded && !options.playlist_on) {
+		GtkAllocation allocation;
+		gtk_widget_get_allocation(playlist_window, &allocation);
 		gtk_window_resize(GTK_WINDOW(main_window), options.main_size_x,
-				  options.main_size_y - 14 - 6 - 6 -
-				  playlist_window->allocation.height);
+				  options.main_size_y - 14 - 6 - 6 - allocation.height);
 	}
 
 	if (!options.playlist_is_embedded) {
@@ -1001,14 +1004,14 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 
 	if (custom_main_keybinding_expected) {
 		switch (event->keyval) {
-		case GDK_Shift_L:
-		case GDK_Shift_R: 
-		case GDK_Control_L:
-		case GDK_Control_R: 
-		case GDK_Alt_L:
-		case GDK_Alt_R: 
-		case GDK_Super_L:
-		case GDK_Super_R: 
+		case GDK_KEY_Shift_L:
+		case GDK_KEY_Shift_R:
+		case GDK_KEY_Control_L:
+		case GDK_KEY_Control_R:
+		case GDK_KEY_Alt_L:
+		case GDK_KEY_Alt_R:
+		case GDK_KEY_Super_L:
+		case GDK_KEY_Super_R:
 			return FALSE;
 		default:
 			run_custom_main_keybinding(gdk_keyval_name(event->keyval), event->state);
@@ -1018,48 +1021,48 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 	}
 
 	switch (event->keyval) {
-	case GDK_KP_Divide:
-	case GDK_slash:
+	case GDK_KEY_KP_Divide:
+	case GDK_KEY_slash:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Divide */
 			change_volume_or_balance(scale_bal, GTK_SCROLL_STEP_BACKWARD);
 		} else {
 			change_volume_or_balance(scale_vol, GTK_SCROLL_STEP_BACKWARD);
 		}
 		return TRUE;
-	case GDK_KP_Multiply:
-	case GDK_asterisk:
+	case GDK_KEY_KP_Multiply:
+	case GDK_KEY_asterisk:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + KP_Multiply */
 			change_volume_or_balance(scale_bal, GTK_SCROLL_STEP_FORWARD);
 		} else {
 			change_volume_or_balance(scale_vol, GTK_SCROLL_STEP_FORWARD);
 		}
 		return TRUE;
-	case GDK_Right:
+	case GDK_KEY_Right:
 		move_song_position_slider(GTK_SCROLL_STEP_FORWARD);
 		return TRUE;
-	case GDK_Left:
+	case GDK_KEY_Left:
 		move_song_position_slider(GTK_SCROLL_STEP_BACKWARD);
 		return TRUE;
-	case GDK_b:
-	case GDK_B:
-	case GDK_period:
-	case GDK_AudioNext:
+	case GDK_KEY_b:
+	case GDK_KEY_B:
+	case GDK_KEY_period:
+	case GDK_KEY_AudioNext:
 		next_event(NULL, NULL, NULL);
 		return TRUE;
-	case GDK_z:
-	case GDK_Z:
+	case GDK_KEY_z:
+	case GDK_KEY_Z:
 		if (event->state & GDK_CONTROL_MASK) {
 			custom_main_keybinding_expected = 1;
 			return TRUE;
 		}
-	case GDK_y:
-	case GDK_Y:
-	case GDK_comma:
-	case GDK_AudioPrev:
+	case GDK_KEY_y:
+	case GDK_KEY_Y:
+	case GDK_KEY_comma:
+	case GDK_KEY_AudioPrev:
 		prev_event(NULL, NULL, NULL);
 		return TRUE;
-	case GDK_s:
-	case GDK_S:
+	case GDK_KEY_s:
+	case GDK_KEY_S:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + s */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(musicstore_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(musicstore_toggle)));
@@ -1071,19 +1074,19 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			}
 		}
 		return TRUE;
-	case GDK_v:
-	case GDK_V:
+	case GDK_KEY_v:
+	case GDK_KEY_V:
 		if (!(event->state & GDK_CONTROL_MASK)) {
 			stop_event(NULL, NULL, NULL);
 			return TRUE;
 		}
 		break;
-	case GDK_AudioStop:
+	case GDK_KEY_AudioStop:
 		stop_event(NULL, NULL, NULL);
 		return TRUE;
-	case GDK_c:
-	case GDK_C:
-	case GDK_space:
+	case GDK_KEY_c:
+	case GDK_KEY_C:
+	case GDK_KEY_space:
 		if (!(event->state & GDK_CONTROL_MASK)) {
 			if (!options.combine_play_pause) {
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pause_button),
@@ -1095,21 +1098,21 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			return TRUE;
 		}
 		break;
-	case GDK_p:
-	case GDK_P:
-	case GDK_AudioPlay:
+	case GDK_KEY_p:
+	case GDK_KEY_P:
+	case GDK_KEY_AudioPlay:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_button),
 					     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 		return TRUE;
-	case GDK_i:
-	case GDK_I:
+	case GDK_KEY_i:
+	case GDK_KEY_I:
 		if (options.playlist_is_embedded) {
 			return playlist_window_key_pressed(widget, event);
 		} else {
 			conf__fileinfo_cb(NULL);
 		}
 		break;
-	case GDK_BackSpace:
+	case GDK_KEY_BackSpace:
 		if (allow_seeks && total_samples != 0) {
 			seek_t seek;
 
@@ -1125,15 +1128,15 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_pos), 0.0f);
 		}
 		return TRUE;
-	case GDK_l:
-	case GDK_L:
+	case GDK_KEY_l:
+	case GDK_KEY_L:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + l */
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(playlist_toggle),
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(playlist_toggle)));
 		}
 		return TRUE;
-	case GDK_x:
-	case GDK_X:
+	case GDK_KEY_x:
+	case GDK_KEY_X:
 		if (event->state & GDK_CONTROL_MASK) {
 			break;
 		}
@@ -1147,23 +1150,23 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(play_button)));
 		}
 		return TRUE;
-	case GDK_q:
-	case GDK_Q:
+	case GDK_KEY_q:
+	case GDK_KEY_Q:
                 if (event->state & GDK_CONTROL_MASK) {  /* CTRL + q */
 			main_window_closing();
 		}
 		return TRUE;
-	case GDK_k:
-	case GDK_K:
+	case GDK_KEY_k:
+	case GDK_KEY_K:
                 if (!options.disable_skin_support_settings) {
                 	create_skin_window();
                 }
                 return TRUE;
-	case GDK_o:
-	case GDK_O:
+	case GDK_KEY_o:
+	case GDK_KEY_O:
                 create_options_window();
                 return TRUE;
-	case GDK_1:
+	case GDK_KEY_1:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + 1 */
                         if(playlist_tabs >= 1) {
                                 gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 1-1);
@@ -1176,7 +1179,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                         }
                 }
                 return TRUE;
-	case GDK_2:
+	case GDK_KEY_2:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + 2 */
                         if(playlist_tabs >= 2) {
                                 gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 2-1);
@@ -1189,7 +1192,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                         }
                 }
                 return TRUE;
-	case GDK_3:
+	case GDK_KEY_3:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT + 3 */
                         if(playlist_tabs >= 3) {
                                 gtk_notebook_set_current_page(GTK_NOTEBOOK(playlist_notebook), 3-1);
@@ -1202,16 +1205,16 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                         }
                 }
                 return TRUE;
-	case GDK_4:
-	case GDK_5:
-	case GDK_6:
-	case GDK_7:
-	case GDK_8:
-	case GDK_9:
-	case GDK_0:
+	case GDK_KEY_4:
+	case GDK_KEY_5:
+	case GDK_KEY_6:
+	case GDK_KEY_7:
+	case GDK_KEY_8:
+	case GDK_KEY_9:
+	case GDK_KEY_0:
                 if (event->state & GDK_MOD1_MASK) {  /* ALT */
 
-                        int val = event->keyval - GDK_0;
+                        int val = event->keyval - GDK_KEY_0;
                         val = (val == 0) ? 10 : val;
 
                         if(playlist_tabs >= val) {
@@ -1220,7 +1223,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
                 }
                 return TRUE;
 #ifdef HAVE_SYSTRAY
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		if (systray_used) {
 			hide_all_windows(NULL);
 		}
@@ -1228,13 +1231,13 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 #endif /* HAVE_SYSTRAY */
 
 #ifdef HAVE_LOOP
-	case GDK_less:
+	case GDK_KEY_less:
 		if (options.repeat_on && is_file_loaded) {
 			float pos = (total_samples > 0) ? ((double)sample_pos / total_samples) : 0;
 			aqualung_loop_bar_adjust_start(AQUALUNG_LOOP_BAR(loop_bar), pos);
 		}
 		return TRUE;
-	case GDK_greater:
+	case GDK_KEY_greater:
 		if (options.repeat_on && is_file_loaded) {
 			float pos = (total_samples > 0) ? ((double)sample_pos / total_samples) : 1;
 			aqualung_loop_bar_adjust_end(AQUALUNG_LOOP_BAR(loop_bar), pos);
@@ -1255,8 +1258,8 @@ gint
 main_window_key_released(GtkWidget * widget, GdkEventKey * event) {
 
 	switch (event->keyval) {
-        case GDK_Right:
-        case GDK_Left:
+        case GDK_KEY_Right:
+        case GDK_KEY_Left:
 		seek_song();
                 break;
 	}
@@ -1338,12 +1341,14 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpointer 
 	if (event->button == 3) {
 		if (options.playlist_is_embedded) {
 			/* translate and crop event coordinates over playlist widget */
-			event->x -= playlist_window->allocation.x;
-			if (event->x > playlist_window->allocation.width) {
+			GtkAllocation allocation;
+			gtk_widget_get_allocation(playlist_window, &allocation);
+			event->x -= allocation.x;
+			if (event->x > allocation.width) {
 				event->x = -1;
 			}
-			event->y -= playlist_window->allocation.y;
-			if (event->y > playlist_window->allocation.height) {
+			event->y -= allocation.y;
+			if (event->y > allocation.height) {
 				event->y = -1;
 			}
 			return playlist_window_button_pressed(widget, event, playlist_get_current());
@@ -2952,7 +2957,6 @@ create_main_window(char * skin_path) {
 			 G_CALLBACK(scale_button_release_event), NULL);
 	gtk_scale_set_digits(GTK_SCALE(scale_pos), 0);
         gtk_scale_set_draw_value(GTK_SCALE(scale_pos), FALSE);
-	gtk_range_set_update_policy(GTK_RANGE(scale_pos), GTK_UPDATE_DISCONTINUOUS);
 	gtk_box_pack_start(GTK_BOX(vbox), scale_pos, FALSE, FALSE, 3);
 
         vbox_sep = gtk_vbox_new (FALSE, 0);

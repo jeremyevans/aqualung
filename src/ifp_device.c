@@ -311,7 +311,7 @@ upload_download_songs_cb(GtkButton * button, gpointer user_data) {
 int
 mkdir_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data) {
 
-        if (event->keyval == GDK_Return) {
+        if (event->keyval == GDK_KEY_Return) {
                 gtk_dialog_response(GTK_DIALOG (mkdir_dialog), GTK_RESPONSE_OK);
         }
         return FALSE;
@@ -365,7 +365,7 @@ aifp_create_directory_cb (GtkButton *button, gpointer user_data) {
 gint
 rename_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data) {
 
-        if (event->keyval == GDK_Return) {
+        if (event->keyval == GDK_KEY_Return) {
                 gtk_dialog_response(GTK_DIALOG (rename_dialog), GTK_RESPONSE_OK);
         }
         return FALSE;
@@ -767,21 +767,21 @@ aifp_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
         if (!transfer_active) {
 
                 switch (kevent->keyval) {
-                        case GDK_Escape:
+                        case GDK_KEY_Escape:
                                 aifp_window_close (NULL, NULL);
                                 return TRUE;
-                        case GDK_c:
+                        case GDK_KEY_c:
                                 if (transfer_mode == UPLOAD_MODE) {
                                         aifp_create_directory_cb (NULL, NULL);
                                         return TRUE;
                                 } else {
                                         break;
                                 }
-                        case GDK_r:
+                        case GDK_KEY_r:
                                 aifp_rename_item_cb (NULL, NULL);
                                 return TRUE;
-                        case GDK_Delete:
-                        case GDK_KP_Delete:
+                        case GDK_KEY_Delete:
+                        case GDK_KEY_KP_Delete:
                                 aifp_remove_item_cb (NULL, NULL);
                                 return TRUE;
                 }

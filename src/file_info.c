@@ -389,11 +389,11 @@ info_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent, gpointer data)
 	int page;
 
 	switch (kevent->keyval) {
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		dismiss(NULL, data);
 		return TRUE;
 		break;
-	case GDK_Return:
+	case GDK_KEY_Return:
 		page = (gtk_notebook_get_current_page(GTK_NOTEBOOK(fi->nb)) + 1) % fi->n_pages;
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(fi->nb), page);
 		break;
@@ -414,7 +414,8 @@ fi_set_frame_from_source(fi_t * fi, meta_frame_t * frame) {
 			free(frame->field_val);
 		}
 		if (frame->type == META_FIELD_GENRE) {
-			frame->field_val = gtk_combo_box_get_active_text(GTK_COMBO_BOX(frame->source));
+			frame->field_val = gtk_combo_box_text_get_active_text(
+                           GTK_COMBO_BOX_TEXT(frame->source));
 		} else {
 			frame->field_val = strdup(gtk_entry_get_text(GTK_ENTRY(frame->source)));
 		}
@@ -900,13 +901,13 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		char * type_str;
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
-		source->type_combo = gtk_combo_box_new_text();
+		source->type_combo = gtk_combo_box_text_new();
 		while (1) {
 			type_str = meta_id3v2_apic_type_to_string(i);
 			if (type_str == NULL) {
 				break;
 			}
-			gtk_combo_box_append_text(GTK_COMBO_BOX(source->type_combo), type_str);
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(source->type_combo), type_str);
 			++i;
 		}
 		gtk_combo_box_set_active(GTK_COMBO_BOX(source->type_combo), frame->int_val);
@@ -1002,7 +1003,7 @@ void
 make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) {
 
 	int i;
-	GtkWidget * combo = gtk_combo_box_entry_new_text();
+	GtkWidget * combo = gtk_combo_box_text_new_with_entry();
 	GSList * list = NULL;
 	GSList * _list;
 
@@ -1018,7 +1019,7 @@ make_genre_combo(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 	_list = list;
 	while (_list != NULL) {
 		char * genre = id3v1_genre_str_from_code(GPOINTER_TO_INT(_list->data));
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), genre);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), genre);
 		_list = g_slist_next(_list);
 	}
 	g_slist_free(list);
@@ -1176,7 +1177,7 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 		return;
 
 	for (i = 0; i < 100; i++) {
-		gtk_combo_box_remove_text(combo, 0);
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo), 0);
 	}
 
 	if (addable_tags == 0) {
@@ -1188,7 +1189,7 @@ fi_fill_tagcombo(GtkComboBox * combo, int addable_tags) {
 
 	while (tag <= META_TAG_MAX) {
 		if (addable_tags & tag) {
-			gtk_combo_box_append_text(combo, meta_get_tagname(tag));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), meta_get_tagname(tag));
 		}
 		tag <<= 1;
 	}
@@ -1224,7 +1225,7 @@ fi_fill_combo_foreach(gpointer data, gpointer user_data) {
 	if (!meta_get_fieldname(field, &str)) {
 		fprintf(stderr, "fi_fill_combo_foreach: programmer error\n");
 	}
-	gtk_combo_box_append_text(combo, str);
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), str);
 }
 
 void
@@ -1233,7 +1234,7 @@ fi_fill_combo(GtkComboBox * combo, GSList * slist) {
 	int i;
 	GSList * sorted_list = g_slist_copy(slist);
 	for (i = 0; i < 100; i++) {
-		gtk_combo_box_remove_text(combo, 0);
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo), 0);
 	}
 	sorted_list = g_slist_sort(sorted_list, fi_fill_combo_cmp);
 	g_slist_foreach(sorted_list, fi_fill_combo_foreach, combo);
@@ -1330,7 +1331,7 @@ fi_add_button_pressed(GtkWidget * widget, gpointer data) {
 	char * str;
 
 	/* Create new frame */
-	char * combo_entry = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+	char * combo_entry = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	if (combo_entry == NULL) {
 		return;
 	}
@@ -1389,7 +1390,7 @@ fi_addtag_button_pressed(GtkWidget * widget, gpointer data) {
 	metadata_t * meta = fi->meta;
 	meta_frame_t * frame;
 	int tag;
-	char * combo_entry = gtk_combo_box_get_active_text(GTK_COMBO_BOX(fi->combo));
+	char * combo_entry = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(fi->combo));
 	if (combo_entry == NULL) {
 		return;
 	}
@@ -1603,7 +1604,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * table = gtk_table_new(0, fi_tabwidth(fi, meta), FALSE);
 	GtkWidget * label = gtk_label_new(meta_get_tagname(frame->tag));
 	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
-	GtkWidget * combo = gtk_combo_box_new_text();
+	GtkWidget * combo = gtk_combo_box_text_new();
 	GtkWidget * addbtn, * delbtn;
 	GSList * slist = meta_get_possible_fields(frame->tag);
 
@@ -1734,7 +1735,7 @@ fi_procmeta(metadata_t * meta, void * data) {
 		gtk_table_attach(GTK_TABLE(fi->add_tag_table), gtk_label_new(_("tag:")),
 				 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
 
-		fi->combo = gtk_combo_box_new_text();
+		fi->combo = gtk_combo_box_text_new();
 		fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
 		gtk_table_attach(GTK_TABLE(fi->add_tag_table), fi->combo,
 				 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);

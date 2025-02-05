@@ -1895,6 +1895,7 @@ win32_thread(void * arg) {
 void
 load_default_cl(int * argc, char *** argv) {
 
+	static char cl[MAXLEN];
 	int i = 0;
 	xmlDocPtr doc;
         xmlNodePtr cur;
@@ -1903,7 +1904,6 @@ load_default_cl(int * argc, char *** argv) {
         FILE * f;
         char config_file[MAXLEN];
 	char default_param[MAXLEN];
-	char cl[MAXLEN];
 	char *config_dir;
 
         if (chdir(options.confdir) != 0) {

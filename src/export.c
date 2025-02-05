@@ -961,7 +961,7 @@ create_export_window() {
 
         gtk_container_set_border_width(GTK_CONTAINER(export_window), 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(export_window), vbox);
 
         gtk_widget_show_all(export_window);
@@ -1168,7 +1168,7 @@ export_start(export_t * export) {
         table = gtk_table_new(4, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame), table);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
@@ -1178,7 +1178,7 @@ export_start(export_t * export) {
         gtk_table_attach(GTK_TABLE(table), export->format_combo, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	export->bitrate_label = gtk_label_new(_("Compression level:"));
         gtk_box_pack_start(GTK_BOX(hbox), export->bitrate_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);

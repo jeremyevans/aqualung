@@ -2006,11 +2006,11 @@ add_url(GtkWidget * widget, gpointer data) {
 			   table, FALSE, TRUE, 2);
 
 	url_label = gtk_label_new(_("URL:"));
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), url_label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-	hbox2 = gtk_hbox_new(FALSE, 0);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
@@ -3753,11 +3753,11 @@ tab__rename_cb(gpointer data) {
 			   table, FALSE, TRUE, 2);
 
 	label = gtk_label_new(_("Name:"));
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
 
-	hbox2 = gtk_hbox_new(FALSE, 0);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
@@ -3855,7 +3855,7 @@ create_playlist_tab_label(playlist_t * pl) {
 	char path[MAXLEN];
 
 
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_set_can_focus(hbox, FALSE);
 
 	event_box = gtk_event_box_new();
@@ -4081,7 +4081,7 @@ create_playlist_gui(playlist_t * pl) {
 			 G_CALLBACK(playlist_selection_changed_cb), pl);
 
 
-        pl->widget = gtk_vbox_new(FALSE, 2);
+        pl->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 
 	viewport = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(pl->widget), viewport, TRUE, TRUE, 0);
@@ -4094,7 +4094,7 @@ create_playlist_gui(playlist_t * pl) {
 	gtk_container_add(GTK_CONTAINER(pl->scroll), pl->view);
 
 
-	pl->progbar_container = gtk_hbox_new(FALSE, 4);
+	pl->progbar_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
         gtk_box_pack_start(GTK_BOX(pl->widget), pl->progbar_container, FALSE, FALSE, 0);
 
 	if (pl->progbar_semaphore > 0) {
@@ -4224,12 +4224,13 @@ create_playlist(void) {
                 init_plist_menu(plist_menu);
         }
 
-        vbox = gtk_vbox_new(FALSE, 2);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+        gtk_widget_set_vexpand(vbox, TRUE);
         gtk_container_add(GTK_CONTAINER(playlist_window), vbox);
 
 	/* this widget should not be visually noticeable, it is only used for
 	   getting active and inactive playlist colors from the skin/rc file */
-	playlist_color_indicator = gtk_hbox_new(FALSE, 0);
+	playlist_color_indicator = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_name(playlist_color_indicator, "playlist_color_indicator");
         gtk_box_pack_start(GTK_BOX(vbox), playlist_color_indicator, FALSE, FALSE, 0);
 
@@ -4289,7 +4290,7 @@ create_playlist(void) {
 		g_signal_connect(G_OBJECT(statusbar_viewport), "motion_notify_event",
 				 G_CALLBACK(scroll_motion_notify), (gpointer)statusbar_scrolledwin);
 
-		statusbar = gtk_hbox_new(FALSE, 0);
+		statusbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
 		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar);
 
@@ -4316,7 +4317,7 @@ create_playlist(void) {
 	playlist_set_font(options.override_skin_settings);
 
 	/* bottom area of playlist window */
-        hbox_bottom = gtk_hbox_new(FALSE, 0);
+        hbox_bottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox), hbox_bottom, FALSE, TRUE, 0);
 
 	add_button = gtk_button_new_with_label(_("Add files"));

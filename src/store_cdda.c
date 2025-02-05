@@ -152,7 +152,7 @@ cdda_info_row(char * text, int yes, GtkWidget * table, int * cnt) {
 
 	image = gtk_image_new_from_stock(yes ? GTK_STOCK_APPLY : GTK_STOCK_CANCEL, GTK_ICON_SIZE_BUTTON);
 	label = gtk_label_new(text);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), image, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 2, 1);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 1);
@@ -199,50 +199,50 @@ cdda_drive_info(cdda_drive_t * drive) {
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, FALSE, FALSE, 4);
 
 	table = gtk_table_new(4, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Device path:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(cdda_displayed_device_path(drive->device_path));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Vendor:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_vendor);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Model:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_model);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Revision:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_revision);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("The information below is reported by the drive, and\n"
 				"may not reflect the actual capabilities of the device."));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
@@ -359,7 +359,7 @@ cdda_disc_info(cdda_drive_t * drive) {
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_widget_set_size_request(GTK_WIDGET(dialog), 500, 400);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			   vbox, TRUE, TRUE, 4);
@@ -374,12 +374,12 @@ cdda_disc_info(cdda_drive_t * drive) {
 		if (text && *text != '\0') {
 			has_some_cdtext = 1;
 
-			hbox = gtk_hbox_new(FALSE, 0);
+			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			label = gtk_label_new(cdtext_field2str(i));
 			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
 
-			hbox = gtk_hbox_new(FALSE, 0);
+			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			label = gtk_label_new(text);
 			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);

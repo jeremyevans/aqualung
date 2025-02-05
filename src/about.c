@@ -294,10 +294,10 @@ create_about_window() {
 	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
         g_signal_connect(G_OBJECT(about_window), "key_press_event", G_CALLBACK(about_key_pressed), NULL);
 
-        vbox0 = gtk_vbox_new(FALSE, 0);
+        vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(about_window), vbox0);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_end(GTK_BOX(vbox0), vbox, TRUE, TRUE, 0);
 

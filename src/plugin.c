@@ -792,18 +792,18 @@ build_plugin_window(plugin_instance * instance) {
 			      GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
         gtk_container_set_border_width(GTK_CONTAINER(instance->window), 5);
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_add(GTK_CONTAINER(instance->window), vbox);
 
-	upper_hbox = gtk_hbox_new(FALSE, 0);
+	upper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), upper_hbox, FALSE, TRUE, 2);
 
-	upper_vbox = gtk_vbox_new(FALSE, 0);
+	upper_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), upper_vbox, FALSE, FALSE, 2);
 
 	widget = gtk_label_new(plugin->Name);
 	gtk_widget_set_name(widget, "plugin_name");
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(upper_vbox), hbox, FALSE, FALSE, 2);
 
@@ -812,7 +812,7 @@ build_plugin_window(plugin_instance * instance) {
 		*c = '\0';
 	widget = gtk_label_new(maker);
 	gtk_widget_set_name(widget, "plugin_maker");
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(upper_vbox), hbox, FALSE, FALSE, 2);
 
@@ -844,11 +844,11 @@ build_plugin_window(plugin_instance * instance) {
 	arr_strlcat(str_inout, " ]");
  
 	widget = gtk_label_new(str_inout);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(upper_vbox), hbox, FALSE, FALSE, 2);
 
-	upper_vbox = gtk_vbox_new(FALSE, 0);
+	upper_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_end(GTK_BOX(upper_hbox), upper_vbox, FALSE, FALSE, 2);
 
 
@@ -898,7 +898,7 @@ build_plugin_window(plugin_instance * instance) {
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), scrwin, TRUE, TRUE, 2);
 
-	inner_vbox = gtk_vbox_new(FALSE, 0);
+	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), inner_vbox);
 
 	if ((n_toggled) || (n_untoggled) || (n_outctl) || (n_outlat)) {
@@ -918,7 +918,7 @@ build_plugin_window(plugin_instance * instance) {
 				continue;
 			
 			widget = gtk_label_new(plugin->PortNames[k]);
-			hbox = gtk_hbox_new(FALSE, 0);
+			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
 					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
@@ -970,7 +970,7 @@ build_plugin_window(plugin_instance * instance) {
 				continue;
 			
 			widget = gtk_label_new(plugin->PortNames[k]);
-                        hbox = gtk_hbox_new(FALSE, 0);
+                        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
 					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
@@ -1166,7 +1166,7 @@ build_plugin_window(plugin_instance * instance) {
 				continue;
 			
 			widget = gtk_label_new(plugin->PortNames[k]);
-                        hbox = gtk_hbox_new(FALSE, 0);
+                        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
 					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
@@ -1307,7 +1307,7 @@ build_plugin_window(plugin_instance * instance) {
 				continue;
 			
 			widget = gtk_label_new(plugin->PortNames[k]);
-                        hbox = gtk_hbox_new(FALSE, 0);
+                        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
 					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
@@ -1807,13 +1807,13 @@ create_fxbuilder(void) {
         g_signal_connect(G_OBJECT(fxbuilder_window), "key_press_event", G_CALLBACK(fxbuilder_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(fxbuilder_window), 2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_add(GTK_CONTAINER(fxbuilder_window), hbox);
 
         frame_avail = gtk_frame_new(_("Available plugins"));
         gtk_box_pack_start(GTK_BOX(hbox), frame_avail, TRUE, TRUE, 5);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
         gtk_container_add(GTK_CONTAINER(frame_avail), vbox);
 
@@ -1916,14 +1916,15 @@ create_fxbuilder(void) {
         frame_running = gtk_frame_new(_("Running plugins"));
         gtk_box_pack_start(GTK_BOX(hbox), frame_running, TRUE, TRUE, 5);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
         gtk_container_add(GTK_CONTAINER(frame_running), vbox);
 
 	viewport_running = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport_running, TRUE, TRUE, 3);
 
-	hbox_buttons = gtk_hbox_new(TRUE, 0);
+	hbox_buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+        gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, TRUE, 3);
 
         remove_button = gtk_button_new_from_stock (GTK_STOCK_REMOVE); 

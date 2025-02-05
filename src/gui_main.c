@@ -2778,16 +2778,16 @@ create_main_window(char * skin_path) {
         gtk_widget_show(conf__quit);
 
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(main_window), vbox);
 
 
-	disp_hbox = gtk_hbox_new(FALSE, 3);
+	disp_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_box_pack_start(GTK_BOX(vbox), disp_hbox, FALSE, FALSE, 0);
 
 
 	time_table = gtk_table_new(2, 2, FALSE);
-	disp_vbox = gtk_vbox_new(FALSE, 0);
+	disp_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	gtk_box_pack_start(GTK_BOX(disp_hbox), time_table, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(disp_hbox), disp_vbox, TRUE, TRUE, 0);
@@ -2830,7 +2830,7 @@ create_main_window(char * skin_path) {
         g_signal_connect(G_OBJECT(info_viewp), "motion_notify_event",
 			 G_CALLBACK(scroll_motion_notify), (gpointer)info_scrolledwin);
 
-	info_hbox = gtk_hbox_new(FALSE, 0);
+	info_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(info_hbox), 1);
 	gtk_container_add(GTK_CONTAINER(info_viewp), info_hbox);
 
@@ -2850,7 +2850,7 @@ create_main_window(char * skin_path) {
 	g_signal_connect(G_OBJECT(title_viewp), "motion_notify_event", G_CALLBACK(scroll_motion_notify),
 			 (gpointer)title_scrolledwin);
 
-	title_hbox = gtk_hbox_new(FALSE, 0);
+	title_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(title_hbox), 1);
 	gtk_container_add(GTK_CONTAINER(title_viewp), title_hbox);
 
@@ -2863,7 +2863,7 @@ create_main_window(char * skin_path) {
         gtk_widget_set_name(time_labels[options.time_idx[0]], "big_timer_label");
 	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[options.time_idx[0]]);
 
-	time_hbox1 = gtk_hbox_new(FALSE, 3);
+	time_hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox1), 2);
 	gtk_container_add(GTK_CONTAINER(time1_viewp), time_hbox1);
 
@@ -2872,7 +2872,7 @@ create_main_window(char * skin_path) {
         gtk_widget_set_name(time_labels[options.time_idx[1]], "small_timer_label");
 	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[options.time_idx[1]], TRUE, TRUE, 0);
 
-	time_hbox2 = gtk_hbox_new(FALSE, 3);
+	time_hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox2), 2);
 	gtk_container_add(GTK_CONTAINER(time2_viewp), time_hbox2);
 
@@ -2959,7 +2959,7 @@ create_main_window(char * skin_path) {
         gtk_scale_set_draw_value(GTK_SCALE(scale_pos), FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), scale_pos, FALSE, FALSE, 3);
 
-        vbox_sep = gtk_vbox_new (FALSE, 0);
+        vbox_sep = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_sep, FALSE, FALSE, 2);
 
 	gtk_widget_set_can_focus(scale_vol, FALSE);
@@ -2980,14 +2980,14 @@ create_main_window(char * skin_path) {
         /* Embedded playlist */
 
         if (options.playlist_is_embedded && options.buttons_at_the_bottom) {
-		playlist_window = gtk_vbox_new(FALSE, 0);
+		playlist_window = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 		gtk_widget_set_name(playlist_window, "playlist_window");
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
 
         /* Button box with prev, play, pause, stop, next buttons */
 
-	btns_hbox = gtk_hbox_new(FALSE, 0);
+	btns_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), btns_hbox, FALSE, FALSE, 0);
 
 	prev_button = gtk_button_new();
@@ -3097,7 +3097,7 @@ create_main_window(char * skin_path) {
 
 	/* Embedded playlist */
 	if (options.playlist_is_embedded && !options.buttons_at_the_bottom) {
-		playlist_window = gtk_vbox_new(FALSE, 0);
+		playlist_window = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 		gtk_widget_set_name(playlist_window, "playlist_window");
 		gtk_box_pack_start(GTK_BOX(vbox), playlist_window, TRUE, TRUE, 3);
 	}
@@ -3370,7 +3370,7 @@ create_systray_menu_item(const gchar * stock_id, char * text) {
 	GtkWidget * hbox;
 	GtkWidget * widget;
 
-	hbox = gtk_hbox_new(FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show(hbox);
 	widget = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_MENU);
 	gtk_widget_show(widget);

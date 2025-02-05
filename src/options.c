@@ -1209,7 +1209,7 @@ create_notebook_tab(char * text, char * imgfile) {
 
         char path[MAXLEN];
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	label = gtk_label_new(text);
 	gtk_box_pack_end(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -1549,13 +1549,13 @@ setup_combo_with_label(GtkBox * box, char * label_text) {
 	GtkWidget * label;
 	GtkWidget * combo;
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(box, hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(label_text);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-	hbox_s = gtk_hbox_new(FALSE, 0);
+	hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 3);
 
 	combo = gtk_combo_box_text_new ();
@@ -1679,7 +1679,7 @@ setup_get_mouse_button_window(void) {
 	frame = gtk_frame_new(_("Mouse button"));
 	gtk_container_add(GTK_CONTAINER(eventbox), frame);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -1695,7 +1695,7 @@ setup_get_mouse_button_window(void) {
 	frame = gtk_frame_new(_("Command"));
 	gtk_box_pack_start(GTK_BOX(vbox_main), frame, FALSE, TRUE, 0);
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
@@ -2046,7 +2046,7 @@ create_options_window(void) {
 
 	/* "General" notebook page */
 
-	vbox_general = gtk_vbox_new(FALSE, 3);
+	vbox_general = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_general), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_general, create_notebook_tab(_("General"), "general.png"));
 
@@ -2055,7 +2055,7 @@ create_options_window(void) {
 
 	/* General/Main window page */
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox, gtk_label_new(_("Main window")));
 
@@ -2094,7 +2094,7 @@ create_options_window(void) {
 	frame_title = gtk_frame_new(_("Title Format"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 3);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
 
@@ -2111,7 +2111,7 @@ create_options_window(void) {
 	frame_title = gtk_frame_new(_("Lua extension file"));
 	gtk_box_pack_start(GTK_BOX(vbox), frame_title, FALSE, TRUE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 3);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame_title), hbox);
 
@@ -2134,7 +2134,7 @@ create_options_window(void) {
 	/* General/Systray page */
 
 #ifdef HAVE_SYSTRAY
-	vbox_systray = gtk_vbox_new(FALSE, 3);
+	vbox_systray = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_systray), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox_systray, gtk_label_new(_("Systray")));
 
@@ -2167,7 +2167,7 @@ create_options_window(void) {
 	frame_systray_mouse_wheel = gtk_frame_new(_("Mouse wheel"));
 	gtk_box_pack_start(GTK_BOX(vbox_systray), frame_systray_mouse_wheel, FALSE, TRUE, 5);
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_container_add(GTK_CONTAINER(frame_systray_mouse_wheel), vbox);
 
@@ -2186,7 +2186,7 @@ create_options_window(void) {
 	frame_systray_mouse_buttons = gtk_frame_new(_("Mouse buttons"));
 	gtk_box_pack_start(GTK_BOX(vbox_systray), frame_systray_mouse_buttons, FALSE, TRUE, 5);
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 	gtk_container_add(GTK_CONTAINER(frame_systray_mouse_buttons), vbox);
 
@@ -2254,7 +2254,7 @@ create_options_window(void) {
 	        column, renderer, systray_mb_col_command_datafunc, NULL, NULL);
 
 
-	hbox = gtk_hbox_new(FALSE, 3);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -2276,14 +2276,14 @@ create_options_window(void) {
 
 	/* General/Miscellaneous page */
 
-	vbox_miscellaneous_tab = gtk_vbox_new(FALSE, 3);
+	vbox_miscellaneous_tab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_miscellaneous_tab), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox_miscellaneous_tab, gtk_label_new(_("Miscellaneous")));
 
 	frame_param = gtk_frame_new(_("Implicit command line"));
 	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_param, FALSE, TRUE, 5);
 
-        hbox_param = gtk_hbox_new(FALSE, 3);
+        hbox_param = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox_param), 5);
 	gtk_container_add(GTK_CONTAINER(frame_param), hbox_param);
 
@@ -2300,16 +2300,16 @@ create_options_window(void) {
 	frame_cart = gtk_frame_new(_("Cover art"));
 	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_cart, FALSE, TRUE, 5);
 
-	vbox_cart = gtk_vbox_new(FALSE, 3);
+	vbox_cart = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_cart), 10);
 	gtk_container_add(GTK_CONTAINER(frame_cart), vbox_cart);
 
-        hbox_cwidth = gtk_hbox_new(FALSE, 0);
+        hbox_cwidth = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_cart), hbox_cwidth, FALSE, FALSE, 0);
         label_cwidth = gtk_label_new(_("Default cover width:"));
         gtk_box_pack_start(GTK_BOX(hbox_cwidth), label_cwidth, FALSE, FALSE, 0);
 
-        hbox_s = gtk_hbox_new(FALSE, 0);
+        hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox_cwidth), hbox_s, TRUE, TRUE, 3);
 
 	combo_cwidth = gtk_combo_box_text_new ();
@@ -2354,7 +2354,7 @@ create_options_window(void) {
 	frame_misc = gtk_frame_new(_("Miscellaneous"));
 	gtk_box_pack_start(GTK_BOX(vbox_miscellaneous_tab), frame_misc, FALSE, TRUE, 0);
 
-	vbox_misc = gtk_vbox_new(FALSE, 3);
+	vbox_misc = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_misc), 8);
 	gtk_container_add(GTK_CONTAINER(frame_misc), vbox_misc);
 
@@ -2402,7 +2402,7 @@ create_options_window(void) {
 
 	/* "Playlist" notebook page */
 
-	vbox_pl = gtk_vbox_new(FALSE, 3);
+	vbox_pl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_pl), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_pl, create_notebook_tab(_("Playlist"), "playlist.png"));
 
@@ -2446,7 +2446,7 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(vbox_pl), check_autoplsave, FALSE, TRUE, 0);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_pl), hbox, FALSE, TRUE, 0);
 
 	check_playlist_auto_save =
@@ -2562,7 +2562,7 @@ create_options_window(void) {
         frame_plistcol = gtk_frame_new(_("Playlist column order"));
         gtk_box_pack_start(GTK_BOX(vbox_pl), frame_plistcol, FALSE, TRUE, 5);
 
-        vbox_plistcol = gtk_vbox_new(FALSE, 0);
+        vbox_plistcol = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_plistcol), 8);
         gtk_container_add(GTK_CONTAINER(frame_plistcol), vbox_plistcol);
 
@@ -2613,7 +2613,7 @@ create_options_window(void) {
 
         /* "Music Store" notebook page */
 
-	vbox_ms = gtk_vbox_new(FALSE, 3);
+	vbox_ms = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_ms), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_ms, create_notebook_tab(_("Music Store"), "music_store.png"));
 
@@ -2691,7 +2691,7 @@ create_options_window(void) {
 	frame_ms_pathlist = gtk_frame_new(_("Paths to Music Store databases"));
 	gtk_box_pack_start(GTK_BOX(vbox_ms), frame_ms_pathlist, FALSE, TRUE, 5);
 
-	vbox_ms_pathlist = gtk_vbox_new(FALSE, 0);
+	vbox_ms_pathlist = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ms_pathlist), 8);
 	gtk_container_add(GTK_CONTAINER(frame_ms_pathlist), vbox_ms_pathlist);
 
@@ -2724,7 +2724,7 @@ create_options_window(void) {
 	gtk_container_add(GTK_CONTAINER(viewport), scrolled_win);
 	gtk_container_add(GTK_CONTAINER(scrolled_win), ms_pathlist_view);
 
-	hbox_ms_pathlist = gtk_hbox_new(FALSE, FALSE);
+	hbox_ms_pathlist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist, FALSE, FALSE, 0);
 
 	entry_ms_pathlist = gtk_entry_new();
@@ -2736,7 +2736,7 @@ create_options_window(void) {
 			  G_CALLBACK(browse_ms_pathlist_clicked), (gpointer)entry_ms_pathlist);
 	gtk_box_pack_end(GTK_BOX(hbox_ms_pathlist), browse_ms_pathlist, FALSE, FALSE, 0);
 
-	hbox_ms_pathlist_2 = gtk_hbox_new(FALSE, FALSE);
+	hbox_ms_pathlist_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_ms_pathlist), hbox_ms_pathlist_2, FALSE, FALSE, 0);
 
         help_pathlist = gtk_button_new_from_stock (GTK_STOCK_HELP);
@@ -2765,14 +2765,14 @@ create_options_window(void) {
 
 	/* "DSP" notebook page */
 
-	vbox_dsp = gtk_vbox_new(FALSE, 3);
+	vbox_dsp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_dsp), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_dsp, create_notebook_tab(_("DSP"), "dsp.png"));
 
 	frame_ladspa = gtk_frame_new(_("LADSPA plugin processing"));
 	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_ladspa, FALSE, TRUE, 0);
 
-	vbox_ladspa = gtk_vbox_new(FALSE, 3);
+	vbox_ladspa = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_ladspa), 10);
 	gtk_container_add(GTK_CONTAINER(frame_ladspa), vbox_ladspa);
 
@@ -2798,7 +2798,7 @@ create_options_window(void) {
 	frame_src = gtk_frame_new(_("Sample Rate Converter type"));
 	gtk_box_pack_start(GTK_BOX(vbox_dsp), frame_src, FALSE, TRUE, 5);
 
-	vbox_src = gtk_vbox_new(FALSE, 3);
+	vbox_src = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_src), 10);
 	gtk_container_add(GTK_CONTAINER(frame_src), vbox_src);
 
@@ -2834,7 +2834,7 @@ create_options_window(void) {
 
 	/* "Playback RVA" notebook page */
 
-	vbox_rva = gtk_vbox_new(FALSE, 3);
+	vbox_rva = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_rva), 10);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_rva, create_notebook_tab(_("Playback RVA"), "rva.png"));
 
@@ -2866,7 +2866,7 @@ create_options_window(void) {
 	g_signal_connect(G_OBJECT(rva_drawing_area), "expose_event",
 			 G_CALLBACK(rva_expose_event), NULL);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_listening_env = gtk_label_new(_("Listening environment:"));
         gtk_box_pack_start(GTK_BOX(hbox), label_listening_env, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 1, 2,
@@ -2886,7 +2886,7 @@ create_options_window(void) {
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_listening_env), options.rva_env);
 	g_signal_connect(combo_listening_env, "changed", G_CALLBACK(changed_listening_env), NULL);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_refvol = gtk_label_new(_("Reference volume [dBFS] :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_refvol, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 2, 3,
@@ -2902,7 +2902,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), spin_refvol, 1, 2, 2, 3,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_steepness = gtk_label_new(_("Steepness [dB/dB] :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_steepness, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 3, 4,
@@ -2920,7 +2920,7 @@ create_options_window(void) {
 
 
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_defvol = gtk_label_new(_("RVA for Unmeasured Files [dB] :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_defvol, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 4, 5,
@@ -2950,7 +2950,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), check_rva_use_averaging, 0, 2, 5, 6,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_threshold = gtk_label_new(_("Drop statistical aberrations based on"));
         gtk_box_pack_start(GTK_BOX(hbox), label_threshold, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 6, 7,
@@ -2968,7 +2968,7 @@ create_options_window(void) {
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_threshold), options.rva_use_linear_thresh);
 	g_signal_connect(combo_threshold, "changed", G_CALLBACK(changed_threshold), NULL);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_linthresh = gtk_label_new(_("Linear threshold [dB] :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_linthresh, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_rva), hbox, 0, 1, 7, 8,
@@ -2984,7 +2984,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_rva), spin_linthresh, 1, 2, 7, 8,
                          GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         /* xgettext:no-c-format */
         label_stdthresh = gtk_label_new(_("% of standard deviation :"));
         gtk_box_pack_start(GTK_BOX(hbox), label_stdthresh, FALSE, FALSE, 0);
@@ -3031,19 +3031,19 @@ create_options_window(void) {
 
 	/* "Metadata" notebook page */
 
-	vbox_meta = gtk_vbox_new(FALSE, 3);
+	vbox_meta = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_meta), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_meta, create_notebook_tab(_("Metadata"), "metadata.png"));
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(_("ReplayGain tag to use (with fallback to the other): "));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox, FALSE, TRUE, 0);
 
 	combo_replaygain = gtk_combo_box_text_new ();
@@ -3055,15 +3055,15 @@ create_options_window(void) {
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo_replaygain), options.replaygain_tag_to_use);
 
 
-	hbox_meta = gtk_hbox_new(FALSE, 5);
+	hbox_meta = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
 
 	frame_meta = gtk_frame_new(_("Adding files to Playlist"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	vbox_meta2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
 	check_meta_use_basename_only =
 		gtk_check_button_new_with_label(_("Use basename only instead of full path\n"
@@ -3074,7 +3074,7 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_meta_use_basename_only, FALSE, TRUE, 35);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
 	check_meta_rm_extension = gtk_check_button_new_with_label(_("Remove file extension"));
 	gtk_widget_set_name(check_meta_rm_extension, "check_on_notebook");
@@ -3083,7 +3083,7 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_meta_rm_extension, FALSE, TRUE, 35);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
 	check_meta_us_to_space = gtk_check_button_new_with_label(_("Convert underscore to space"));
 	gtk_widget_set_name(check_meta_us_to_space, "check_on_notebook");
@@ -3093,15 +3093,15 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), check_meta_us_to_space, FALSE, TRUE, 35);
 
 
-	hbox_meta = gtk_hbox_new(FALSE, 5);
+	hbox_meta = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
 
 	frame_meta = gtk_frame_new(_("Metadata editor (File info dialog)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	vbox_meta2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
 	check_metaedit_auto_clone =
 		gtk_check_button_new_with_label(_("When adding new frames, "
@@ -3112,15 +3112,15 @@ create_options_window(void) {
 	}
         gtk_box_pack_start(GTK_BOX(hbox), check_metaedit_auto_clone, FALSE, TRUE, 35);
 
-	hbox_meta = gtk_hbox_new(FALSE, 5);
+	hbox_meta = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 8);
 
 	frame_meta = gtk_frame_new(_("MPEG audio ID3v1/ID3v2 character encoding"));
 	gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	vbox_meta2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 3);
 
 	encode_set_entry = gtk_entry_new();
@@ -3132,22 +3132,22 @@ create_options_window(void) {
 	g_signal_connect(help_btn_meta_encode, "clicked", G_CALLBACK(display_meta_encode_help), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), help_btn_meta_encode, FALSE, FALSE, 5);
 
-	hbox_meta = gtk_hbox_new(FALSE, 5);
+	hbox_meta = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
         gtk_box_pack_start(GTK_BOX(vbox_meta), hbox_meta, FALSE, TRUE, 0);
 
 	frame_meta = gtk_frame_new(_("Batch update & encode (mass tagger, CD ripper, file export)"));
         gtk_box_pack_start(GTK_BOX(hbox_meta), frame_meta, TRUE, TRUE, 0);
-	vbox_meta2 = gtk_vbox_new(FALSE, 0);
+	vbox_meta2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(frame_meta), vbox_meta2);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(_("Tags to add when creating or updating MPEG audio files:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_batch_mpeg_add_id3v1 = gtk_check_button_new_with_label(_("ID3v1"));
 	gtk_widget_set_name(check_batch_mpeg_add_id3v1, "check_on_notebook");
@@ -3157,7 +3157,7 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_id3v1, FALSE, TRUE, 35);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_batch_mpeg_add_id3v2 = gtk_check_button_new_with_label(_("ID3v2"));
 	gtk_widget_set_name(check_batch_mpeg_add_id3v2, "check_on_notebook");
@@ -3167,7 +3167,7 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_id3v2, FALSE, TRUE, 35);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 0);
 	check_batch_mpeg_add_ape = gtk_check_button_new_with_label(_("APE"));
 	gtk_widget_set_name(check_batch_mpeg_add_ape, "check_on_notebook");
@@ -3177,7 +3177,7 @@ create_options_window(void) {
         gtk_box_pack_start(GTK_BOX(hbox), check_batch_mpeg_add_ape, FALSE, TRUE, 35);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_meta2), hbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new(_("Note: pre-existing tags will be updated even though they\n"
@@ -3192,7 +3192,7 @@ create_options_window(void) {
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cdda, create_notebook_tab(_("CD Audio"), "cdda.png"));
 
 	label = gtk_label_new(_("CD drive speed:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cdda), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
 
@@ -3209,7 +3209,7 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_cdda), frame_cdda, 0, 3, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
-	vbox_cdda = gtk_vbox_new(FALSE, 3);
+	vbox_cdda = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_cdda), 8);
 	gtk_container_add(GTK_CONTAINER(frame_cdda), vbox_cdda);
 
@@ -3229,11 +3229,11 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(vbox_cdda), check_cdda_mode_neverskip, FALSE, FALSE, 0);
 	g_signal_connect(check_cdda_mode_neverskip, "toggled", G_CALLBACK(cdda_toggled), NULL);
 
-        hbox_cdda = gtk_hbox_new(FALSE, 3);
+        hbox_cdda = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_box_pack_start(GTK_BOX(vbox_cdda), hbox_cdda, FALSE, FALSE, 0);
 
 	label_cdda_maxretries = gtk_label_new(_("\tMaximum number of retries:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label_cdda_maxretries, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(hbox_cdda), hbox, FALSE, FALSE, 0);
 
@@ -3300,7 +3300,7 @@ create_options_window(void) {
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_cddb, create_notebook_tab(_("CDDB"), "cddb.png"));
 
 	label = gtk_label_new(_("CDDB server:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3311,7 +3311,7 @@ create_options_window(void) {
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	label = gtk_label_new(_("Connection timeout [sec]:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3322,7 +3322,7 @@ create_options_window(void) {
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	cddb_label_proto = gtk_label_new(_("Protocol for querying (direct connection only):"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), cddb_label_proto, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_cddb), hbox, 0, 1, 5, 6,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3342,7 +3342,7 @@ create_options_window(void) {
 
 	/* Internet notebook page */
 
-	vbox_inet = gtk_vbox_new(FALSE, 3);
+	vbox_inet = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_inet), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_inet, create_notebook_tab(_("Internet"), "inet.png"));
 
@@ -3366,7 +3366,7 @@ create_options_window(void) {
 
 
 	inet_label_proxy = gtk_label_new(_("Proxy host:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), inet_label_proxy, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_inet), hbox, 0, 1, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3377,7 +3377,7 @@ create_options_window(void) {
                          GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 3);
 
 	inet_label_proxy_port = gtk_label_new(_("Port:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), inet_label_proxy_port, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_inet), hbox, 2, 3, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3388,7 +3388,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 3);
 
 	inet_label_noproxy_domains = gtk_label_new(_("No proxy for:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), inet_label_noproxy_domains, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table_inet), hbox, 0, 1, 1, 2,
                          GTK_FILL, GTK_FILL, 5, 3);
@@ -3403,11 +3403,11 @@ create_options_window(void) {
         gtk_table_attach(GTK_TABLE(table_inet), inet_help_noproxy_domains, 3, 4, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 
 
-	inet_hbox_timeout = gtk_hbox_new(FALSE, 0);
+	inet_hbox_timeout = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_inet), inet_hbox_timeout, FALSE, FALSE, 5);
 
 	inet_label_timeout = gtk_label_new(_("Timeout for socket I/O:"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), inet_label_timeout, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), hbox, FALSE, FALSE, 5);
 
@@ -3416,7 +3416,7 @@ create_options_window(void) {
 	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), inet_spinner_timeout, FALSE, FALSE, 5);
 
 	inet_label_timeout = gtk_label_new(_("seconds"));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), inet_label_timeout, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inet_hbox_timeout), hbox, FALSE, FALSE, 5);
 
@@ -3434,7 +3434,7 @@ create_options_window(void) {
 
         override_shadow = options.override_skin_settings;
 
-	vbox_appearance = gtk_vbox_new(FALSE, 3);
+	vbox_appearance = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, create_notebook_tab(_("Appearance"), "appearance.png"));
 
@@ -3681,13 +3681,13 @@ create_options_window(void) {
 	frame_colors = gtk_frame_new(_("Colors"));
 	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_colors, FALSE, TRUE, 5);
 
-	vbox_colors = gtk_vbox_new(FALSE, 3);
+	vbox_colors = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 5);
 	gtk_container_add(GTK_CONTAINER(frame_colors), vbox_colors);
 
         /* song color */
 
-        hbox = gtk_hbox_new(FALSE, 5);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
         gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Song in playlist: "));
@@ -3695,7 +3695,7 @@ create_options_window(void) {
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
-	hbox_s = gtk_hbox_new(FALSE, 0);
+	hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.song_color, &color) == FALSE) {
@@ -3714,7 +3714,7 @@ create_options_window(void) {
 
         /* active song color */
 
-	hbox = gtk_hbox_new(FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
         gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Active song in playlist: "));
@@ -3722,7 +3722,7 @@ create_options_window(void) {
         gtk_size_group_add_widget(label_size, label);
         gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
-	hbox_s = gtk_hbox_new(FALSE, 0);
+	hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
 
         if (gdk_color_parse(options.activesong_color, &color) == FALSE) {

@@ -322,7 +322,7 @@ podcast_dialog(podcast_t ** podcast, int create) {
 		GtkWidget * label = gtk_label_new(_("Automatic update has been disabled for all feeds\n"
 						    "in the Podcasts store popup menu."));
 		GtkWidget * icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_BUTTON);
-		GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+		GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 		gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 5);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);

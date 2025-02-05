@@ -313,7 +313,7 @@ create_query_progress_window(cddb_lookup_t * data) {
 			 G_CALLBACK(abort_cb), data);
         gtk_container_set_border_width(GTK_CONTAINER(data->progress_win), 10);
 	
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(data->progress_win), vbox);
 
 	data->progress_label = gtk_label_new(_("Retrieving matches from server..."));
@@ -922,7 +922,7 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			   table, FALSE, FALSE, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
         label = gtk_label_new(_("Matches:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -942,7 +942,7 @@ cddb_dialog(cddb_lookup_t * data) {
                  
         gtk_table_attach(GTK_TABLE(table), data->combo, 1, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Artist:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -951,7 +951,7 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_table_attach(GTK_TABLE(table), data->artist_entry, 1, 2, 1, 2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Title:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -960,7 +960,7 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_table_attach(GTK_TABLE(table), data->title_entry, 1, 2, 2, 3,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Year:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -969,7 +969,7 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_table_attach(GTK_TABLE(table), data->year_spinner, 1, 2, 3, 4,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Category:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -979,7 +979,7 @@ cddb_dialog(cddb_lookup_t * data) {
         gtk_table_attach(GTK_TABLE(table), data->category_entry, 1, 2, 4, 5,
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Genre:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
@@ -988,7 +988,7 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_table_attach(GTK_TABLE(table), data->genre_entry, 1, 2, 5, 6,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
 	label = gtk_label_new(_("Extended data:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);

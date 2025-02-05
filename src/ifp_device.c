@@ -959,11 +959,11 @@ aifp_transfer_files(gint mode) {
         gtk_container_set_border_width(GTK_CONTAINER(aifp_window), 5);
         gtk_window_set_default_size(GTK_WINDOW(aifp_window), options.ifpmanager_size_x, options.ifpmanager_size_y);
 
-        vbox1 = gtk_vbox_new (FALSE, 0);
+        vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox1);
         gtk_container_add (GTK_CONTAINER (aifp_window), vbox1);
 
-        vbox2 = gtk_vbox_new (FALSE, 0);
+        vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox2);
         gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
 
@@ -981,7 +981,7 @@ aifp_transfer_files(gint mode) {
 
         if (transfer_mode == UPLOAD_MODE) {
 
-                hbox1 = gtk_hbox_new (FALSE, 0);
+                hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                 gtk_widget_show (hbox1);
                 gtk_container_add (GTK_CONTAINER (alignment), hbox1);
 
@@ -1015,11 +1015,11 @@ aifp_transfer_files(gint mode) {
                 gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
         }
 
-        vbox3 = gtk_vbox_new (FALSE, 0);
+        vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox3);
         gtk_container_add (GTK_CONTAINER (alignment), vbox3);
 
-        hbox1 = gtk_hbox_new (FALSE, 0);
+        hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show (hbox1);
         gtk_box_pack_start (GTK_BOX (vbox3), hbox1, TRUE, TRUE, 2);
 
@@ -1034,7 +1034,7 @@ aifp_transfer_files(gint mode) {
         gtk_misc_set_alignment (GTK_MISC (label_model), 0, 0.5);
         gtk_misc_set_padding (GTK_MISC (label_model), 5, 0);
 
-        hbox1 = gtk_hbox_new (FALSE, 0);
+        hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show (hbox1);
         gtk_box_pack_start (GTK_BOX (vbox3), hbox1, TRUE, TRUE, 2);
 
@@ -1066,7 +1066,7 @@ aifp_transfer_files(gint mode) {
         gtk_container_set_border_width (GTK_CONTAINER (alignment), 4);
         gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 
-        hbox1 = gtk_hbox_new (FALSE, 0);
+        hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show (hbox1);
         gtk_container_add (GTK_CONTAINER (alignment), hbox1);
 
@@ -1112,7 +1112,7 @@ aifp_transfer_files(gint mode) {
         gtk_widget_show (vseparator);
         gtk_box_pack_start (GTK_BOX (hbox1), vseparator, FALSE, TRUE, 2);
 
-        vbox4 = gtk_vbox_new (FALSE, 0);
+        vbox4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox4);
         gtk_box_pack_start (GTK_BOX (hbox1), vbox4, FALSE, FALSE, 0);
 
@@ -1176,7 +1176,7 @@ aifp_transfer_files(gint mode) {
                 gtk_container_add (GTK_CONTAINER (frame), alignment);
                 gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 
-                hbox2 = gtk_hbox_new(FALSE, FALSE);
+                hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                 gtk_container_add (GTK_CONTAINER (alignment), hbox2);
                 gtk_widget_show (hbox2);
 

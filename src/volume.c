@@ -337,7 +337,7 @@ create_volume_window() {
 
         gtk_container_set_border_width(GTK_CONTAINER(vol_window), 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(vol_window), vbox);
 
         gtk_widget_show_all(vol_window);
@@ -364,7 +364,7 @@ vol_create_gui(volume_t * vol) {
 	gtk_table_attach(GTK_TABLE(vol->slot), gtk_hseparator_new(), 0, 3, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("File:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 1, 2,
@@ -380,7 +380,7 @@ vol_create_gui(volume_t * vol) {
 	gtk_table_attach(GTK_TABLE(vol->slot), vol->pause_button, 2, 3, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Progress:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 2, 3,

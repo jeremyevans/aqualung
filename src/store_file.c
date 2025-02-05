@@ -413,7 +413,7 @@ insert_comment_text_view(GtkWidget * dialog, GtkTextBuffer ** buffer, char * tex
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, TRUE, 2);
 
 	label = gtk_label_new(_("Comments:"));
@@ -773,7 +773,7 @@ add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
 	list_label = gtk_label_new(_("Auto-create tracks from these files:"));
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), list_label, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, TRUE, 2);
 
@@ -2970,7 +2970,7 @@ create_tag_dialog() {
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 					     NULL);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			   vbox, FALSE, FALSE, 0);
@@ -3074,13 +3074,13 @@ create_tag_prog_window(void) {
                          G_CALLBACK(tag_prog_window_close), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(tag_prog_window), 20);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(tag_prog_window), vbox);
 
 	table = gtk_table_new(3, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("File:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -3092,7 +3092,7 @@ create_tag_prog_window(void) {
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
 
-	hbox_result = gtk_hbox_new(FALSE, 0);
+	hbox_result = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label_result = gtk_label_new(_("Failed to set metadata for the following files:"));
 	gtk_box_pack_start(GTK_BOX(hbox_result), label_result, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox_result, 0, 2, 1, 2,
@@ -4750,7 +4750,7 @@ store_file_create_popup_menu(void) {
 void
 store_file_insert_progress_bar(GtkWidget * vbox) {
 
-	ms_progress_bar_container = gtk_hbox_new(FALSE, 4);
+	ms_progress_bar_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
         gtk_box_pack_start(GTK_BOX(vbox), ms_progress_bar_container, FALSE, FALSE, 1);
 
 	if (ms_progress_bar_semaphore > 0) {

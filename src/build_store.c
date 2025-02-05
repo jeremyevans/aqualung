@@ -569,7 +569,7 @@ capitalize_gui_new(capitalize_t * model, GtkWidget * target_vbox) {
 	frame = gtk_frame_new(_("Capitalization"));
         gtk_box_pack_start(GTK_BOX(target_vbox), frame, FALSE, FALSE, 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
@@ -738,14 +738,14 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
 	frame = gtk_frame_new(_("Regular expression"));
         gtk_box_pack_start(GTK_BOX(target_vbox), frame, FALSE, FALSE, 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
 	table = gtk_table_new(2, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Regexp:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -755,7 +755,7 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
 	gtk_table_attach(GTK_TABLE(table), gui->entry_regexp, 1, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Replace:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
@@ -768,7 +768,7 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
 	gtk_entry_set_text(GTK_ENTRY(gui->entry_regexp), model->regexp);
 	gtk_entry_set_text(GTK_ENTRY(gui->entry_replacement), model->replacement);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gui->label_error = gtk_label_new("");
 	gtk_widget_modify_fg(gui->label_error, GTK_STATE_NORMAL, &red);
         gtk_box_pack_start(GTK_BOX(hbox), gui->label_error, FALSE, FALSE, 5);
@@ -778,7 +778,7 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
 	frame = gtk_frame_new(_("Predefined transformations"));
         gtk_box_pack_start(GTK_BOX(target_vbox), frame, FALSE, FALSE, 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
@@ -1570,7 +1570,7 @@ build_type_dialog(build_store_t * build_data) {
 	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			  notebook);
 
-        vbox = gtk_vbox_new(FALSE, 5);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
@@ -1581,7 +1581,7 @@ build_type_dialog(build_store_t * build_data) {
 
  	label = gtk_label_new(_("Follows the directory structure to identify the artists and\n"
  				"records. The files are added on a record basis."));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
  	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -1594,7 +1594,7 @@ build_type_dialog(build_store_t * build_data) {
  	label = gtk_label_new(_("Recursive search from the root directory for audio files.\n"
  				"The files are processed independently, so only metadata\n"
  				"and filename transformation are available."));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 30);
  	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -1716,7 +1716,7 @@ build_dialog(build_store_t * data) {
 
 	/* General */
 
-        gen_vbox = gtk_vbox_new(FALSE, 0);
+        gen_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(gen_vbox), 5);
 	label = gtk_label_new(_("General"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), gen_vbox, label);
@@ -1730,7 +1730,7 @@ build_dialog(build_store_t * data) {
 	gtk_container_add(GTK_CONTAINER(frame), table);
 
 	label = gtk_label_new(_("Root path:"));
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
 			 GTK_FILL, GTK_FILL, 0, 5);
@@ -1750,7 +1750,7 @@ build_dialog(build_store_t * data) {
 
 	if (data->type == BUILD_TYPE_STRICT) {
 		label = gtk_label_new(_("Structure:"));
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 		gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 				 GTK_FILL, GTK_FILL, 0, 0);
@@ -1772,7 +1772,7 @@ build_dialog(build_store_t * data) {
 
 	gen_excl_frame = gtk_frame_new(_("Exclude files matching wildcard"));
         gtk_box_pack_start(GTK_BOX(gen_vbox), gen_excl_frame, FALSE, FALSE, 5);
-        gen_excl_frame_hbox = gtk_hbox_new(FALSE, 0);
+        gen_excl_frame_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(gen_excl_frame_hbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_excl_frame), gen_excl_frame_hbox);
 
@@ -1797,7 +1797,7 @@ build_dialog(build_store_t * data) {
 
 	gen_incl_frame = gtk_frame_new(_("Include only files matching wildcard"));
         gtk_box_pack_start(GTK_BOX(gen_vbox), gen_incl_frame, FALSE, FALSE, 5);
-        gen_incl_frame_hbox = gtk_hbox_new(FALSE, 0);
+        gen_incl_frame_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(gen_incl_frame_hbox), 5);
 	gtk_container_add(GTK_CONTAINER(gen_incl_frame), gen_incl_frame_hbox);
 
@@ -1841,7 +1841,7 @@ build_dialog(build_store_t * data) {
 
 	/* Artist */
 
-        art_vbox = gtk_vbox_new(FALSE, 0);
+        art_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(art_vbox), 5);
 	label = gtk_label_new(_("Artist"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), art_vbox, label);
@@ -1880,7 +1880,7 @@ build_dialog(build_store_t * data) {
 	frame = gtk_frame_new(_("Sort artists by"));
         gtk_box_pack_start(GTK_BOX(art_vbox), frame, FALSE, FALSE, 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
@@ -1896,7 +1896,7 @@ build_dialog(build_store_t * data) {
 
 	/* Record */
 
-        rec_vbox = gtk_vbox_new(FALSE, 0);
+        rec_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(rec_vbox), 5);
 	label = gtk_label_new(_("Record"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), rec_vbox, label);
@@ -1935,7 +1935,7 @@ build_dialog(build_store_t * data) {
 	frame = gtk_frame_new(_("Sort records by"));
         gtk_box_pack_start(GTK_BOX(rec_vbox), frame, FALSE, FALSE, 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
@@ -1962,7 +1962,7 @@ build_dialog(build_store_t * data) {
 
 	/* Track */
 
-        trk_vbox = gtk_vbox_new(FALSE, 0);
+        trk_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(trk_vbox), 5);
 	label = gtk_label_new(_("Track"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), trk_vbox, label);
@@ -2016,7 +2016,7 @@ build_dialog(build_store_t * data) {
 
 	/* Sandbox */
 
-        snd_vbox = gtk_vbox_new(FALSE, 0);
+        snd_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(snd_vbox), 5);
 	label = gtk_label_new(_("Sandbox"));
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), snd_vbox, label);
@@ -2034,7 +2034,7 @@ build_dialog(build_store_t * data) {
         gtk_container_set_border_width(GTK_CONTAINER(table), 5);
 	gtk_container_add(GTK_CONTAINER(frame), table);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Filename:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
@@ -2247,7 +2247,7 @@ progress_window(build_store_t * data) {
                          G_CALLBACK(prog_window_close), data);
         gtk_container_set_border_width(GTK_CONTAINER(data->prog_window), 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(data->prog_window), vbox);
 
 	table = gtk_table_new(2, 2, FALSE);
@@ -2255,13 +2255,13 @@ progress_window(build_store_t * data) {
 
 	insert_label_entry(table, _("Processing:"), &data->prog_file_entry, NULL, 0, 1, FALSE);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Action:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	data->prog_action_label = gtk_label_new("");
         gtk_box_pack_start(GTK_BOX(hbox), data->prog_action_label, FALSE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,

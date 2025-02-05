@@ -255,7 +255,7 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
         }
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	hbox = gtk_hbox_new (FALSE, 2);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
 	image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
@@ -685,7 +685,7 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 	GtkWidget * hbox;
 
 	label = gtk_label_new(ltext);
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
 
@@ -707,11 +707,11 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 	GtkWidget * hbox;
 
 	label = gtk_label_new(ltext);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
@@ -743,11 +743,11 @@ insert_label_progbar_button(GtkWidget * table, char * ltext, GtkWidget ** progba
 	GtkWidget * hbox;
 
 	label = gtk_label_new(ltext);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
 			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
 
@@ -767,7 +767,7 @@ insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinva
 	GtkWidget * hbox;
 
 	label = gtk_label_new(ltext);
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
 

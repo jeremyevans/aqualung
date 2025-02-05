@@ -849,7 +849,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	char * pic_caption;
 	char str[MAXLEN];
 	GtkWidget * label_frame;
-	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget * hbox;
 	GtkWidget * label;
 	GtkWidget * button;
@@ -885,13 +885,13 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	arr_snprintf(str, _("MIME type: %s"), frame->field_name);
 	source->mime_label = gtk_label_new(str);
 	gtk_box_pack_start(GTK_BOX(hbox), source->mime_label, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	label = gtk_label_new(_("Picture type:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -899,7 +899,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	if (meta->writable) {
 		int i = 0;
 		char * type_str;
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 		source->type_combo = gtk_combo_box_text_new();
 		while (1) {
@@ -913,7 +913,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(source->type_combo), frame->int_val);
 		gtk_box_pack_start(GTK_BOX(hbox), source->type_combo, TRUE, TRUE, 0);
 	} else {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 		arr_snprintf(str, "%s",
 			     meta_id3v2_apic_type_to_string(frame->int_val));
@@ -921,19 +921,19 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	}
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	label = gtk_label_new(_("Description:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	if (meta->writable) {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 		source->descr_entry = gtk_entry_new();
 		gtk_entry_set_text(GTK_ENTRY(source->descr_entry), frame->field_val);
 		gtk_box_pack_start(GTK_BOX(hbox), source->descr_entry, TRUE, TRUE, 0);
 	} else {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 		label = gtk_label_new((frame->field_val[0] == '\0') ?
 				      _("(no description)") : frame->field_val);
@@ -941,7 +941,8 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 	}
 
 
-	hbox = gtk_hbox_new(TRUE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+        gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 
 	button = gui_stock_label_button(_("Change"), GTK_STOCK_OPEN);
@@ -973,7 +974,7 @@ fi_procframe_label(fi_t * fi, meta_frame_t * frame) {
 		return fi_procframe_label_apic(fi, frame);
 	} else {
 		char str[MAXLEN];
-		GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+		GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		GtkWidget * label;
 		arr_snprintf(str, "%s:", frame->field_name);
 		label = gtk_label_new(str);
@@ -1048,7 +1049,7 @@ make_apic_widget(meta_frame_t * frame, GtkWidget ** widget, GtkWidget ** entry) 
 
 	GtkWidget * apic_frame = gtk_frame_new(NULL);
 	GtkWidget * image = make_image_from_binary(frame);
-	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	gtk_frame_set_shadow_type(GTK_FRAME(apic_frame), GTK_SHADOW_NONE);
 	gtk_container_add(GTK_CONTAINER(apic_frame), vbox);
@@ -1431,7 +1432,7 @@ fi_procframe_ins_modinfo(fi_t * fi, meta_frame_t * frame) {
 
 	int page = lookup_page(fi, frame->tag);
 	GtkWidget * table = fi->pageidx[page].table;
-	GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	module_info_fill_page(fi, frame, vbox);
 	gtk_table_attach(GTK_TABLE(table), vbox, 0, 1, 0, 1,
@@ -1598,12 +1599,12 @@ void
 fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 
 	metadata_t * meta = fi->meta;
-	GtkWidget * vbox = gtk_vbox_new(FALSE, 4);
-	GtkWidget * vbox_padding = gtk_vbox_new(FALSE, 0);
+	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+	GtkWidget * vbox_padding = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget * scrwin = gtk_scrolled_window_new(NULL, NULL);
 	GtkWidget * table = gtk_table_new(0, fi_tabwidth(fi, meta), FALSE);
 	GtkWidget * label = gtk_label_new(meta_get_tagname(frame->tag));
-	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget * combo = gtk_combo_box_text_new();
 	GtkWidget * addbtn, * delbtn;
 	GSList * slist = meta_get_possible_fields(frame->tag);
@@ -1771,7 +1772,7 @@ fi_cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer dat
 
 void
 fi_add_file_table_row(char * caption, GtkWidget ** entry, GtkWidget * table, int row) {
-	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget * label = gtk_label_new(caption);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 5, 3);
@@ -2036,10 +2037,10 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 			 G_CALLBACK(info_window_key_pressed), (gpointer)fi);
 	gtk_container_set_border_width(GTK_CONTAINER(fi->info_window), 5);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(fi->info_window), vbox);
 
-	hbox_t = gtk_hbox_new(FALSE, 0);
+	hbox_t = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_t, FALSE, FALSE, 5);
 
 	table = gtk_table_new(2, 2, FALSE);
@@ -2056,7 +2057,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
         gtk_container_add (GTK_CONTAINER (fi->event_box), fi->cover_image_area);
         g_signal_connect(G_OBJECT(fi->event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), (gpointer)fi);
-	fi->hbox = gtk_hbox_new(FALSE, 0);
+	fi->hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), fi->hbox, FALSE, FALSE, 5);
 
 	fi->nb = gtk_notebook_new();
@@ -2064,7 +2065,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 
 	/* Audio data notebook page */
 
-	vbox_file = gtk_vbox_new(FALSE, 4);
+	vbox_file = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	table_file = gtk_table_new(6, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_file), table_file, TRUE, TRUE, 10);
 	label_file = gtk_label_new(_("Audio data"));
@@ -2229,11 +2230,11 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
-        hbox2 = gtk_hbox_new (FALSE, 0);
+        hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show (hbox2);
         gtk_box_pack_start (GTK_BOX (vbox), hbox2, TRUE, TRUE, 0);
 
-        vbox2 = gtk_vbox_new (FALSE, 0);
+        vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox2);
         gtk_box_pack_start (GTK_BOX (hbox2), vbox2, FALSE, FALSE, 0);
 
@@ -2308,7 +2309,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         gtk_widget_show (vseparator);
         gtk_box_pack_start (GTK_BOX (hbox2), vseparator, FALSE, FALSE, 4);
 
-        vbox3 = gtk_vbox_new (FALSE, 0);
+        vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show (vbox3);
         gtk_box_pack_start (GTK_BOX (hbox2), vbox3, TRUE, TRUE, 0);
 

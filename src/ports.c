@@ -455,7 +455,7 @@ port_setup_dialog(void) {
 	gtk_window_set_transient_for(GTK_WINDOW(ports_window), GTK_WINDOW(main_window));
         g_signal_connect(G_OBJECT(ports_window), "delete_event", G_CALLBACK(port_window_close), NULL);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(ports_window), vbox);
 
         table = gtk_table_new(2, 2, FALSE);
@@ -479,11 +479,11 @@ port_setup_dialog(void) {
         gtk_table_attach(GTK_TABLE(table), frame_dr, 1, 2, 0, 1,
                          GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
 
-        vbox_dl = gtk_vbox_new(FALSE, 5);
+        vbox_dl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_dl), 8);
 	gtk_container_add(GTK_CONTAINER(frame_dl), vbox_dl);
 
-        vbox_dr = gtk_vbox_new(FALSE, 5);
+        vbox_dr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_dr), 8);
 	gtk_container_add(GTK_CONTAINER(frame_dr), vbox_dr);
 
@@ -549,8 +549,8 @@ port_setup_dialog(void) {
 	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(TVCOL_BUTTON(column_out_L))));
 	gtk_widget_destroy(gtk_bin_get_child(GTK_BIN(TVCOL_BUTTON(column_out_R))));
 
-	hbox_L = gtk_hbox_new(FALSE, 0);
-	hbox_R = gtk_hbox_new(FALSE, 0);
+	hbox_L = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	hbox_R = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 	label_L = gtk_label_new(_(" out L"));
 	label_R = gtk_label_new(_(" out R"));
@@ -575,4 +575,3 @@ port_setup_dialog(void) {
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-

@@ -535,12 +535,12 @@ create_music_browser(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(browser_window), 2);
         gtk_widget_set_size_request(browser_window, 200, 300);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(browser_window), vbox);
 
         if (options.enable_mstore_toolbar) {
 
-                hbox = gtk_hbox_new(FALSE, 0);
+                hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                 gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
                 toolbar_search_button = gui_stock_label_button((gchar *)-1, GTK_STOCK_FIND);
@@ -751,7 +751,7 @@ create_music_browser(void) {
 		g_signal_connect(G_OBJECT(statusbar_viewport), "motion_notify_event",
 				 G_CALLBACK(scroll_motion_notify), (gpointer)statusbar_scrolledwin);
 
-		statusbar_hbox = gtk_hbox_new(FALSE, 0);
+		statusbar_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(statusbar_hbox), 1);
 		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar_hbox);
 

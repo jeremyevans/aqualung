@@ -485,12 +485,12 @@ search_dialog(void) {
 			 G_CALLBACK(search_window_key_pressed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(search_window), 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_show(vbox);
         gtk_container_add(GTK_CONTAINER(search_window), vbox);
 
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show(hbox);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 3);
 
@@ -526,7 +526,7 @@ search_dialog(void) {
 	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show(hbox);     
 	label = gtk_label_new(_("Search in:"));
         gtk_widget_show(label);     
@@ -559,7 +559,7 @@ search_dialog(void) {
 	gtk_table_attach(GTK_TABLE(table), check_comment, 1, 2, 4, 5,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
 
-	hbox = sres_list = gtk_hbox_new(FALSE, 0);
+	hbox = sres_list = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show(hbox);     
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 3);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 3);

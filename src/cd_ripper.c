@@ -121,7 +121,7 @@ char destdir[MAXLEN];
 GtkWidget *
 create_notebook_page(GtkWidget * nb, char * title) {
 
-        GtkWidget * vbox = gtk_vbox_new(FALSE, 0);
+        GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
         gtk_notebook_append_page(GTK_NOTEBOOK(nb), vbox, gtk_label_new(title));
 	return vbox;
@@ -134,7 +134,7 @@ create_frame_on_page(GtkWidget * vbox, char * title) {
 	GtkWidget * vbox1;
 	GtkWidget * frame = gtk_frame_new(title);
 	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 5);
-        vbox1 = gtk_vbox_new(FALSE, 0);
+        vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(frame), vbox1);
 	return vbox1;
 }
@@ -723,7 +723,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(source_tree), GTK_TREE_VIEW_COLUMN(column));
 
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 5, 6, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -746,7 +746,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	frame = gtk_frame_new(_("Target directory for ripped files"));
 	gtk_box_pack_start(GTK_BOX(vbox_dest1), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
         gtk_container_add(GTK_CONTAINER(frame), hbox);
 
@@ -760,7 +760,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 			 (gpointer)ripper_destdir_entry);
         gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_dest1), hbox, FALSE, FALSE, 5);
 
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("Add to Music Store")), FALSE, FALSE, 7);
@@ -773,7 +773,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         table = gtk_table_new(4, 2, TRUE);
         gtk_box_pack_start(GTK_BOX(vbox_format), table, TRUE, TRUE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 4);
 
@@ -781,7 +781,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         gtk_table_attach(GTK_TABLE(table), ripper_format_combo, 1, 2, 0, 1,
 			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	ripper_bitrate_label = gtk_label_new(_("Compression level:"));
         gtk_box_pack_start(GTK_BOX(hbox), ripper_bitrate_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 0);
@@ -836,7 +836,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         gtk_box_pack_start(GTK_BOX(vbox_para1), ripper_neverskip_check, FALSE, FALSE, 3);
         g_signal_connect(ripper_neverskip_check, "toggled", G_CALLBACK(ripper_paranoia_toggled), NULL);
 
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(vbox_para1), hbox, FALSE, FALSE, 3);
 
 	ripper_maxretries_label = gtk_label_new(_("Maximum number of retries:"));
@@ -1032,7 +1032,7 @@ ripper_window(void) {
                          G_CALLBACK(ripper_prog_window_state_changed), NULL);
         gtk_container_set_border_width(GTK_CONTAINER(ripper_prog_window), 5);
 
-        vbox = gtk_vbox_new(FALSE, 0);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(ripper_prog_window), vbox);
 
         viewport = gtk_viewport_new(NULL, NULL);
@@ -1072,7 +1072,7 @@ ripper_window(void) {
         column = gtk_tree_view_column_new_with_attributes(_("Progress"), cell, "value", 3, NULL);
         gtk_tree_view_append_column(GTK_TREE_VIEW(prog_tree), GTK_TREE_VIEW_COLUMN(column));
 
-        ripper_hbox = gtk_hbox_new(FALSE, 0);
+        ripper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_end(GTK_BOX(vbox), ripper_hbox, FALSE, TRUE, 5);
 
 	ripper_close_when_ready_check = gtk_check_button_new_with_label(_("Close window when complete"));

@@ -843,25 +843,6 @@ playlist_disable_bold_font(void) {
 }
 
 void
-playlist_set_font_foreach(gpointer data, gpointer user_data) {
-
-	gtk_widget_modify_font(((playlist_t *)data)->view, fd_playlist);
-}
-
-void
-playlist_set_font(int cond) {
-
-        if (cond) {
-		gtk_widget_modify_font(statusbar_selected, fd_statusbar);
-		gtk_widget_modify_font(statusbar_selected_label, fd_statusbar);
-		gtk_widget_modify_font(statusbar_total, fd_statusbar);
-		gtk_widget_modify_font(statusbar_total_label, fd_statusbar);
-
-		g_list_foreach(playlists, playlist_set_font_foreach, NULL);
-	}
-}
-
-void
 playlist_set_markup(playlist_t * pl) {
 
 	if (pl->playing) {
@@ -941,35 +922,13 @@ playlist_set_color(void) {
 	int rs = 0, gs = 0, bs = 0;
 	int ri = 0, gi = 0, bi = 0;
 
+	rs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
+	gs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
+	bs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
 
-        if (options.override_skin_settings &&
-	    (gdk_color_parse(options.activesong_color, &color) == TRUE)) {
-
-                rs = color.red;
-                gs = color.green;
-                bs = color.blue;
-
-                if (rs == 0 && gs == 0 && bs == 0) {
-                        rs = 1;
-		}
-        } else {
-		rs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
-		gs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
-		bs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
-	}
-
-        if (options.override_skin_settings &&
-	    (gdk_color_parse(options.song_color, &color) == TRUE)) {
-
-                ri = color.red;
-                gi = color.green;
-                bi = color.blue;
-
-        } else {
-        	ri = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].red;
-        	gi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].green;
-        	bi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].blue;
-        }
+	ri = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].red;
+	gi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].green;
+	bi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].blue;
 
 	arr_snprintf(active, "#%04X%04X%04X", rs, gs, bs);
 	arr_snprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
@@ -3962,10 +3921,6 @@ create_playlist_gui(playlist_t * pl) {
 	g_signal_connect(G_OBJECT(pl->view), "key_press_event",
 			 G_CALLBACK(playlist_key_pressed), NULL);
 
-	if (options.override_skin_settings) {
-                gtk_widget_modify_font(pl->view, fd_playlist);
-	}
-
 	if (options.enable_pl_rules_hint) {
 		gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
 	}
@@ -4312,9 +4267,6 @@ create_playlist(void) {
 		gtk_widget_set_name(statusbar_total_label, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_total_label, FALSE, TRUE, 0);
 	}
-
-
-	playlist_set_font(options.override_skin_settings);
 
 	/* bottom area of playlist window */
         hbox_bottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);

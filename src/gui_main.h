@@ -37,6 +37,7 @@ void try_waking_disk_thread(void);
 void toggle_noeffect(int id, int state);
 void cue_track_for_playback(GtkTreeStore * store, GtkTreeIter * piter, cue_t * cue);
 
+void apply_theme(char * path);
 void create_gui(int argc, char ** argv, int optind, int enqueue,
 		unsigned long rate, unsigned long rb_audio_size);
 
@@ -49,7 +50,7 @@ void main_window_set_font(int cond);
 
 void save_window_position(void);
 void restore_window_position(void);
-void main_buttons_set_content(char * skin_path);
+void main_buttons_set_content(char * theme_path);
 
 void set_src_type_label(int src_type);
 

@@ -102,4 +102,3 @@ gboolean tree_model_prev_iter(GtkTreeModel * model, GtkTreeIter * iter, GtkTreeI
 #endif /* AQUALUNG_UTILS_GUI_H */
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8:
-

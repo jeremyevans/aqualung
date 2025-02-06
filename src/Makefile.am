@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\" \
+AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
             $(glib_CFLAGS) $(lavc_CFLAGS) $(mad_CFLAGS) $(sndfile_CFLAGS) \
             $(speex_CFLAGS) $(vorbis_CFLAGS) $(vorbisenc_CFLAGS) $(wavpack_CFLAGS)
 AM_CXXFLAGS = $(glib_CFLAGS)
@@ -11,7 +11,10 @@ EXTRA_DIST = $(image_DATA)
 
 bin_PROGRAMS = aqualung
 
-aqualung_CPPFLAGS = $(AM_CPPFLAGS) -DAQUALUNG_SKINDIR=\"$(pkgdatadir)/skin\"
+aqualung_CPPFLAGS = $(AM_CPPFLAGS) \
+                  -DAQUALUNG_SRCDIR=\"$(CURDIR)\" \
+                  -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" \
+                  -DAQUALUNG_THEMEDIR=\"$(pkgdatadir)/theme\"
 
 aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(alsa_CFLAGS) $(pulse_CFLAGS) \
@@ -58,7 +61,6 @@ rb.h rb.c \
 search.h search.c \
 search_playlist.h search_playlist.c \
 segv.h segv.c \
-skin.h skin.c \
 store_file.h store_file.c \
 transceiver.c transceiver.h \
 trashlist.c trashlist.h \

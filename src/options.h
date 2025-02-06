@@ -48,9 +48,6 @@ typedef struct {
 	char ripdir[MAXLEN];
 	char storedir[MAXLEN];
 
-	/* directory of skin in use */
-	char skin[MAXLEN];
-
 	/* Misc - not accessible from the Settings dialog */
 	float vol;
 	float bal;
@@ -212,19 +209,6 @@ typedef struct {
 	int inet_proxy_port;
 	char inet_noproxy_domains[MAXLEN];
 	int inet_timeout;
-
-	/* Appearance */
-	int disable_skin_support_settings;
-	int override_skin_settings;
-	char playlist_font[MAX_FONTNAME_LEN];
-	char browser_font[MAX_FONTNAME_LEN];
-	char bigtimer_font[MAX_FONTNAME_LEN];
-	char smalltimer_font[MAX_FONTNAME_LEN];
-	char songtitle_font[MAX_FONTNAME_LEN];
-	char songinfo_font[MAX_FONTNAME_LEN];
-	char statusbar_font[MAX_FONTNAME_LEN];
-	char song_color[MAX_COLORNAME_LEN];
-	char activesong_color[MAX_COLORNAME_LEN];
 
 	/* Lua */
 	char ext_title_format_file[MAXLEN];

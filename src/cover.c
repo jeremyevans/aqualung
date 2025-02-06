@@ -226,21 +226,6 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
                 bc2 = bc4 = 160;        /* light edges */
         }
 
-        /* set high contrast bevel if "plain" or "no_skin" is the current skin */
-
-        if ((c = strrchr(options.skin, '/')) != NULL) {
-                ++c;
-
-                if (strcasecmp(c, "plain") == 0 || strcasecmp(c, "no_skin") == 0) {
-
-                        bc1 = bc2 = bc3 = bc4 = 0;      /* dark edges */
-
-                        if (bevel == TRUE) {
-                                bc2 = bc4 = 255;        /* light edges */
-                        }
-                }
-        }
-
         /* draw frame */
 
         channels = gdk_pixbuf_get_n_channels (pixbuf);

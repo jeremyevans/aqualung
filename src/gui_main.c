@@ -76,7 +76,6 @@
 #include "decoder/file_decoder.h"
 #include "about.h"
 #include "options.h"
-#include "skin.h"
 #include "playlist.h"
 #include "file_info.h"
 #include "i18n.h"
@@ -267,7 +266,7 @@ int custom_main_keybinding_expected = 0;
 /* popup menu for configuration */
 GtkWidget * conf_menu;
 GtkWidget * conf__options;
-GtkWidget * conf__skin;
+GtkWidget * conf__theme;
 GtkWidget * conf__fileinfo;
 GtkWidget * conf__about;
 GtkWidget * conf__quit;
@@ -306,7 +305,7 @@ guint32 last_systray_scroll_event_time = 0;
 
 int systray_main_window_on = 1;
 
-void create_main_window(char * skin_path);
+void create_main_window();
 
 void toggle_noeffect(int id, int state);
 
@@ -838,9 +837,8 @@ conf__options_cb(gpointer data) {
 
 
 void
-conf__skin_cb(gpointer data) {
-
-	create_skin_window();
+conf__theme_cb(gpointer data) {
+	apply_theme(AQUALUNG_THEMEDIR);
 }
 
 
@@ -1158,9 +1156,7 @@ main_window_key_pressed(GtkWidget * widget, GdkEventKey * event) {
 		return TRUE;
 	case GDK_KEY_k:
 	case GDK_KEY_K:
-                if (!options.disable_skin_support_settings) {
-                	create_skin_window();
-                }
+		conf__theme_cb (NULL);
                 return TRUE;
 	case GDK_KEY_o:
 	case GDK_KEY_O:
@@ -2451,38 +2447,38 @@ button_set_content(GtkWidget * button, char * imgpath, char * alt) {
 }
 
 void
-main_buttons_set_content(char * skin_path) {
+main_buttons_set_content(char * theme_path) {
 
 	char path[MAXLEN];
 
-	arr_snprintf(path, "%s/%s", skin_path, "prev.png");
+	arr_snprintf(path, "%s/%s", theme_path, "prev.png");
 	button_set_content(prev_button, path, "prev");
-	arr_snprintf(path, "%s/%s", skin_path, "stop.png");
+	arr_snprintf(path, "%s/%s", theme_path, "stop.png");
 	button_set_content(stop_button, path, "stop");
-	arr_snprintf(path, "%s/%s", skin_path, "next.png");
+	arr_snprintf(path, "%s/%s", theme_path, "next.png");
 	button_set_content(next_button, path, "next");
 	if (options.combine_play_pause) {
-		arr_snprintf(path, "%s/%s", skin_path, "play_pause.png");
+		arr_snprintf(path, "%s/%s", theme_path, "play_pause.png");
 		button_set_content(play_button, path, "play/pause");
 	} else {
-		arr_snprintf(path, "%s/%s", skin_path, "play.png");
+		arr_snprintf(path, "%s/%s", theme_path, "play.png");
 		button_set_content(play_button, path, "play");
-		arr_snprintf(path, "%s/%s", skin_path, "pause.png");
+		arr_snprintf(path, "%s/%s", theme_path, "pause.png");
 		button_set_content(pause_button, path, "pause");
 	}
-	arr_snprintf(path, "%s/%s", skin_path, "repeat.png");
+	arr_snprintf(path, "%s/%s", theme_path, "repeat.png");
 	button_set_content(repeat_button, path, "repeat");
-	arr_snprintf(path, "%s/%s", skin_path, "repeat_all.png");
+	arr_snprintf(path, "%s/%s", theme_path, "repeat_all.png");
 	button_set_content(repeat_all_button, path, "rep_all");
-	arr_snprintf(path, "%s/%s", skin_path, "shuffle.png");
+	arr_snprintf(path, "%s/%s", theme_path, "shuffle.png");
 	button_set_content(shuffle_button, path, "shuffle");
 
-	arr_snprintf(path, "%s/%s", skin_path, "pl.png");
+	arr_snprintf(path, "%s/%s", theme_path, "pl.png");
 	button_set_content(playlist_toggle, path, "PL");
-	arr_snprintf(path, "%s/%s", skin_path, "ms.png");
+	arr_snprintf(path, "%s/%s", theme_path, "ms.png");
 	button_set_content(musicstore_toggle, path, "MS");
 #ifdef HAVE_LADSPA
-	arr_snprintf(path, "%s/%s", skin_path, "fx.png");
+	arr_snprintf(path, "%s/%s", theme_path, "fx.png");
 	button_set_content(plugin_toggle, path, "FX");
 #endif /* HAVE_LADSPA */
 }
@@ -2629,21 +2625,7 @@ cover_press_button_cb (GtkWidget *widget, GdkEventButton *event, gpointer user_d
 }
 
 void
-main_window_set_font(int cond) {
-
-        if (cond) {
-		gtk_widget_modify_font(bigtimer_label, fd_bigtimer);
-		gtk_widget_modify_font(smalltimer_label_1, fd_smalltimer);
-		gtk_widget_modify_font(smalltimer_label_2, fd_smalltimer);
-		gtk_widget_modify_font(label_title, fd_songtitle);
-		gtk_widget_modify_font(label_input, fd_songinfo);
-		gtk_widget_modify_font(label_output, fd_songinfo);
-		gtk_widget_modify_font(label_src_type, fd_songinfo);
-	}
-}
-
-void
-create_main_window(char * skin_path) {
+create_main_window() {
 
 	GtkWidget * vbox;
 	GtkWidget * disp_hbox;
@@ -2706,16 +2688,6 @@ create_main_window(char * skin_path) {
                 gtk_window_set_keep_above (GTK_WINDOW(main_window), TRUE);
         }
 
-        /* initialize fonts */
-
-	fd_playlist = pango_font_description_from_string(options.playlist_font);
- 	fd_browser = pango_font_description_from_string(options.browser_font);
- 	fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
- 	fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
- 	fd_songtitle = pango_font_description_from_string(options.songtitle_font);
- 	fd_songinfo = pango_font_description_from_string(options.songinfo_font);
- 	fd_statusbar = pango_font_description_from_string(options.statusbar_font);
-
         conf_menu = gtk_menu_new();
 	register_toplevel_window(conf_menu, TOP_WIN_SKIN);
 
@@ -2724,8 +2696,8 @@ create_main_window(char * skin_path) {
                 plist_menu = conf_menu;
         }
 
+        conf__theme = gtk_menu_item_new_with_label(_("Reload theme"));
         conf__options = gtk_menu_item_new_with_label(_("Settings"));
-        conf__skin = gtk_menu_item_new_with_label(_("Skin chooser"));
         if (!options.playlist_is_embedded) {
                 conf__fileinfo = gtk_menu_item_new_with_label(_("File info"));
 	}
@@ -2737,8 +2709,8 @@ create_main_window(char * skin_path) {
         if (options.playlist_is_embedded) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__separator1);
 	}
+        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__theme);
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__options);
-        gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__skin);
 
 #ifdef HAVE_JACK_MGMT
 	if (output == JACK_DRIVER) {
@@ -2759,7 +2731,7 @@ create_main_window(char * skin_path) {
         gtk_menu_shell_append(GTK_MENU_SHELL(conf_menu), conf__quit);
 
         g_signal_connect_swapped(G_OBJECT(conf__options), "activate", G_CALLBACK(conf__options_cb), NULL);
-        g_signal_connect_swapped(G_OBJECT(conf__skin), "activate", G_CALLBACK(conf__skin_cb), NULL);
+        g_signal_connect_swapped(G_OBJECT(conf__theme), "activate", G_CALLBACK(conf__theme_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__about), "activate", G_CALLBACK(conf__about_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(conf__quit), "activate", G_CALLBACK(conf__quit_cb), NULL);
 
@@ -2769,9 +2741,7 @@ create_main_window(char * skin_path) {
 	}
 
         gtk_widget_show(conf__options);
-        if (!options.disable_skin_support_settings) {
-                gtk_widget_show(conf__skin);
-        }
+	gtk_widget_show(conf__theme);
         gtk_widget_show(conf__separator1);
         gtk_widget_show(conf__about);
         gtk_widget_show(conf__separator2);
@@ -2899,8 +2869,6 @@ create_main_window(char * skin_path) {
 	label_src_type = gtk_label_new("");
 	gtk_widget_set_name(label_src_type, "label_info");
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_src_type, FALSE, FALSE, 3);
-
-	main_window_set_font(options.override_skin_settings);
 
 	/* Volume and balance slider */
 	vb_table = gtk_table_new(1, 3, FALSE);
@@ -3079,14 +3047,6 @@ create_main_window(char * skin_path) {
 #endif /* HAVE_LADSPA */
 
 	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_grid, FALSE, FALSE, 3);
-
-        if (options.disable_skin_support_settings) {
-	        arr_snprintf(path, "%s/no_skin", AQUALUNG_SKINDIR);
-	        main_buttons_set_content(path);
-        } else {
-	        main_buttons_set_content(skin_path);
-        }
-        set_buttons_relief();
 
 	/* Embedded playlist */
 	if (options.playlist_is_embedded && !options.buttons_at_the_bottom) {
@@ -3472,6 +3432,39 @@ setup_systray(void) {
 }
 #endif /* HAVE_SYSTRAY */
 
+gboolean
+apply_css_theme(char* path) {
+	char csspath[MAXLEN];
+	arr_snprintf(csspath, "%s/theme.css", path);
+	GError* err = NULL;
+	GtkCssProvider *cssProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_path(cssProvider, csspath, &err);
+	if (err) {
+		fprintf(stderr, "Theme not loaded: %s\n", csspath);
+		g_error_free(err);
+		err = NULL;
+		return FALSE;
+	}
+	gtk_style_context_add_provider_for_screen(
+		gdk_screen_get_default(),
+		GTK_STYLE_PROVIDER(cssProvider),
+		GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	main_buttons_set_content(path);
+	return TRUE;
+}
+
+void
+apply_theme(char * path) {
+	if (!apply_css_theme(path))
+	{
+		char devpath[MAXLEN];
+		arr_snprintf(devpath, "%s/../theme", AQUALUNG_SRCDIR);
+		if (apply_css_theme(devpath))
+			printf("Loaded dev theme: %s\n", devpath);
+	}
+}
+
 void
 create_gui(int argc, char ** argv, int optind, int enqueue,
 	   unsigned long rate, unsigned long rb_audio_size) {
@@ -3495,23 +3488,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	if (options.title_format[0] == '\0')
 		arr_snprintf(options.title_format, "%%a: %%t [%%r]");
-	if (options.skin[0] == '\0') {
-		arr_snprintf(options.skin, "%s/default", AQUALUNG_SKINDIR);
-		options.main_pos_x = 280;
-		options.main_pos_y = 30;
-		options.main_size_x = 380;
-		options.main_size_y = 380;
-		options.browser_pos_x = 30;
-		options.browser_pos_y = 30;
-		options.browser_size_x = 240;
-		options.browser_size_y = 380;
-		options.browser_on = 1;
-		options.playlist_pos_x = 300;
-		options.playlist_pos_y = 180;
-		options.playlist_size_x = 400;
-		options.playlist_size_y = 500;
-		options.playlist_on = 1;
-	}
 
 	if (options.cddb_server[0] == '\0') {
 		arr_snprintf(options.cddb_server, "gnudb.org");
@@ -3521,13 +3497,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 		options.src_type = 4;
 	}
 
-        if (options.disable_skin_support_settings) {
-	        arr_snprintf(path, "%s/no_skin/rc", AQUALUNG_SKINDIR);
-        } else {
-	        arr_snprintf(path, "%s/rc", options.skin);
-        }
-	gtk_rc_parse(path);
-
 #ifdef HAVE_SYSTRAY
 	if (options.use_systray) {
 		systray_used = 1;
@@ -3535,7 +3504,9 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 	}
 #endif /* HAVE_SYSTRAY */
 
-	create_main_window(options.skin);
+	create_main_window();
+	apply_theme(AQUALUNG_THEMEDIR);
+        set_buttons_relief();
 
 	vol_prev = -101.0f;
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj_vol), options.vol);
@@ -3707,11 +3678,6 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 
 	/* set timeout function */
 	timeout_tag = aqualung_timeout_add(TIMEOUT_PERIOD, timeout_callback, NULL);
-
-	/* re-apply skin to override possible WM theme */
-	if (!options.disable_skin_support_settings) {
-		apply_skin(options.skin);
-	}
 }
 
 

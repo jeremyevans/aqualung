@@ -65,7 +65,6 @@
 #include "search.h"
 #include "playlist.h"
 #include "i18n.h"
-#include "skin.h"
 #include "options.h"
 
 
@@ -90,8 +89,6 @@ extern PangoFontDescription *fd_statusbar;
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
-extern GtkWidget * conf__skin;
-
 int rva_is_enabled_shadow;
 int rva_env_shadow;
 float rva_refvol_shadow;
@@ -103,10 +100,7 @@ float rva_avg_stddev_thresh_shadow;
 float rva_no_rva_voladj_shadow;
 char ext_title_format_file_shadow[MAXLEN];
 
-int appearance_changed;
-int reskin_flag;
 int restart_flag;
-int override_shadow;
 int track_name_in_bold_shadow;
 
 GtkWidget * options_window;
@@ -249,9 +243,6 @@ GtkWidget * inet_help_noproxy_domains;
 GtkWidget * inet_spinner_timeout;
 
 
-GtkWidget * check_disable_skin_support;
-GtkWidget * check_override_skin;
-
 #define DEFAULT_FONT_NAME "Sans 11"
 
 GtkWidget * entry_pl_font;
@@ -337,16 +328,6 @@ open_font_desc(void) {
         if (fd_statusbar) {
 		pango_font_description_free(fd_statusbar);
 		fd_statusbar = NULL;
-	}
-
-	if (options.override_skin_settings) {
-		fd_playlist = pango_font_description_from_string(options.playlist_font);
-		fd_browser = pango_font_description_from_string(options.browser_font);
-		fd_bigtimer = pango_font_description_from_string(options.bigtimer_font);
-		fd_smalltimer = pango_font_description_from_string(options.smalltimer_font);
-		fd_songtitle = pango_font_description_from_string(options.songtitle_font);
-		fd_songinfo = pango_font_description_from_string(options.songinfo_font);
-		fd_statusbar = pango_font_description_from_string(options.statusbar_font);
 	}
 }
 
@@ -735,51 +716,6 @@ options_window_accept(void) {
 	set_option_from_entry(inet_entry_noproxy_domains, options.inet_noproxy_domains, CHAR_ARRAY_SIZE(options.inet_noproxy_domains));
 	set_option_from_spin(inet_spinner_timeout, &options.inet_timeout);
 
-
-	/* Appearance */
-
-        set_option_from_toggle(check_disable_skin_support, &options.disable_skin_support_settings);
-        set_option_from_toggle(check_override_skin, &options.override_skin_settings);
-	set_option_from_entry(entry_pl_font, options.playlist_font, CHAR_ARRAY_SIZE(options.playlist_font));
-	set_option_from_entry(entry_ms_font, options.browser_font, CHAR_ARRAY_SIZE(options.browser_font));
-	set_option_from_entry(entry_bt_font, options.bigtimer_font, CHAR_ARRAY_SIZE(options.bigtimer_font));
-	set_option_from_entry(entry_st_font, options.smalltimer_font, CHAR_ARRAY_SIZE(options.smalltimer_font));
-	set_option_from_entry(entry_songt_font, options.songtitle_font, CHAR_ARRAY_SIZE(options.songtitle_font));
-	set_option_from_entry(entry_si_font, options.songinfo_font, CHAR_ARRAY_SIZE(options.songinfo_font));
-	set_option_from_entry(entry_sb_font, options.statusbar_font, CHAR_ARRAY_SIZE(options.statusbar_font));
-
-        /* refresh GUI */
-	for (i = 0; i < 3; i++) {
-		gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(plistcol_store),
-					      &iter, NULL, i);
-		gtk_tree_model_get(GTK_TREE_MODEL(plistcol_store), &iter,
-				   1, options.plcol_idx + i, -1);
-	}
-	playlist_reorder_columns_all(options.plcol_idx);
-
-        if (!track_name_in_bold_shadow && options.show_active_track_name_in_bold == 1) {
-		reskin_flag = 1;
-                track_name_in_bold_shadow = 0;
-        }
-
-
-	if (appearance_changed) {
-		/* apply fonts */
-		open_font_desc();
-		main_window_set_font(1);
-		music_browser_set_font(1);
-		playlist_set_font(1);
-
-                playlist_set_color();
-
-		reskin_flag = 1;
-	}
-
-        if (!options.override_skin_settings && override_shadow) {
-		reskin_flag = 1;
-                override_shadow = 0;
-        }
-
 	music_store_remove_unset_stores();
 
 	music_store_add_new_stores();
@@ -1086,33 +1022,6 @@ show_restart_info(void) {
 }
 
 void
-appearance_font_select(GtkWidget * widget, gpointer data) {
-
-	gchar *s;
-	GtkWidget *font_selector;
-	gint response;
-
-	font_selector = gtk_font_selection_dialog_new(_("Select a font..."));
-	gtk_window_set_modal(GTK_WINDOW(font_selector), TRUE);
-	gtk_window_set_transient_for(GTK_WINDOW(font_selector), GTK_WINDOW(options_window));
-	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_selector),
-						gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data)));
-	gtk_widget_show (font_selector);
-	response = aqualung_dialog_run (GTK_DIALOG (font_selector));
-
-	if (response == GTK_RESPONSE_OK) {
-
-		s = gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG(font_selector));
-		gtk_entry_set_text(GTK_ENTRY((GtkWidget *)data), s);
-		g_free (s);
-
-	}
-
-        appearance_changed = 1;
-	gtk_widget_destroy (font_selector);
-}
-
-void
 restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 	GtkTreeIter iter;
@@ -1137,66 +1046,6 @@ restart_active(GtkToggleButton * togglebutton, gpointer data) {
 
 	gtk_list_store_append(restart_list_store, &iter);
 	gtk_list_store_set(restart_list_store, &iter, 0, (char *)data, -1);
-}
-
-void
-set_sensitive_part(void) {
-
-	GtkWidget *sensitive_table[] = {
-		entry_ms_font, entry_pl_font, entry_bt_font, entry_st_font,
-		entry_songt_font, entry_si_font, entry_sb_font, button_ms_font,
-		button_pl_font, button_bt_font, button_st_font, button_songt_font,
-		button_si_font, button_sb_font, color_picker
-	};
-
-	gboolean state;
-        gint items, n;
-
-	state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_override_skin));
-
-        items = sizeof(sensitive_table) / sizeof(GtkWidget*);
-
-        for (n = 0; n < items; n++) {
-                gtk_widget_set_sensitive(sensitive_table[n], state);
-        }
-}
-
-void
-cb_toggle_disable_skin_support(GtkToggleButton *togglebutton, gpointer user_data) {
-
-        appearance_changed = 1;
-
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_disable_skin_support)) == TRUE) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_override_skin), TRUE);
-		gtk_widget_set_sensitive(check_override_skin, FALSE);
-                restart_active(togglebutton, _("Disable skin support"));
-        } else {
-		gtk_widget_set_sensitive(check_override_skin, TRUE);
-        }
-}
-
-void
-cb_toggle_override_skin(GtkToggleButton *togglebutton, gpointer user_data) {
-
-        appearance_changed = 1;
-        set_sensitive_part();
-}
-
-void
-color_selected(GtkColorButton *widget, gpointer user_data) {
-
-	GdkColor c;
-	gchar str[MAX_COLORNAME_LEN];
-
-        appearance_changed = 1;
-        gtk_color_button_get_color(widget, &c);
-        arr_snprintf(str, "#%02X%02X%02X", c.red * 256 / 65536, c.green * 256 / 65536, c.blue * 256 / 65536);
-
-        if (GPOINTER_TO_INT(user_data) == SONG_COLOR) {
-                arr_strlcpy(options.song_color, str);
-        } else {
-                arr_strlcpy(options.activesong_color, str);
-        }
 }
 
 GtkWidget *
@@ -1881,15 +1730,6 @@ options_dialog_response(GtkDialog * dialog, gint response_id, gpointer data) {
 	gtk_widget_destroy(options_window);
 	options_window = NULL;
 
-	if (reskin_flag) {
-		if (!options.disable_skin_support_settings) {
-			apply_skin(options.skin);
-			gtk_widget_show(conf__skin);
-		} else {
-			gtk_widget_hide(conf__skin);
-		}
-	}
-
 #ifdef HAVE_SYSTRAY
 	gtk_list_store_clear(systray_mouse_buttons_store);
 	gtk_list_store_clear(systray_mouse_buttons_cmds_store);
@@ -2005,8 +1845,6 @@ create_options_window(void) {
 	}
 
         restart_flag = 0;
-	reskin_flag = 0;
-        appearance_changed = 0;
 	if (options.ext_title_format_file[0] == '\0') {
 		arr_strlcpy(ext_title_format_file_shadow, options.confdir);
 	} else {
@@ -3430,316 +3268,6 @@ create_options_window(void) {
 	}
 
 
-        /* Appearance notebook page */
-
-        override_shadow = options.override_skin_settings;
-
-	vbox_appearance = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox_appearance), 8);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox_appearance, create_notebook_tab(_("Appearance"), "appearance.png"));
-
-
-        check_disable_skin_support =
-		gtk_check_button_new_with_label(_("Disable skin support"));
-
-        gtk_widget_set_name(check_disable_skin_support, "check_on_notebook");
-	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_disable_skin_support, FALSE, FALSE, 0);
-
-        check_override_skin =
-		gtk_check_button_new_with_label(_("Override skin settings"));
-
-        gtk_widget_set_name(check_override_skin, "check_on_notebook");
-	if (options.override_skin_settings) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_override_skin), TRUE);
-	}
-	gtk_box_pack_start(GTK_BOX(vbox_appearance), check_override_skin, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (check_override_skin), "toggled",
-						G_CALLBACK (cb_toggle_override_skin), NULL);
-
-	if (options.disable_skin_support_settings) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_disable_skin_support), TRUE);
-		gtk_widget_set_sensitive(check_override_skin, FALSE);
-	}
-	g_signal_connect (G_OBJECT (check_disable_skin_support), "toggled",
-						G_CALLBACK (cb_toggle_disable_skin_support), NULL);
-
-	frame_fonts = gtk_frame_new(_("Fonts"));
-	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_fonts, FALSE, TRUE, 5);
-
-        table_fonts = gtk_table_new (7, 3, FALSE);
-        gtk_widget_show (table_fonts);
-	gtk_container_add(GTK_CONTAINER(frame_fonts), table_fonts);
-	gtk_container_set_border_width(GTK_CONTAINER(table_fonts), 5);
-        gtk_table_set_row_spacings (GTK_TABLE (table_fonts), 4);
-        gtk_table_set_col_spacings (GTK_TABLE (table_fonts), 4);
-
-        /* playlist font */
-
-	label = gtk_label_new(_("Playlist: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 0, 1,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_pl_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_pl_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_pl_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_pl_font, 1, 2, 0, 1,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.playlist_font)) {
-		gtk_entry_set_text(GTK_ENTRY(entry_pl_font), options.playlist_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_pl_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.playlist_font, DEFAULT_FONT_NAME);
-        }
-
-        button_pl_font =  gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_pl_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_pl_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_pl_font, 2, 3, 0, 1,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* music store font */
-
-	label = gtk_label_new(_("Music Store: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 1, 2,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_ms_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_ms_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_ms_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_ms_font, 1, 2, 1, 2,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.browser_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_ms_font), options.browser_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_ms_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.browser_font, DEFAULT_FONT_NAME);
-        }
-
-        button_ms_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_ms_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_ms_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_ms_font, 2, 3, 1, 2,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* big timer font */
-
-	label = gtk_label_new(_("Big timer: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 2, 3,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_bt_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_bt_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_bt_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_bt_font, 1, 2, 2, 3,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.bigtimer_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_bt_font), options.bigtimer_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_bt_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.bigtimer_font, DEFAULT_FONT_NAME);
-        }
-
-        button_bt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_bt_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_bt_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_bt_font, 2, 3, 2, 3,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* small timer font */
-
-	label = gtk_label_new(_("Small timers: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 3, 4,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_st_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_st_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_st_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_st_font, 1, 2, 3, 4,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.smalltimer_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_st_font), options.smalltimer_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_st_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.smalltimer_font, DEFAULT_FONT_NAME);
-        }
-
-        button_st_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_st_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_st_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_st_font, 2, 3, 3, 4,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* song title font */
-
-	label = gtk_label_new(_("Song title: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 4, 5,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_songt_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_songt_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_songt_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_songt_font, 1, 2, 4, 5,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.songtitle_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_songt_font), options.songtitle_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_songt_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.songtitle_font, DEFAULT_FONT_NAME);
-        }
-
-        button_songt_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_songt_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_songt_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_songt_font, 2, 3, 4, 5,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* song info font */
-
-	label = gtk_label_new(_("Song info: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 5, 6,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_si_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_si_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_si_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_si_font, 1, 2, 5, 6,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.songinfo_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_si_font), options.songinfo_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_si_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.songinfo_font, DEFAULT_FONT_NAME);
-        }
-
-        button_si_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_si_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_si_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_si_font, 2, 3, 5, 6,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* statusbar font */
-
-	label = gtk_label_new(_("Statusbar: "));
-        gtk_table_attach (GTK_TABLE (table_fonts), label, 0, 1, 6, 7,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-        entry_sb_font = gtk_entry_new();
-        gtk_widget_set_can_focus(entry_sb_font, FALSE);
-        gtk_editable_set_editable(GTK_EDITABLE(entry_sb_font), FALSE);
-        gtk_table_attach (GTK_TABLE (table_fonts), entry_sb_font, 1, 2, 6, 7,
-                         (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        if (strlen(options.statusbar_font)) {
-	        gtk_entry_set_text(GTK_ENTRY(entry_sb_font), options.statusbar_font);
-        } else {
-                gtk_entry_set_text(GTK_ENTRY(entry_sb_font), DEFAULT_FONT_NAME);
-                arr_strlcpy(options.statusbar_font, DEFAULT_FONT_NAME);
-        }
-
-        button_sb_font = gui_stock_label_button(_("Select"), GTK_STOCK_SELECT_FONT);
-	g_signal_connect (G_OBJECT (button_sb_font), "clicked",
-			  G_CALLBACK (appearance_font_select), entry_sb_font);
-        gtk_table_attach (GTK_TABLE (table_fonts), button_sb_font, 2, 3, 6, 7,
-                         (GtkAttachOptions) (GTK_FILL),
-                         (GtkAttachOptions) (0), 0, 0);
-
-        /* colors */
-
-	frame_colors = gtk_frame_new(_("Colors"));
-	gtk_box_pack_start(GTK_BOX(vbox_appearance), frame_colors, FALSE, TRUE, 5);
-
-	vbox_colors = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_colors), 5);
-	gtk_container_add(GTK_CONTAINER(frame_colors), vbox_colors);
-
-        /* song color */
-
-        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
-
-	label = gtk_label_new(_("Song in playlist: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-	hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
-
-        if (gdk_color_parse(options.song_color, &color) == FALSE) {
-                color.red = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
-                color.green = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
-                color.blue = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
-                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
-        }
-
-        color_picker = gtk_color_button_new_with_color (&color);
-        gtk_widget_set_size_request(GTK_WIDGET(color_picker), 60, -1);
-        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (color_picker), "color-set",
-						G_CALLBACK (color_selected), (gpointer *) SONG_COLOR);
-
-
-        /* active song color */
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-        gtk_box_pack_start(GTK_BOX(vbox_colors), hbox, FALSE, TRUE, 0);
-
-	label = gtk_label_new(_("Active song in playlist: "));
-        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-        gtk_size_group_add_widget(label_size, label);
-        gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-
-	hbox_s = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), hbox_s, TRUE, TRUE, 0);
-
-        if (gdk_color_parse(options.activesong_color, &color) == FALSE) {
-                color.red = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
-                color.green = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
-                color.blue = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
-                color.pixel = (gulong)((color.red & 0xff00)*256 + (color.green & 0xff00) + (color.blue & 0xff00)/256);
-        }
-
-        color_picker = gtk_color_button_new_with_color (&color);
-        gtk_widget_set_size_request(GTK_WIDGET(color_picker), 60, -1);
-        gtk_box_pack_start(GTK_BOX(hbox), color_picker, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (color_picker), "color-set",
-						G_CALLBACK (color_selected), (gpointer *) ACTIVE_SONG_COLOR);
-
-        set_sensitive_part();
-
         /* end of notebook */
 
 	gtk_widget_show_all(options_window);
@@ -3809,7 +3337,6 @@ save_config(void) {
 	SAVE_STR(storedir);
 	SAVE_STR(default_param);
 	SAVE_STR(title_format);
-	SAVE_STR(skin);
 	SAVE_INT(src_type);
 	SAVE_INT(ladspa_is_postfader);
 	SAVE_INT(auto_save_playlist);
@@ -3853,8 +3380,6 @@ save_config(void) {
 	SAVE_INT(show_hidden);
 	SAVE_INT(main_window_always_on_top);
 	SAVE_INT(tags_tab_first);
-	SAVE_INT(disable_skin_support_settings);
-	SAVE_INT(override_skin_settings);
 	SAVE_INT(replaygain_tag_to_use);
 	SAVE_FLOAT(vol);
 	SAVE_FLOAT(bal);
@@ -3900,15 +3425,6 @@ save_config(void) {
 	SAVE_INT_SH(enable_playlist_statusbar);
 	SAVE_INT(ifpmanager_size_x);
 	SAVE_INT(ifpmanager_size_y);
-	SAVE_FONT(browser_font);
-	SAVE_FONT(playlist_font);
-	SAVE_FONT(bigtimer_font);
-	SAVE_FONT(smalltimer_font);
-	SAVE_FONT(songtitle_font);
-	SAVE_FONT(songinfo_font);
-	SAVE_FONT(statusbar_font);
-	SAVE_COLOR(song_color);
-	SAVE_COLOR(activesong_color);
 	SAVE_INT(repeat_on);
 	SAVE_INT(repeat_all_on);
 	SAVE_INT(shuffle_on);
@@ -4113,8 +3629,6 @@ load_config(void) {
 
 	options.browser_paned_pos = 400;
 
-	options.skin[0] = '\0';
-
 	options.default_param[0] = '\0';
 	options.title_format[0] = '\0';
         options.enable_tooltips = 1;
@@ -4203,8 +3717,6 @@ load_config(void) {
 	options.batch_tag_flags = BATCH_TAG_TITLE | BATCH_TAG_ARTIST | BATCH_TAG_ALBUM |
 		BATCH_TAG_YEAR | BATCH_TAG_COMMENT | BATCH_TAG_TRACKNO;
 
-        arr_strlcpy(options.song_color, "#888888");
-
 	ms_pathlist_store = gtk_list_store_new(3,
 					       G_TYPE_STRING,   /* path */
 					       G_TYPE_STRING,   /* displayed name */
@@ -4221,7 +3733,6 @@ load_config(void) {
 		LOAD_STR(storedir);
 		LOAD_STR(default_param);
 		LOAD_STR(title_format);
-		LOAD_STR(skin);
 
 		if (!src_type_parsed) {
 			LOAD_INT(src_type);
@@ -4269,8 +3780,6 @@ load_config(void) {
 		LOAD_INT(show_hidden);
 		LOAD_INT(main_window_always_on_top);
 		LOAD_INT(tags_tab_first);
-		LOAD_INT(disable_skin_support_settings);
-		LOAD_INT(override_skin_settings);
 		LOAD_INT(replaygain_tag_to_use);
 		LOAD_FLOAT(vol);
 		LOAD_FLOAT(bal);
@@ -4307,15 +3816,6 @@ load_config(void) {
 		LOAD_INT_SH(enable_playlist_statusbar);
 		LOAD_INT(ifpmanager_size_x);
 		LOAD_INT(ifpmanager_size_y);
-		LOAD_STR(browser_font);
-		LOAD_STR(playlist_font);
-		LOAD_STR(bigtimer_font);
-		LOAD_STR(smalltimer_font);
-		LOAD_STR(songtitle_font);
-		LOAD_STR(songinfo_font);
-		LOAD_STR(statusbar_font);
-		LOAD_STR(song_color);
-		LOAD_STR(activesong_color);
 		LOAD_INT(repeat_on);
 		LOAD_INT(repeat_all_on);
 		LOAD_INT(shuffle_on);

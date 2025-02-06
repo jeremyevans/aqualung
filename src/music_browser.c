@@ -492,15 +492,6 @@ music_tree_expand_stores(void) {
 }
 
 void
-music_browser_set_font(int cond) {
-
-        if (cond) {
-		gtk_widget_modify_font(music_tree, fd_browser);
-		gtk_widget_modify_font(statusbar_ms, fd_statusbar);
-	}
-}
-
-void
 create_music_browser(void) {
 
 	GtkWidget * vbox;
@@ -759,8 +750,6 @@ create_music_browser(void) {
 		gtk_widget_set_name(statusbar_ms, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar_hbox), statusbar_ms, FALSE, FALSE, 0);
 	}
-
-	music_browser_set_font(options.override_skin_settings);
 }
 
 

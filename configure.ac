@@ -8,14 +8,7 @@ AC_CONFIG_FILES([
     Makefile
     doc/Makefile
     po/Makefile.in
-    skin/Makefile
-    skin/dark/Makefile
-    skin/default/Makefile
-    skin/metal/Makefile
-    skin/ocean/Makefile
-    skin/plain/Makefile
-    skin/woody/Makefile
-    skin/no_skin/Makefile
+    theme/Makefile
     src/Makefile
 ])
 AC_CANONICAL_HOST

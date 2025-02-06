@@ -1,0 +1,24 @@
+#big_timer_label {
+    font: 24px "Courier Pitch";
+    color: #000000;
+}
+
+#small_timer_label {
+    font: 18px "Courier Pitch";
+    color: #000000;
+}
+
+#label_title {
+    font: 24px "DejaVu Sans";
+    color: #000000;
+}
+
+#label_info {
+    font: 15px "DejaVu Sans";
+    color: #000000;
+}
+
+#playlist_color_indicator { color: #000000; }
+#playlist_color_indicator:active { color: #00026b; }
+#playlist_color_indicator:selected { color: #0505b8; }
+#playlist_color_indicator:disabled { color: #000000; }

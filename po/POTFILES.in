@@ -19,7 +19,6 @@ src/podcast.c
 src/ports.c
 src/search.c
 src/search_playlist.c
-src/skin.c
 src/store_cdda.c
 src/store_file.c
 src/store_podcast.c

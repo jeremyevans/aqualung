@@ -226,10 +226,7 @@ GtkWidget * repeat_all_button;
 GtkWidget * shuffle_button;
 
 GtkWidget * label_title;
-GtkWidget * label_format;
-GtkWidget * label_samplerate;
-GtkWidget * label_bps;
-GtkWidget * label_mono;
+GtkWidget * label_input;
 GtkWidget * label_output;
 GtkWidget * label_src_type;
 
@@ -404,17 +401,6 @@ hide_cover_thumbnail(void) {
 }
 
 void
-set_format_label(char * format_str) {
-
-	if (!is_file_loaded) {
-		gtk_label_set_text(GTK_LABEL(label_format), "");
-	} else {
-		gtk_label_set_text(GTK_LABEL(label_format), format_str);
-	}
-}
-
-
-void
 format_bps_label(int bps, int format_flags, char * str, size_t str_size) {
 
 	if (bps == 0) {
@@ -434,50 +420,20 @@ format_bps_label(int bps, int format_flags, char * str, size_t str_size) {
 }
 
 void
-set_bps_label(int bps, int format_flags) {
-
+set_input_label(fileinfo_t di) {
 	char str[MAXLEN];
 
-	format_bps_label(bps, format_flags, str, CHAR_ARRAY_SIZE(str));
-
-	if (is_file_loaded) {
-		gtk_label_set_text(GTK_LABEL(label_bps), str);
+	if (!is_file_loaded) {
+		arr_strlcpy(str, _("IDLE"));
 	} else {
-		gtk_label_set_text(GTK_LABEL(label_bps), "");
+		char bps_str [128];
+		format_bps_label(di.bps, di.format_flags, bps_str, CHAR_ARRAY_SIZE(bps_str));
+		arr_snprintf(str, "%s %ld Hz %s %s",
+			     (di.is_mono ? _("MONO") : _("STEREO")),
+			     di.sample_rate, bps_str, di.format_str);
 	}
+	gtk_label_set_text(GTK_LABEL(label_input), str);
 }
-
-
-void
-set_samplerate_label(int sr) {
-
-	char str[MAXLEN];
-
-	arr_snprintf(str, "%d Hz", sr);
-
-	if (is_file_loaded) {
-		gtk_label_set_text(GTK_LABEL(label_samplerate), str);
-	} else {
-		gtk_label_set_text(GTK_LABEL(label_samplerate), "");
-	}
-}
-
-
-void
-set_mono_label(int is_mono) {
-
-	if (is_file_loaded) {
-		if (is_mono) {
-			gtk_label_set_text(GTK_LABEL(label_mono), _("MONO"));
-		} else {
-			gtk_label_set_text(GTK_LABEL(label_mono), _("STEREO"));
-		}
-	} else {
-		gtk_label_set_text(GTK_LABEL(label_mono), "");
-	}
-}
-
-
 
 void
 set_output_label(int output, int out_SR) {
@@ -487,32 +443,32 @@ set_output_label(int output, int out_SR) {
 	switch (output) {
 #ifdef HAVE_PULSE
 	case PULSE_DRIVER:
-		arr_snprintf(str, "%s PulseAudio @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "PulseAudio @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_PULSE */
 #ifdef HAVE_SNDIO
 	case SNDIO_DRIVER:
-		arr_snprintf(str, "%s sndio @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "sndio @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_SNDIO */
 #ifdef HAVE_OSS
 	case OSS_DRIVER:
-		arr_snprintf(str, "%s OSS @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "OSS @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_OSS */
 #ifdef HAVE_ALSA
 	case ALSA_DRIVER:
-		arr_snprintf(str, "%s ALSA @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "ALSA @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_ALSA */
 #ifdef HAVE_JACK
 	case JACK_DRIVER:
-		arr_snprintf(str, "%s JACK @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "JACK @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_JACK */
 #ifdef HAVE_WINMM
 	case WIN32_DRIVER:
-		arr_snprintf(str, "%s Win32 @ %d Hz", _("Output:"), out_SR);
+		arr_snprintf(str, "Win32 @ %d Hz", out_SR);
 		break;
 #endif /* HAVE_WINMM */
 	default:
@@ -528,16 +484,12 @@ set_output_label(int output, int out_SR) {
 void
 set_src_type_label(int src_type) {
 
-	char str[MAXLEN];
-
-	arr_strlcpy(str, _("SRC Type: "));
 #ifdef HAVE_SRC
-	arr_strlcat(str, src_get_name(src_type));
+	gtk_label_set_text(GTK_LABEL(label_src_type), src_get_name(src_type));
 #else
-	arr_strlcat(str, _("None"));
+	gtk_label_set_text(GTK_LABEL(label_src_type), _("None"));
 #endif /* HAVE_SRC */
 
-	gtk_label_set_text(GTK_LABEL(label_src_type), str);
 }
 
 
@@ -630,10 +582,7 @@ refresh_displays(void) {
 	loop_bar_update_tooltip();
 #endif /* HAVE_LOOP */
 
-	set_format_label(disp_info.format_str);
-	set_samplerate_label(disp_info.sample_rate);
-	set_bps_label(disp_info.bps, disp_info.format_flags);
-	set_mono_label(disp_info.is_mono);
+	set_input_label(disp_info);
 	set_output_label(output, out_SR);
 	set_src_type_label(options.src_type);
 
@@ -2682,10 +2631,7 @@ main_window_set_font(int cond) {
 		gtk_widget_modify_font(smalltimer_label_1, fd_smalltimer);
 		gtk_widget_modify_font(smalltimer_label_2, fd_smalltimer);
 		gtk_widget_modify_font(label_title, fd_songtitle);
-		gtk_widget_modify_font(label_mono, fd_songinfo);
-		gtk_widget_modify_font(label_samplerate, fd_songinfo);
-		gtk_widget_modify_font(label_bps, fd_songinfo);
-		gtk_widget_modify_font(label_format, fd_songinfo);
+		gtk_widget_modify_font(label_input, fd_songinfo);
 		gtk_widget_modify_font(label_output, fd_songinfo);
 		gtk_widget_modify_font(label_src_type, fd_songinfo);
 	}
@@ -2716,7 +2662,6 @@ create_main_window(char * skin_path) {
 	GtkWidget * title_scrolledwin;
 	GtkWidget * info_viewp;
 	GtkWidget * info_scrolledwin;
-	GtkWidget * info_vsep;
 
 	GtkWidget * sr_table;
 
@@ -2935,28 +2880,17 @@ create_main_window(char * skin_path) {
         gtk_widget_set_name(label_title, "label_title");
 	gtk_box_pack_start(GTK_BOX(title_hbox), label_title, FALSE, FALSE, 3);
 
-	label_mono = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(info_hbox), label_mono, FALSE, FALSE, 3);
-	gtk_widget_set_name(label_mono, "label_info");
+	label_input = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(info_hbox), label_input, FALSE, FALSE, 3);
+	gtk_widget_set_name(label_input, "label_info");
 
-	label_samplerate = gtk_label_new("0");
-	gtk_widget_set_name(label_samplerate, "label_info");
-	gtk_box_pack_start(GTK_BOX(info_hbox), label_samplerate, FALSE, FALSE, 3);
-
-	label_bps = gtk_label_new("");
-	gtk_widget_set_name(label_bps, "label_info");
-	gtk_box_pack_start(GTK_BOX(info_hbox), label_bps, FALSE, FALSE, 3);
-
-	label_format = gtk_label_new("");
-	gtk_widget_set_name(label_format, "label_info");
-	gtk_box_pack_start(GTK_BOX(info_hbox), label_format, FALSE, FALSE, 3);
-
-	info_vsep = gtk_vseparator_new();
-	gtk_box_pack_start(GTK_BOX(info_hbox), info_vsep, FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_vseparator_new(), FALSE, FALSE, 3);
 
 	label_output = gtk_label_new("");
 	gtk_widget_set_name(label_output, "label_info");
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_output, FALSE, FALSE, 3);
+
+	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_vseparator_new(), FALSE, FALSE, 3);
 
 	label_src_type = gtk_label_new("");
 	gtk_widget_set_name(label_src_type, "label_info");
@@ -3975,10 +3909,6 @@ timeout_callback(gpointer data) {
 		case CMD_FILEINFO:
 			while (rb_read_space(rb_disk2gui) < sizeof(fileinfo_t))
 				;
-			if (fileinfo.format_str != NULL) { /* free previous format_str, if there is one */
-				free(fileinfo.format_str);
-				fileinfo.format_str = NULL;
-			}
 			rb_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
 
 			sample_pos = 0;

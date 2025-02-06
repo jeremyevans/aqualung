@@ -379,6 +379,7 @@ disk_thread(void * arg) {
 
 						decoder_t * dec = (decoder_t *)fdec->pdec;
 						fileinfo_t fileinfo_sent;
+						memset(&fileinfo_sent, 0, sizeof(fileinfo_t));
 
 						cdda_decoder_reopen(dec, filename);
 						fdec->samples_left = fdec->fileinfo.total_samples;
@@ -421,6 +422,7 @@ disk_thread(void * arg) {
 						goto sleep;
 					} else {
 						fileinfo_t fileinfo_sent;
+						memset(&fileinfo_sent, 0, sizeof(fileinfo_t));
 
 						file_decoder_set_rva(fdec, cue.voladj);
 						info->in_SR_prev = info->in_SR;
@@ -441,6 +443,9 @@ disk_thread(void * arg) {
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;
+						/* free previous format_str, if there was one */
+						if (fileinfo_sent.format_str != NULL)
+							free (fileinfo_sent.format_str);
 						fileinfo_sent = fdec->fileinfo;
 						fileinfo_sent.format_str = strdup(fdec->fileinfo.format_str);
 						rb_write(rb_disk2gui, &send_cmd,

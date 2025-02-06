@@ -45,6 +45,7 @@ extern GtkWidget * music_tree;
 extern GtkWidget * browser_window;
 
 GtkWidget * search_window = NULL;
+static int search_store_quit = 0;
 GtkWidget * searchkey_entry;
 
 GtkWidget * check_case;
@@ -114,6 +115,7 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
                           (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
                           (comment_yes * SEARCH_F_CO);
 
+	search_store_quit = 1;
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
@@ -129,6 +131,7 @@ search_window_close(GtkWidget * widget, gpointer * data) {
                           (artist_yes * SEARCH_F_AN) | (record_yes * SEARCH_F_RT) | (track_yes * SEARCH_F_TT) |
                           (comment_yes * SEARCH_F_CO);
 
+	search_store_quit = 1;
 	clear_search_store();
         search_window = NULL;
         return 0;
@@ -403,7 +406,7 @@ search_button_clicked(GtkWidget * widget, gpointer data) {
 			gtk_tree_selection_select_iter(search_select, &sfac_iter);
 		}
 		
-		close_button_clicked(NULL, NULL);            
+		close_button_clicked(NULL, NULL);
 	}
 
 	return TRUE;
@@ -417,6 +420,8 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 	GtkTreePath * path;
 	gpointer gptr;
 
+	if (search_store_quit)
+		return;
 
 	if (!gtk_tree_selection_get_selected(search_select, NULL, &iter)) {
 		return;
@@ -474,6 +479,7 @@ search_dialog(void) {
         if (search_window != NULL) {
 		return;
         }
+	search_store_quit = 0;
 
         search_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Music Store"));

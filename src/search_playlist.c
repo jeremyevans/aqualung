@@ -49,6 +49,7 @@ extern GtkWidget * main_window;
 extern GList * playlists;
 
 static GtkWidget * search_window = NULL;
+static int search_playlist_quit = 0;
 static GtkWidget * searchkey_entry;
 
 static GtkWidget * check_case;
@@ -103,6 +104,7 @@ close_button_clicked(GtkWidget * widget, gpointer data) {
         get_toggle_buttons_state();
         options.search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
 
+	search_playlist_quit = 1;
 	clear_search_store();
         gtk_widget_destroy(search_window);
         search_window = NULL;
@@ -116,6 +118,7 @@ search_window_close(GtkWidget * widget, gpointer * data) {
         get_toggle_buttons_state();
         options.search_pl_flags = (casesens * SEARCH_F_CS) | (exactonly * SEARCH_F_EM) | (selectfc * SEARCH_F_SF);
 
+	search_playlist_quit = 1;
 	clear_search_store();
         search_window = NULL;
         return 0;
@@ -264,6 +267,9 @@ search_selection_changed(GtkTreeSelection * treeselection, gpointer user_data) {
 	gpointer gptr2;
 	playlist_t * pl;
 
+	if (search_playlist_quit)
+		return;
+
 	if (!gtk_tree_selection_get_selected(search_select, NULL, &iter)) {
 		return;
 	}
@@ -330,6 +336,7 @@ search_playlist_dialog(void) {
         if (search_window != NULL) {
 		return;
         }
+	search_playlist_quit = 0;
 
         search_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(search_window), _("Search the Playlist"));

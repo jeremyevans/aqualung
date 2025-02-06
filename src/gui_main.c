@@ -2655,7 +2655,7 @@ create_main_window(char * skin_path) {
 	GtkWidget * conf__separator1;
 	GtkWidget * conf__separator2;
 
-	GtkWidget * time_table;
+	GtkWidget * time_grid;
 	GtkWidget * time0_viewp;
 	GtkWidget * time1_viewp;
 	GtkWidget * time2_viewp;
@@ -2668,7 +2668,7 @@ create_main_window(char * skin_path) {
 	GtkWidget * info_viewp;
 	GtkWidget * info_scrolledwin;
 
-	GtkWidget * sr_table;
+	GtkWidget * sr_grid;
 
         char path[MAXLEN];
 
@@ -2786,10 +2786,10 @@ create_main_window(char * skin_path) {
 	gtk_box_pack_start(GTK_BOX(vbox), disp_hbox, FALSE, FALSE, 0);
 
 
-	time_table = gtk_table_new(2, 2, FALSE);
+	time_grid = gtk_grid_new();
 	disp_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-	gtk_box_pack_start(GTK_BOX(disp_hbox), time_table, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(disp_hbox), time_grid, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(disp_hbox), disp_vbox, TRUE, TRUE, 0);
 
 	time0_viewp = gtk_viewport_new(NULL, NULL);
@@ -2805,12 +2805,11 @@ create_main_window(char * skin_path) {
 	g_signal_connect(G_OBJECT(time2_viewp), "button_press_event", G_CALLBACK(time_label2_clicked), NULL);
 
 
-	gtk_table_attach(GTK_TABLE(time_table), time0_viewp, 0, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
-	gtk_table_attach(GTK_TABLE(time_table), time1_viewp, 0, 1, 1, 2,
-			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
-	gtk_table_attach(GTK_TABLE(time_table), time2_viewp, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(time_grid), time0_viewp, 0, 0, 2, 1);
+	gtk_widget_set_vexpand(time0_viewp, TRUE);
+	gtk_widget_set_vexpand(time_grid, FALSE);
+	gtk_grid_attach(GTK_GRID(time_grid), time1_viewp, 0, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(time_grid), time2_viewp, 1, 1, 1, 1);
 
 
 	info_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -3035,27 +3034,21 @@ create_main_window(char * skin_path) {
 
 
 	/* toggle buttons for shuffle and repeat */
-	sr_table = gtk_table_new(2, 2, FALSE);
+	sr_grid = gtk_grid_new();
 
 	repeat_button = gtk_toggle_button_new();
         aqualung_widget_set_tooltip_text(repeat_button, _("Repeat current song"));
-	gtk_widget_set_size_request(repeat_button, -1, 1);
-	gtk_table_attach(GTK_TABLE(sr_table), repeat_button, 0, 1, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
+	gtk_grid_attach(GTK_GRID(sr_grid), repeat_button, 0, 0, 1, 1);
 	g_signal_connect(repeat_button, "toggled", G_CALLBACK(repeat_toggled), NULL);
 
 	repeat_all_button = gtk_toggle_button_new();
         aqualung_widget_set_tooltip_text(repeat_all_button, _("Repeat all songs"));
-	gtk_widget_set_size_request(repeat_all_button, -1, 1);
-	gtk_table_attach(GTK_TABLE(sr_table), repeat_all_button, 0, 1, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
+	gtk_grid_attach(GTK_GRID(sr_grid), repeat_all_button, 1, 0, 1, 1);
 	g_signal_connect(repeat_all_button, "toggled", G_CALLBACK(repeat_all_toggled), NULL);
 
 	shuffle_button = gtk_toggle_button_new();
         aqualung_widget_set_tooltip_text(shuffle_button, _("Shuffle songs"));
-	gtk_widget_set_size_request(shuffle_button, -1, 1);
-	gtk_table_attach(GTK_TABLE(sr_table), shuffle_button, 1, 2, 0, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
+	gtk_grid_attach(GTK_GRID(sr_grid), shuffle_button, 2, 0, 1, 1);
 	g_signal_connect(shuffle_button, "toggled", G_CALLBACK(shuffle_toggled), NULL);
 
 	gtk_widget_set_can_focus(repeat_button, FALSE);
@@ -3085,7 +3078,7 @@ create_main_window(char * skin_path) {
 	gtk_widget_set_can_focus(plugin_toggle, FALSE);
 #endif /* HAVE_LADSPA */
 
-	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_table, FALSE, FALSE, 3);
+	gtk_box_pack_end(GTK_BOX(btns_hbox), sr_grid, FALSE, FALSE, 3);
 
         if (options.disable_skin_support_settings) {
 	        arr_snprintf(path, "%s/no_skin", AQUALUNG_SKINDIR);

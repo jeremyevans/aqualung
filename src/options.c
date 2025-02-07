@@ -234,7 +234,6 @@ GtkWidget * inet_entry_noproxy_domains;
 GtkWidget * inet_help_noproxy_domains;
 GtkWidget * inet_spinner_timeout;
 
-void draw_rva_diagram(void);
 void show_restart_info(void);
 void restart_active(GtkToggleButton *, gpointer);
 
@@ -730,7 +729,7 @@ check_rva_is_enabled_toggled(GtkWidget * widget, gpointer * data) {
 		gtk_widget_set_sensitive(label_defvol, FALSE);
 	}
 
-	draw_rva_diagram();
+	gtk_widget_queue_draw(rva_drawing_area);
 }
 
 
@@ -787,13 +786,11 @@ changed_listening_env(GtkWidget * widget, gpointer * data) {
 }
 
 
-void
-draw_rva_diagram(void) {
+gboolean
+rva_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
 
-	GtkAllocation allocation;
-	gtk_widget_get_allocation(rva_viewport, &allocation);
-	int width = allocation.width - 4;
-	int height = allocation.height - 4;
+	int width = gtk_widget_get_allocated_width (widget);
+	int height = gtk_widget_get_allocated_height (widget);
 	int dw = width / 24;
 	int dh = height / 24;
 	int xoffs = (width - 24*dw) / 2 - 1;
@@ -802,67 +799,58 @@ draw_rva_diagram(void) {
 	int px1, py1, px2, py2;
 	int i;
 
-        cairo_t *rva_cr = NULL;
+	cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+	cairo_paint (cr);
 
-	rva_cr = gdk_cairo_create(gtk_widget_get_window(rva_drawing_area));
+	cairo_set_line_width (cr, 1.0);
 
-        if (rva_cr != NULL) {
+	if (rva_is_enabled_shadow) {
+		cairo_set_source_rgb (cr, 10000 / 65536.0, 10000 / 65536.0, 10000 / 65536.0);
+	} else {
+		cairo_set_source_rgb (cr, 5000 / 65536.0, 5000 / 65536.0, 5000 / 65536.0);
+	}
 
-                cairo_set_source_rgb (rva_cr, 0.0, 0.0, 0.0);
-                cairo_paint (rva_cr);
+	cairo_set_antialias (cr, CAIRO_ANTIALIAS_NONE);
 
-                cairo_set_line_width (rva_cr, 1.0);
+	for (i = 0; i <= 24; i++) {
+		cairo_move_to (cr, xoffs + i * dw, yoffs);
+		cairo_line_to (cr, xoffs + i * dw, yoffs + 24 * dh);
+		cairo_move_to (cr, xoffs, yoffs + i * dh);
+		cairo_line_to (cr, xoffs + 24 * dw, yoffs + i * dh);
+	}
+	cairo_stroke (cr);
 
-                if (rva_is_enabled_shadow) {
-                        cairo_set_source_rgb (rva_cr, 10000 / 65536.0, 10000 / 65536.0, 10000 / 65536.0);
-                } else {
-                        cairo_set_source_rgb (rva_cr, 5000 / 65536.0, 5000 / 65536.0, 5000 / 65536.0);
-                }
+	cairo_set_antialias (cr, CAIRO_ANTIALIAS_DEFAULT);
 
-                cairo_set_antialias (rva_cr, CAIRO_ANTIALIAS_NONE);
+	if (rva_is_enabled_shadow) {
+		cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
+	} else {
+		cairo_set_source_rgb (cr, 0.0, 0.0, 30000 / 65536.0);
+	}
 
-                for (i = 0; i <= 24; i++) {
-                        cairo_move_to (rva_cr, xoffs + i * dw, yoffs);
-                        cairo_line_to (rva_cr, xoffs + i * dw, yoffs + 24 * dh);
-                        cairo_move_to (rva_cr, xoffs, yoffs + i * dh);
-                        cairo_line_to (rva_cr, xoffs + 24 * dw, yoffs + i * dh);
-                }
-                cairo_stroke (rva_cr);
+	cairo_move_to (cr, xoffs, yoffs + 24 * dh);
+	cairo_line_to (cr, xoffs + 24 * dw, yoffs);
+	cairo_stroke (cr);
 
-                cairo_set_antialias (rva_cr, CAIRO_ANTIALIAS_DEFAULT);
+	if (rva_is_enabled_shadow) {
+		cairo_set_source_rgb (cr, 1.0, 0.0, 0.0);
+	} else {
+		cairo_set_source_rgb (cr, 30000 / 65536.0, 0.0, 0.0);
+	}
 
-                if (rva_is_enabled_shadow) {
-                        cairo_set_source_rgb (rva_cr, 0.0, 0.0, 1.0);
-                } else {
-                        cairo_set_source_rgb (rva_cr, 0.0, 0.0, 30000 / 65536.0);
-                }
+	volx = -24.0f;
+	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+	px1 = xoffs;
+	py1 = yoffs - (voly * dh);
 
-                cairo_move_to (rva_cr, xoffs, yoffs + 24 * dh);
-                cairo_line_to (rva_cr, xoffs + 24 * dw, yoffs);
-                cairo_stroke (rva_cr);
+	volx = 0.0f;
+	voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
+	px2 = xoffs + 24*dw;
+	py2 = yoffs - (voly * dh);
 
-                if (rva_is_enabled_shadow) {
-                        cairo_set_source_rgb (rva_cr, 1.0, 0.0, 0.0);
-                } else {
-                        cairo_set_source_rgb (rva_cr, 30000 / 65536.0, 0.0, 0.0);
-                }
-
-                volx = -24.0f;
-                voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
-                px1 = xoffs;
-                py1 = yoffs - (voly * dh);
-
-                volx = 0.0f;
-                voly = volx + (volx - rva_refvol_shadow) * (rva_steepness_shadow - 1.0f);
-                px2 = xoffs + 24*dw;
-                py2 = yoffs - (voly * dh);
-
-                cairo_move_to (rva_cr, px1, py1);
-                cairo_line_to (rva_cr, px2, py2);
-                cairo_stroke (rva_cr);
-
-                cairo_destroy (rva_cr);
-        }
+	cairo_move_to (cr, px1, py1);
+	cairo_line_to (cr, px2, py2);
+	cairo_stroke (cr);
 }
 
 
@@ -870,7 +858,7 @@ void
 refvol_changed(GtkWidget * widget, gpointer * data) {
 
 	rva_refvol_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
-	draw_rva_diagram();
+	gtk_widget_queue_draw(rva_drawing_area);
 }
 
 
@@ -878,23 +866,7 @@ void
 steepness_changed(GtkWidget * widget, gpointer * data) {
 
 	rva_steepness_shadow = gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
-	draw_rva_diagram();
-}
-
-
-static gint
-rva_configure_event(GtkWidget * widget, GdkEventConfigure * event) {
-
-	draw_rva_diagram();
-	return TRUE;
-}
-
-
-static gint
-rva_expose_event(GtkWidget * widget, GdkEventExpose * event) {
-
-	draw_rva_diagram();
-	return FALSE;
+	gtk_widget_queue_draw(rva_drawing_area);
 }
 
 
@@ -2631,10 +2603,8 @@ create_options_window(void) {
 	gtk_widget_set_size_request(GTK_WIDGET(rva_drawing_area), 240, 240);
 	gtk_container_add(GTK_CONTAINER(rva_viewport), rva_drawing_area);
 
-	g_signal_connect(G_OBJECT(rva_drawing_area), "configure_event",
-			 G_CALLBACK(rva_configure_event), NULL);
-	g_signal_connect(G_OBJECT(rva_drawing_area), "expose_event",
-			 G_CALLBACK(rva_expose_event), NULL);
+	g_signal_connect(G_OBJECT(rva_drawing_area), "draw",
+			 G_CALLBACK(rva_draw), NULL);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         label_listening_env = gtk_label_new(_("Listening environment:"));

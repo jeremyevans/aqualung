@@ -54,9 +54,6 @@ extern GtkWidget * musicstore_toggle;
 
 extern GtkListStore * ms_pathlist_store;
 
-extern PangoFontDescription *fd_browser;
-extern PangoFontDescription *fd_statusbar;
-
 GtkWidget * browser_window;
 
 int music_store_changed = 0;

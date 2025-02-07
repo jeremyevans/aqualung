@@ -78,14 +78,6 @@ extern GtkWidget * main_window;
 extern GtkWidget * playlist_window;
 extern GtkWidget * playlist_color_indicator;
 
-extern PangoFontDescription *fd_playlist;
-extern PangoFontDescription *fd_browser;
-extern PangoFontDescription *fd_bigtimer;
-extern PangoFontDescription *fd_smalltimer;
-extern PangoFontDescription *fd_songtitle;
-extern PangoFontDescription *fd_songinfo;
-extern PangoFontDescription *fd_statusbar;
-
 extern GtkWidget * music_tree;
 extern GtkTreeStore * music_store;
 
@@ -242,27 +234,6 @@ GtkWidget * inet_entry_noproxy_domains;
 GtkWidget * inet_help_noproxy_domains;
 GtkWidget * inet_spinner_timeout;
 
-
-#define DEFAULT_FONT_NAME "Sans 11"
-
-GtkWidget * entry_pl_font;
-GtkWidget * entry_ms_font;
-GtkWidget * entry_bt_font;
-GtkWidget * entry_st_font;
-GtkWidget * entry_songt_font;
-GtkWidget * entry_si_font;
-GtkWidget * entry_sb_font;
-GtkWidget * button_pl_font;
-GtkWidget * button_ms_font;
-GtkWidget * button_bt_font;
-GtkWidget * button_st_font;
-GtkWidget * button_songt_font;
-GtkWidget * button_si_font;
-GtkWidget * button_sb_font;
-
-GdkColor color;
-GtkWidget * color_picker;
-
 void draw_rva_diagram(void);
 void show_restart_info(void);
 void restart_active(GtkToggleButton *, gpointer);
@@ -291,45 +262,6 @@ void save_jack_connections(xmlDocPtr, xmlNodePtr);
 
 GtkListStore * restart_list_store = NULL;
 
-
-void
-open_font_desc(void) {
-
-        if (fd_playlist) {
-		pango_font_description_free(fd_playlist);
-		fd_playlist = NULL;
-	}
-
-        if (fd_browser) {
-		pango_font_description_free(fd_browser);
-		fd_browser = NULL;
-	}
-
-        if (fd_bigtimer) {
-		pango_font_description_free(fd_bigtimer);
-		fd_bigtimer = NULL;
-	}
-
-        if (fd_smalltimer) {
-		pango_font_description_free(fd_smalltimer);
-		fd_smalltimer = NULL;
-	}
-
-        if (fd_songtitle) {
-		pango_font_description_free(fd_songtitle);
-		fd_songtitle = NULL;
-	}
-
-        if (fd_songinfo) {
-		pango_font_description_free(fd_songinfo);
-		fd_songinfo = NULL;
-	}
-
-        if (fd_statusbar) {
-		pango_font_description_free(fd_statusbar);
-		fd_statusbar = NULL;
-	}
-}
 
 int
 diff_option_from_toggle(GtkWidget * widget, int opt) {

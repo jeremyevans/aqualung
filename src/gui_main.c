@@ -98,14 +98,6 @@ extern options_t options;
 char pl_color_active[14];
 char pl_color_inactive[14];
 
-PangoFontDescription *fd_playlist;
-PangoFontDescription *fd_browser;
-PangoFontDescription *fd_bigtimer;
-PangoFontDescription *fd_smalltimer;
-PangoFontDescription *fd_songtitle;
-PangoFontDescription *fd_songinfo;
-PangoFontDescription *fd_statusbar;
-
 /* Communication between gui thread and disk thread */
 extern AQUALUNG_MUTEX_DECLARE(disk_thread_lock)
 extern AQUALUNG_COND_DECLARE(disk_thread_wake)
@@ -741,9 +733,6 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 		arr_snprintf(playlist_name, "%s/%s", options.confdir, "playlist.xml");
 		playlist_save_all(playlist_name);
 	}
-
-        pango_font_description_free(fd_playlist);
-        pango_font_description_free(fd_browser);
 
 	finalize_options();
 

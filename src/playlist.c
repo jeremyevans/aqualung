@@ -70,9 +70,6 @@ extern options_t options;
 extern char pl_color_active[14];
 extern char pl_color_inactive[14];
 
-extern PangoFontDescription *fd_playlist;
-extern PangoFontDescription *fd_statusbar;
-
 extern GtkWidget * main_window;
 
 extern GtkTreeSelection * music_select;

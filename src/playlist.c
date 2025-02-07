@@ -4133,7 +4133,6 @@ create_playlist(void) {
 
 	GtkWidget * statusbar;
 	GtkWidget * statusbar_scrolledwin;
-	GtkWidget * statusbar_viewport;
 
 	GtkWidget * hbox_bottom;
 	GtkWidget * add_button;
@@ -4221,30 +4220,23 @@ create_playlist(void) {
 	if (options.enable_playlist_statusbar) {
 
 		statusbar_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-		gtk_widget_set_can_focus(statusbar_scrolledwin, FALSE);
-		gtk_widget_set_size_request(statusbar_scrolledwin, 1, -1);    /* MAGIC */
+		gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(statusbar_scrolledwin), FALSE);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(statusbar_scrolledwin),
-					       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
-		statusbar_viewport = gtk_viewport_new(NULL, NULL);
-		gtk_widget_set_name(statusbar_viewport, "info_viewport");
-
-		gtk_container_add(GTK_CONTAINER(statusbar_scrolledwin), statusbar_viewport);
+					       GTK_POLICY_EXTERNAL, GTK_POLICY_NEVER);
+		gtk_widget_set_events(statusbar_scrolledwin,
+				      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
 		gtk_box_pack_start(GTK_BOX(vbox), statusbar_scrolledwin, FALSE, TRUE, 2);
 
-		gtk_widget_set_events(statusbar_viewport,
-				      GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
-
-		g_signal_connect(G_OBJECT(statusbar_viewport), "button_press_event",
-				 G_CALLBACK(scroll_btn_pressed), NULL);
-		g_signal_connect(G_OBJECT(statusbar_viewport), "button_release_event",
+		g_signal_connect(G_OBJECT(statusbar_scrolledwin), "button_press_event",
+				 G_CALLBACK(scroll_btn_pressed), (gpointer)statusbar_scrolledwin);
+		g_signal_connect(G_OBJECT(statusbar_scrolledwin), "button_release_event",
 				 G_CALLBACK(scroll_btn_released), (gpointer)statusbar_scrolledwin);
-		g_signal_connect(G_OBJECT(statusbar_viewport), "motion_notify_event",
+		g_signal_connect(G_OBJECT(statusbar_scrolledwin), "motion_notify_event",
 				 G_CALLBACK(scroll_motion_notify), (gpointer)statusbar_scrolledwin);
 
 		statusbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
-		gtk_container_add(GTK_CONTAINER(statusbar_viewport), statusbar);
+		gtk_container_add(GTK_CONTAINER(statusbar_scrolledwin), statusbar);
 
 		statusbar_selected = gtk_label_new("");
 		gtk_widget_set_name(statusbar_selected, "label_info");

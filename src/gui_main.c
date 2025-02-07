@@ -221,8 +221,7 @@ GtkWidget * label_input;
 GtkWidget * label_output;
 GtkWidget * label_src_type;
 
-int x_scroll_start;
-int x_scroll_pos;
+gdouble x_scroll_start;
 int scroll_btn;
 
 GtkWidget * musicstore_toggle;
@@ -2306,14 +2305,17 @@ time_label2_clicked(GtkWidget * widget, GdkEventButton * event) {
 
 
 gint
-scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event) {
+scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * win) {
 
 	if (event->button != 1)
 		return FALSE;
 
-	x_scroll_start = event->x;
-	x_scroll_pos = event->x;
+	GtkAdjustment * adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(win));
+	x_scroll_start = event->x_root + gtk_adjustment_get_value(adj);
 	scroll_btn = event->button;
+
+	gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
+			      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));
 
 	return TRUE;
 }
@@ -2330,32 +2332,14 @@ scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win) 
 gint
 scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win) {
 
-	int dx = event->x - x_scroll_start;
-	gboolean dummy;
-
 	if (scroll_btn != 1)
 		return FALSE;
 
 	if (!scroll_btn)
 		return TRUE;
 
-	if (dx < -10) {
-		GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(win)));
-		g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_RIGHT, &dummy);
-		x_scroll_start = event->x;
-		gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
-				      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));
-	}
-
-	if (dx > 10) {
-		GtkRange * range = GTK_RANGE(gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(win)));
-		g_signal_emit_by_name(G_OBJECT(range), "move-slider", GTK_SCROLL_STEP_LEFT, &dummy);
-		x_scroll_start = event->x;
-		gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
-				      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));
-	}
-
-	x_scroll_pos = event->x;
+	GtkAdjustment * adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(win));
+	gtk_adjustment_set_value(adj, x_scroll_start - event->x_root);
 
 	return TRUE;
 }
@@ -2627,16 +2611,14 @@ create_main_window() {
 	GtkWidget * conf__separator2;
 
 	GtkWidget * time_grid;
-	GtkWidget * time0_viewp;
-	GtkWidget * time1_viewp;
-	GtkWidget * time2_viewp;
+	GtkWidget * time0_evbox;
+	GtkWidget * time1_evbox;
+	GtkWidget * time2_evbox;
 	GtkWidget * time_hbox1;
 	GtkWidget * time_hbox2;
 
 	GtkWidget * disp_vbox;
-	GtkWidget * title_viewp;
 	GtkWidget * title_scrolledwin;
-	GtkWidget * info_viewp;
 	GtkWidget * info_scrolledwin;
 
 	GtkWidget * sr_grid;
@@ -2751,93 +2733,85 @@ create_main_window() {
 	gtk_box_pack_start(GTK_BOX(disp_hbox), time_grid, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(disp_hbox), disp_vbox, TRUE, TRUE, 0);
 
-	time0_viewp = gtk_viewport_new(NULL, NULL);
-        time1_viewp = gtk_viewport_new(NULL, NULL);
-	time2_viewp = gtk_viewport_new(NULL, NULL);
+	time0_evbox = gtk_event_box_new();
+        time1_evbox = gtk_event_box_new();
+	time2_evbox = gtk_event_box_new();
 
-	gtk_widget_set_name(time0_viewp, "time_viewport");
-	gtk_widget_set_name(time1_viewp, "time_viewport");
-	gtk_widget_set_name(time2_viewp, "time_viewport");
-
-	g_signal_connect(G_OBJECT(time0_viewp), "button_press_event", G_CALLBACK(time_label0_clicked), NULL);
-	g_signal_connect(G_OBJECT(time1_viewp), "button_press_event", G_CALLBACK(time_label1_clicked), NULL);
-	g_signal_connect(G_OBJECT(time2_viewp), "button_press_event", G_CALLBACK(time_label2_clicked), NULL);
+	g_signal_connect(G_OBJECT(time0_evbox), "button_press_event", G_CALLBACK(time_label0_clicked), NULL);
+	g_signal_connect(G_OBJECT(time1_evbox), "button_press_event", G_CALLBACK(time_label1_clicked), NULL);
+	g_signal_connect(G_OBJECT(time2_evbox), "button_press_event", G_CALLBACK(time_label2_clicked), NULL);
 
 
-	gtk_grid_attach(GTK_GRID(time_grid), time0_viewp, 0, 0, 2, 1);
-	gtk_widget_set_vexpand(time0_viewp, TRUE);
+	gtk_grid_attach(GTK_GRID(time_grid), time0_evbox, 0, 0, 2, 1);
+	gtk_widget_set_vexpand(time0_evbox, TRUE);
 	gtk_widget_set_vexpand(time_grid, FALSE);
-	gtk_grid_attach(GTK_GRID(time_grid), time1_viewp, 0, 1, 1, 1);
-	gtk_grid_attach(GTK_GRID(time_grid), time2_viewp, 1, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(time_grid), time1_evbox, 0, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(time_grid), time2_evbox, 1, 1, 1, 1);
 
 
 	info_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-        gtk_widget_set_size_request(info_scrolledwin, 1, -1);           /* MAGIC */
+	gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(info_scrolledwin), FALSE);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(info_scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+				       GTK_POLICY_EXTERNAL, GTK_POLICY_NEVER);
+	gtk_widget_set_events(info_scrolledwin,
+			      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
 
-	info_viewp = gtk_viewport_new(NULL, NULL);
-	gtk_widget_set_name(info_viewp, "info_viewport");
-	gtk_container_add(GTK_CONTAINER(info_scrolledwin), info_viewp);
-	gtk_widget_set_events(info_viewp, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
-
-        g_signal_connect(G_OBJECT(info_viewp), "button_press_event",
-			 G_CALLBACK(scroll_btn_pressed), NULL);
-        g_signal_connect(G_OBJECT(info_viewp), "button_release_event",
+        g_signal_connect(G_OBJECT(info_scrolledwin), "button_press_event",
+			 G_CALLBACK(scroll_btn_pressed), (gpointer)info_scrolledwin);
+        g_signal_connect(G_OBJECT(info_scrolledwin), "button_release_event",
 			 G_CALLBACK(scroll_btn_released), (gpointer)info_scrolledwin);
-        g_signal_connect(G_OBJECT(info_viewp), "motion_notify_event",
+        g_signal_connect(G_OBJECT(info_scrolledwin), "motion_notify_event",
 			 G_CALLBACK(scroll_motion_notify), (gpointer)info_scrolledwin);
 
 	info_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(info_hbox), 1);
-	gtk_container_add(GTK_CONTAINER(info_viewp), info_hbox);
+	gtk_container_add(GTK_CONTAINER(info_scrolledwin), info_hbox);
 
 
 	title_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-        gtk_widget_set_size_request(title_scrolledwin, 1, -1);          /* MAGIC */
+	gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(title_scrolledwin), FALSE);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(title_scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+				       GTK_POLICY_EXTERNAL, GTK_POLICY_NEVER);
+	gtk_widget_set_events(title_scrolledwin,
+			      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
 
-	title_viewp = gtk_viewport_new(NULL, NULL);
-	gtk_widget_set_name(title_viewp, "title_viewport");
-	gtk_container_add(GTK_CONTAINER(title_scrolledwin), title_viewp);
-	gtk_widget_set_events(title_viewp, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
-	g_signal_connect(G_OBJECT(title_viewp), "button_press_event", G_CALLBACK(scroll_btn_pressed), NULL);
-	g_signal_connect(G_OBJECT(title_viewp), "button_release_event", G_CALLBACK(scroll_btn_released),
-			 (gpointer)title_scrolledwin);
-	g_signal_connect(G_OBJECT(title_viewp), "motion_notify_event", G_CALLBACK(scroll_motion_notify),
-			 (gpointer)title_scrolledwin);
+	g_signal_connect(G_OBJECT(title_scrolledwin), "button_press_event",
+			 G_CALLBACK(scroll_btn_pressed), (gpointer)title_scrolledwin);
+	g_signal_connect(G_OBJECT(title_scrolledwin), "button_release_event",
+			 G_CALLBACK(scroll_btn_released), (gpointer)title_scrolledwin);
+	g_signal_connect(G_OBJECT(title_scrolledwin), "motion_notify_event",
+			 G_CALLBACK(scroll_motion_notify), (gpointer)title_scrolledwin);
 
 	title_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(title_hbox), 1);
-	gtk_container_add(GTK_CONTAINER(title_viewp), title_hbox);
+	gtk_container_add(GTK_CONTAINER(title_scrolledwin), title_hbox);
 
-	gtk_box_pack_start(GTK_BOX(disp_vbox), title_scrolledwin, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(disp_vbox), info_scrolledwin, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(disp_vbox), title_scrolledwin, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(disp_vbox), info_scrolledwin, FALSE, FALSE, 0);
 
 	/* labels */
 	bigtimer_label = time_labels[options.time_idx[0]] = gtk_label_new("");
 
         gtk_widget_set_name(time_labels[options.time_idx[0]], "big_timer_label");
-	gtk_container_add(GTK_CONTAINER(time0_viewp), time_labels[options.time_idx[0]]);
+	gtk_container_add(GTK_CONTAINER(time0_evbox), time_labels[options.time_idx[0]]);
 
 	time_hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox1), 2);
-	gtk_container_add(GTK_CONTAINER(time1_viewp), time_hbox1);
+	gtk_container_add(GTK_CONTAINER(time1_evbox), time_hbox1);
 
 	smalltimer_label_1 = time_labels[options.time_idx[1]] = gtk_label_new("");
 
         gtk_widget_set_name(time_labels[options.time_idx[1]], "small_timer_label");
-	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[options.time_idx[1]], TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(time_hbox1), time_labels[options.time_idx[1]], TRUE, TRUE, 2);
 
 	time_hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(time_hbox2), 2);
-	gtk_container_add(GTK_CONTAINER(time2_viewp), time_hbox2);
+	gtk_container_add(GTK_CONTAINER(time2_evbox), time_hbox2);
 
 	smalltimer_label_2 = time_labels[options.time_idx[2]] = gtk_label_new("");
 
         gtk_widget_set_name(time_labels[options.time_idx[2]], "small_timer_label");
-	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[options.time_idx[2]], TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(time_hbox2), time_labels[options.time_idx[2]], TRUE, TRUE, 2);
 
 	label_title = gtk_label_new("");
         gtk_widget_set_name(label_title, "label_title");

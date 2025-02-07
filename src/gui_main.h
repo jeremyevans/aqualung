@@ -54,7 +54,7 @@ void main_buttons_set_content(char * theme_path);
 
 void set_src_type_label(int src_type);
 
-gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event);
+gint scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_btn_released(GtkWidget * widget, GdkEventButton * event, gpointer * win);
 gint scroll_motion_notify(GtkWidget * widget, GdkEventMotion * event, gpointer * win);
 

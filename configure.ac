@@ -446,7 +446,7 @@ AC_MSG_NOTICE([summary
       MPEG Audio (MPEG 1-2.5 Layer I-III) :  $with_mpeg
       MOD Audio (MOD, S3M, XM, IT, etc.)  :  $with_mod
       Musepack                            :  $with_mpc
-      Monkey's Audio Codec                :  $with_mac
+      Monkey's Audio Codec                :  $with_MAC
       WavPack                             :  $with_wavpack
       LAVC (AC3, AAC, WavPack, WMA, etc.) :  $with_lavc
 

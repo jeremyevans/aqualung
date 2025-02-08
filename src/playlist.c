@@ -2780,6 +2780,39 @@ rem__all_cb(gpointer data) {
 	rem_all(pl);
 }
 
+static void
+del_tref_foreach_cb(GtkTreeRowReference * tref, gpointer data) {
+	GtkTreeModel* model = gtk_tree_row_reference_get_model(tref);
+	GtkTreePath* path = gtk_tree_row_reference_get_path(tref);
+	GtkTreeIter iter;
+	if (gtk_tree_model_get_iter(model, &iter, path))
+		playlist_remove_track(model, &iter);
+	gtk_tree_path_free(path);
+	gtk_tree_row_reference_free(tref);
+}
+
+static void
+recalc_album_foreach_cb(GtkTreeRowReference * tref, gpointer data) {
+	playlist_t* pl = (playlist_t*)data;
+	GtkTreeModel* model = gtk_tree_row_reference_get_model(tref);
+	GtkTreePath* path = gtk_tree_row_reference_get_path(tref);
+	GtkTreeIter iter;
+	if (gtk_tree_model_get_iter(model, &iter, path))
+		recalc_album_node(pl, &iter);
+	gtk_tree_path_free(path);
+	gtk_tree_row_reference_free(tref);
+}
+
+static void
+enqueue_iter2tref(GList** plist, GtkTreeModel* model, GtkTreeIter* iter, GtkTreePath** cursor_path)
+{
+	GtkTreePath * p = gtk_tree_model_get_path(model, iter);
+	*plist = g_list_append(*plist, gtk_tree_row_reference_new(model, p));
+	if (*cursor_path == NULL)
+		*cursor_path = gtk_tree_path_copy(p);
+	gtk_tree_path_free(p);
+}
+
 void
 rem__sel_cb(gpointer data) {
 
@@ -2787,8 +2820,7 @@ rem__sel_cb(gpointer data) {
 	GtkTreeIter iter;
 	gint i = 0;
 	playlist_t * pl;
-	GtkTreePath * path = NULL;
-
+	GtkTreePath * cursor_path = NULL;
 
 	if (data != NULL) {
 		pl = (playlist_t *)data;
@@ -2800,14 +2832,12 @@ rem__sel_cb(gpointer data) {
 
 	model = GTK_TREE_MODEL(pl->store);
 
+	GList* del_trefs = NULL;
+	GList* recalc_albums = NULL;
+	gint total = gtk_tree_model_iter_n_children(model, NULL);
 	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, i++)) {
-
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
-			if (path == NULL) {
-				path = gtk_tree_model_get_path(model, &iter);
-			}
-			playlist_remove_track(pl->store, &iter);
-			i--;
+			enqueue_iter2tref(&del_trefs, model, &iter, &cursor_path);
 			continue;
 		}
 
@@ -2816,11 +2846,7 @@ rem__sel_cb(gpointer data) {
 		}
 
 		if (all_tracks_selected(pl, &iter)) {
-			if (path == NULL) {
-				path = gtk_tree_model_get_path(model, &iter);
-			}
-			playlist_remove_track(pl->store, &iter);
-			i--;
+			enqueue_iter2tref(&del_trefs, model, &iter, &cursor_path);
 		} else {
 			int j = 0;
 			int recalc = 0;
@@ -2828,26 +2854,24 @@ rem__sel_cb(gpointer data) {
 
 			while (gtk_tree_model_iter_nth_child(model, &iter_child, &iter, j++)) {
 				if (gtk_tree_selection_iter_is_selected(pl->select, &iter_child)) {
-					if (path == NULL) {
-						path = gtk_tree_model_get_path(model, &iter_child);
-					}
-					playlist_remove_track(pl->store, &iter_child);
+					enqueue_iter2tref(&del_trefs, model, &iter_child, &cursor_path);
 					recalc = 1;
-					j--;
 				}
 			}
 
 			if (recalc) {
-				recalc_album_node(pl, &iter);
+				enqueue_iter2tref(&recalc_albums, model, &iter, &cursor_path);
 			}
 		}
 	}
+	g_list_foreach(del_trefs, (GFunc)del_tref_foreach_cb, NULL);
+	g_list_foreach(recalc_albums, (GFunc)recalc_album_foreach_cb, pl);
 
-	if (path != NULL) {
-		if (gtk_tree_model_get_iter(model, &iter, path)) {
+	if (cursor_path != NULL) {
+		if (gtk_tree_model_get_iter(model, &iter, cursor_path)) {
 			set_cursor_in_playlist(pl, &iter, TRUE);
 		} else {
-			if (gtk_tree_path_get_depth(path) == 1) {
+			if (gtk_tree_path_get_depth(cursor_path) == 1) {
 				int n = gtk_tree_model_iter_n_children(model, NULL);
 				if (n > 0) {
 					gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
@@ -2856,8 +2880,8 @@ rem__sel_cb(gpointer data) {
 			} else {
 				GtkTreeIter iter_child;
 
-				gtk_tree_path_up(path);
-				gtk_tree_model_get_iter(model, &iter, path);
+				gtk_tree_path_up(cursor_path);
+				gtk_tree_model_get_iter(model, &iter, cursor_path);
 
 				gtk_tree_model_iter_nth_child(model, &iter_child, &iter,
 						gtk_tree_model_iter_n_children(model, &iter)-1);
@@ -2865,7 +2889,7 @@ rem__sel_cb(gpointer data) {
 			}
 		}
 
-		gtk_tree_path_free(path);
+		gtk_tree_path_free(cursor_path);
 	}
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(pl->select), playlist_selection_changed_cb, pl);

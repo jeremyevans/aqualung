@@ -8,7 +8,6 @@ AC_CONFIG_FILES([
     Makefile
     doc/Makefile
     po/Makefile.in
-    theme/Makefile
     src/Makefile
 ])
 AC_CANONICAL_HOST

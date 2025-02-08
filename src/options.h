@@ -104,6 +104,7 @@ typedef struct {
 	char title_format[MAXLEN];
 	char default_param[MAXLEN];
 	int enable_tooltips;
+   	int dark_theme;
    	int disable_buttons_relief;
 	int combine_play_pause;
 	int combine_play_pause_shadow;

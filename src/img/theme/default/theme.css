@@ -1,3 +1,7 @@
+button {
+    color: #000000;
+}
+
 #big_timer_label {
     font: 24px "Courier Pitch";
     color: #000000;
@@ -18,7 +22,15 @@
     color: #000000;
 }
 
-#playlist_color_indicator { color: #000000; }
-#playlist_color_indicator:active { color: #00026b; }
-#playlist_color_indicator:selected { color: #0505b8; }
-#playlist_color_indicator:disabled { color: #000000; }
+#playlist_color_indicator:selected {
+    color: #0505b8;
+}
+
+/*
+ * Uncomment this if you prefer a monospace playlist font
+ */
+/*
+#play_list {
+    font: 15px "Monospace";
+}
+*/

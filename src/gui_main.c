@@ -826,7 +826,7 @@ conf__options_cb(gpointer data) {
 
 void
 conf__theme_cb(gpointer data) {
-	apply_theme(AQUALUNG_THEMEDIR);
+	apply_theme();
 }
 
 
@@ -3397,8 +3397,11 @@ setup_systray(void) {
 
 gboolean
 apply_css_theme(char* path) {
+	char theme_path[MAXLEN];
+	arr_snprintf(theme_path, "%s/theme/%s", path,
+		     options.dark_theme ? "dark" : "default");
 	char csspath[MAXLEN];
-	arr_snprintf(csspath, "%s/theme.css", path);
+	arr_snprintf(csspath, "%s/theme.css", theme_path);
 	GError* err = NULL;
 	GtkCssProvider *cssProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_path(cssProvider, csspath, &err);
@@ -3413,18 +3416,18 @@ apply_css_theme(char* path) {
 		GTK_STYLE_PROVIDER(cssProvider),
 		GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-	main_buttons_set_content(path);
+	main_buttons_set_content(theme_path);
 	return TRUE;
 }
 
 void
-apply_theme(char * path) {
-	if (!apply_css_theme(path))
+apply_theme() {
+	if (!apply_css_theme(AQUALUNG_DATADIR))
 	{
 		char devpath[MAXLEN];
-		arr_snprintf(devpath, "%s/../theme", AQUALUNG_SRCDIR);
+		arr_snprintf(devpath, "%s/img", AQUALUNG_SRCDIR);
 		if (apply_css_theme(devpath))
-			printf("Loaded dev theme: %s\n", devpath);
+			printf("Loaded dev theme from source directory\n");
 	}
 }
 
@@ -3468,7 +3471,10 @@ create_gui(int argc, char ** argv, int optind, int enqueue,
 #endif /* HAVE_SYSTRAY */
 
 	create_main_window();
-	apply_theme(AQUALUNG_THEMEDIR);
+	GtkSettings* settings = gtk_widget_get_settings(main_window);
+	g_object_set(settings, "gtk_application_prefer_dark_theme",
+		     options.dark_theme, NULL);
+	apply_theme();
         set_buttons_relief();
 
 	vol_prev = -101.0f;

@@ -100,6 +100,7 @@ GtkWidget * notebook;
 
 GtkWidget * entry_title;
 GtkWidget * entry_param;
+GtkWidget * check_dark_theme;
 GtkWidget * check_enable_tooltips;
 GtkWidget * check_buttons_at_the_bottom;
 GtkWidget * check_disable_buttons_relief;
@@ -503,6 +504,7 @@ options_window_accept(void) {
                 hide_cover_thumbnail();
         }
 
+	set_option_from_toggle(check_dark_theme, &options.dark_theme);
 	set_option_from_toggle(check_disable_buttons_relief, &options.disable_buttons_relief);
 	set_option_from_toggle(check_combine_play_pause, &options.combine_play_pause_shadow);
 	set_option_from_toggle(check_main_window_always_on_top, &options.main_window_always_on_top);
@@ -1800,6 +1802,16 @@ create_options_window(void) {
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_notebook_append_page(GTK_NOTEBOOK(nbook_general), vbox, gtk_label_new(_("Main window")));
+
+        check_dark_theme =
+		gtk_check_button_new_with_label(_("Dark theme"));
+	gtk_widget_set_name(check_dark_theme, "check_on_notebook");
+	if (options.dark_theme) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_dark_theme), TRUE);
+	}
+	gtk_box_pack_start(GTK_BOX(vbox), check_dark_theme, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (check_dark_theme), "toggled",
+			  G_CALLBACK (restart_active), _("Dark theme"));
 
         check_disable_buttons_relief =
 		gtk_check_button_new_with_label(_("Disable control buttons relief"));
@@ -3263,6 +3275,7 @@ save_config(void) {
 	SAVE_INT(meta_rm_extension);
 	SAVE_INT(meta_us_to_space);
 	SAVE_INT(enable_tooltips);
+	SAVE_INT(dark_theme);
 	SAVE_INT(disable_buttons_relief);
 	SAVE_INT_SH(combine_play_pause);
 	SAVE_INT_SH(simple_view_in_fx);
@@ -3663,6 +3676,7 @@ load_config(void) {
 		LOAD_INT_SH(enable_ms_tree_icons);
 		LOAD_INT(ms_confirm_removal);
 		LOAD_INT(enable_tooltips);
+		LOAD_INT(dark_theme);
 		LOAD_INT(disable_buttons_relief);
 		LOAD_INT_SH(combine_play_pause);
 		LOAD_INT_SH(simple_view_in_fx);

@@ -1,0 +1,36 @@
+button {
+    color: #ffffff;
+}
+
+#big_timer_label {
+    font: 24px "Courier Pitch";
+    color: #ffffff;
+}
+
+#small_timer_label {
+    font: 18px "Courier Pitch";
+    color: #ffffff;
+}
+
+#label_title {
+    font: 24px "DejaVu Sans";
+    color: #ffffff;
+}
+
+#label_info {
+    font: 15px "DejaVu Sans";
+    color: #ffffff;
+}
+
+#playlist_color_indicator:selected {
+    color: #60c0ff;
+}
+
+/*
+ * Uncomment this if you prefer a monospace playlist font
+ */
+/*
+#play_list {
+    font: 15px "Monospace";
+}
+*/

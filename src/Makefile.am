@@ -7,14 +7,17 @@ LDADD = $(LIBINTL) $(debug_LIBS)
 
 imagedir = $(pkgdatadir)
 image_DATA = img/*.png
-EXTRA_DIST = $(image_DATA)
+theme_defaultdir = $(pkgdatadir)/theme/default
+theme_default_DATA = img/theme/default/*.css img/theme/default/*.png
+theme_darkdir = $(pkgdatadir)/theme/dark
+theme_dark_DATA = img/theme/dark/*.css img/theme/dark/*.png
+EXTRA_DIST = $(image_DATA) $(theme_default_DATA) $(theme_dark_DATA)
 
 bin_PROGRAMS = aqualung
 
 aqualung_CPPFLAGS = $(AM_CPPFLAGS) \
                   -DAQUALUNG_SRCDIR=\"$(CURDIR)\" \
-                  -DAQUALUNG_DATADIR=\"$(pkgdatadir)\" \
-                  -DAQUALUNG_THEMEDIR=\"$(pkgdatadir)/theme\"
+                  -DAQUALUNG_DATADIR=\"$(pkgdatadir)\"
 
 aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
                   $(alsa_CFLAGS) $(pulse_CFLAGS) \

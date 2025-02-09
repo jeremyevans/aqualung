@@ -786,7 +786,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         gtk_box_pack_start(GTK_BOX(hbox), ripper_bitrate_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 0);
 
-	ripper_bitrate_scale = gtk_hscale_new_with_range(0, 8, 1);
+	ripper_bitrate_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 8, 1);
         g_signal_connect(G_OBJECT(ripper_bitrate_scale), "value-changed",
 			 G_CALLBACK(ripper_bitrate_changed), NULL);
 	gtk_scale_set_draw_value(GTK_SCALE(ripper_bitrate_scale), FALSE);

@@ -853,6 +853,8 @@ rva_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
 	cairo_move_to (cr, px1, py1);
 	cairo_line_to (cr, px2, py2);
 	cairo_stroke (cr);
+
+	return FALSE;
 }
 
 
@@ -1725,8 +1727,6 @@ create_options_window(void) {
 	GtkWidget * inet_hbox_timeout;
 	GtkWidget * inet_label_timeout;
 
-        GtkSizeGroup * label_size;
-
 	GtkWidget * hbox;
 	GtkWidget * vbox;
 	GtkWidget * hbox_s;
@@ -1780,8 +1780,6 @@ create_options_window(void) {
 			 G_CALLBACK(options_dialog_response), NULL);
 	g_signal_connect(G_OBJECT(options_window), "delete_event",
 			 G_CALLBACK(options_dialog_close), NULL);
-
-        label_size = gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
 	/* "General" notebook page */
 
@@ -2640,7 +2638,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_refvol_shadow = options.rva_refvol;
-        adj_refvol = gtk_adjustment_new(options.rva_refvol, -24.0f, 0.0f, 0.1f, 1.0f, 0.0f);
+        adj_refvol = G_OBJECT(gtk_adjustment_new(options.rva_refvol, -24.0f, 0.0f, 0.1f, 1.0f, 0.0f));
         spin_refvol = gtk_spin_button_new(GTK_ADJUSTMENT(adj_refvol), 0.1, 1);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_refvol), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_refvol), FALSE);
@@ -2656,7 +2654,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_steepness_shadow = options.rva_steepness;
-        adj_steepness = gtk_adjustment_new(options.rva_steepness, 0.0f, 1.0f, 0.01f, 0.1f, 0.0f);
+        adj_steepness = G_OBJECT(gtk_adjustment_new(options.rva_steepness, 0.0f, 1.0f, 0.01f, 0.1f, 0.0f));
         spin_steepness = gtk_spin_button_new(GTK_ADJUSTMENT(adj_steepness), 0.02, 2);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_steepness), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_steepness), FALSE);
@@ -2674,7 +2672,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_no_rva_voladj_shadow = options.rva_no_rva_voladj;
-        adj_defvol = gtk_adjustment_new(options.rva_no_rva_voladj, -10.0f, 10.0f, 0.1f, 1.0f, 0.0f);
+        adj_defvol = G_OBJECT(gtk_adjustment_new(options.rva_no_rva_voladj, -10.0f, 10.0f, 0.1f, 1.0f, 0.0f));
         spin_defvol = gtk_spin_button_new(GTK_ADJUSTMENT(adj_defvol), 0.1, 1);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_defvol), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_defvol), FALSE);
@@ -2722,7 +2720,7 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_linear_thresh_shadow = options.rva_avg_linear_thresh;
-        adj_linthresh = gtk_adjustment_new(options.rva_avg_linear_thresh, 0.0f, 60.0f, 0.1f, 1.0f, 0.0f);
+        adj_linthresh = G_OBJECT(gtk_adjustment_new(options.rva_avg_linear_thresh, 0.0f, 60.0f, 0.1f, 1.0f, 0.0f));
         spin_linthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_linthresh), 0.1, 1);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_linthresh), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_linthresh), FALSE);
@@ -2739,8 +2737,8 @@ create_options_window(void) {
                          GTK_FILL, GTK_FILL, 5, 2);
 
 	rva_avg_stddev_thresh_shadow = options.rva_avg_stddev_thresh;
-        adj_stdthresh = gtk_adjustment_new(options.rva_avg_stddev_thresh * 100.0f,
-					   0.0f, 500.0f, 1.0f, 10.0f, 0.0f);
+        adj_stdthresh = G_OBJECT(gtk_adjustment_new(options.rva_avg_stddev_thresh * 100.0f,
+						    0.0f, 500.0f, 1.0f, 10.0f, 0.0f));
         spin_stdthresh = gtk_spin_button_new(GTK_ADJUSTMENT(adj_stdthresh), 0.5, 0);
         gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_stdthresh), TRUE);
         gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_stdthresh), FALSE);

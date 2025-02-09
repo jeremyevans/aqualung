@@ -571,7 +571,7 @@ create_music_browser(void) {
 
 
 	if (!options.hide_comment_pane) {
-		browser_paned = gtk_vpaned_new();
+		browser_paned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_box_pack_start(GTK_BOX(vbox), browser_paned, TRUE, TRUE, 0);
 	}
 

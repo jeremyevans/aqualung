@@ -1099,13 +1099,13 @@ build_plugin_window(plugin_instance * instance) {
 
 			} else { /* no scale values */
 
-				adjustment = gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0);
+				adjustment = G_OBJECT(gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0));
 				instance->adjustments[k] = GTK_ADJUSTMENT(adjustment);
 				g_signal_connect(G_OBJECT(adjustment), "value_changed",
 						 G_CALLBACK(plugin_value_changed), &(instance->knobs[k]));
 				
 				if (!LADSPA_IS_HINT_INTEGER(hints[k].HintDescriptor)) {
-					widget = gtk_hscale_new(GTK_ADJUSTMENT(adjustment));
+					widget = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adjustment));
 					gtk_widget_set_name(widget, "plugin_scale");
 					gtk_widget_set_size_request(widget, 200, -1);
 					gtk_scale_set_digits(GTK_SCALE(widget), dp);
@@ -1254,11 +1254,11 @@ build_plugin_window(plugin_instance * instance) {
 			
 			instance->knobs[k] = start;
 			
-			adjustment = gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0);
+			adjustment = G_OBJECT(gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0));
 			instance->adjustments[k] = GTK_ADJUSTMENT(adjustment);
 			
 			if (!LADSPA_IS_HINT_INTEGER(hints[k].HintDescriptor)) {
-				widget = gtk_hscale_new(GTK_ADJUSTMENT(adjustment));
+				widget = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adjustment));
 				gtk_widget_set_name(widget, "plugin_scale");
 				gtk_widget_set_size_request(widget, 200, -1);
 				gtk_scale_set_digits(GTK_SCALE(widget), dp);
@@ -1395,11 +1395,11 @@ build_plugin_window(plugin_instance * instance) {
 			
 			instance->knobs[k] = start;
 			
-			adjustment = gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0);
+			adjustment = G_OBJECT(gtk_adjustment_new(start, min, max, step, step * 50.0, 0.0));
 			instance->adjustments[k] = GTK_ADJUSTMENT(adjustment);
 			
 			if (!LADSPA_IS_HINT_INTEGER(hints[k].HintDescriptor)) {
-				widget = gtk_hscale_new(GTK_ADJUSTMENT(adjustment));
+				widget = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adjustment));
 				gtk_widget_set_name(widget, "plugin_scale");
 				gtk_widget_set_size_request(widget, 200, -1);
 				gtk_scale_set_digits(GTK_SCALE(widget), dp);

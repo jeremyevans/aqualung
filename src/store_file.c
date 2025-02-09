@@ -1079,7 +1079,7 @@ edit_track_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
         gtk_table_attach(GTK_TABLE(table2), check_button, 0, 1, 0, 1,
                          GTK_FILL, GTK_FILL, 5, 3);
 
-	adj_manual_rva = gtk_adjustment_new(data->rva, -70.0f, 20.0f, 0.1f, 1.0f, 0.0f);
+	adj_manual_rva = G_OBJECT(gtk_adjustment_new(data->rva, -70.0f, 20.0f, 0.1f, 1.0f, 0.0f));
 	spin_button = gtk_spin_button_new(GTK_ADJUSTMENT(adj_manual_rva), 0.3, 1);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_button), TRUE);
 	gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_button), FALSE);

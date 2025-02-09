@@ -2786,7 +2786,7 @@ del_tref_foreach_cb(GtkTreeRowReference * tref, gpointer data) {
 	GtkTreePath* path = gtk_tree_row_reference_get_path(tref);
 	GtkTreeIter iter;
 	if (gtk_tree_model_get_iter(model, &iter, path))
-		playlist_remove_track(model, &iter);
+		playlist_remove_track(GTK_TREE_STORE(model), &iter);
 	gtk_tree_path_free(path);
 	gtk_tree_row_reference_free(tref);
 }

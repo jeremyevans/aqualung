@@ -2315,7 +2315,8 @@ scroll_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * win) {
 	scroll_btn = event->button;
 
 	gdk_window_set_cursor(gtk_widget_get_parent_window(GTK_WIDGET(win)),
-			      gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW));
+			      gdk_cursor_new_for_display(gdk_display_get_default(),
+							 GDK_SB_H_DOUBLE_ARROW));
 
 	return TRUE;
 }
@@ -2836,9 +2837,9 @@ create_main_window() {
         gtk_table_set_col_spacings(GTK_TABLE(vb_table), 3);
 	gtk_box_pack_start(GTK_BOX(disp_vbox), vb_table, TRUE, FALSE, 0);
 
-	adj_vol = gtk_adjustment_new(0.0f, -41.0f, 6.0f, 1.0f, 3.0f, 0.0f);
+	adj_vol = G_OBJECT(gtk_adjustment_new(0.0f, -41.0f, 6.0f, 1.0f, 3.0f, 0.0f));
 	g_signal_connect(G_OBJECT(adj_vol), "value_changed", G_CALLBACK(changed_vol), NULL);
-	scale_vol = gtk_hscale_new(GTK_ADJUSTMENT(adj_vol));
+	scale_vol = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adj_vol));
 	gtk_widget_set_name(scale_vol, "scale_vol");
 	g_signal_connect(G_OBJECT(scale_vol), "button_press_event",
 			 G_CALLBACK(scale_vol_button_press_event), NULL);
@@ -2850,9 +2851,9 @@ create_main_window() {
 	gtk_table_attach(GTK_TABLE(vb_table), scale_vol, 0, 2, 0, 1,
 			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
-        adj_bal = gtk_adjustment_new(0.0f, -100.0f, 100.0f, 1.0f, 10.0f, 0.0f);
+        adj_bal = G_OBJECT(gtk_adjustment_new(0.0f, -100.0f, 100.0f, 1.0f, 10.0f, 0.0f));
         g_signal_connect(G_OBJECT(adj_bal), "value_changed", G_CALLBACK(changed_bal), NULL);
-        scale_bal = gtk_hscale_new(GTK_ADJUSTMENT(adj_bal));
+        scale_bal = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adj_bal));
 	gtk_scale_set_digits(GTK_SCALE(scale_bal), 0);
 	gtk_widget_set_size_request(scale_bal, -1, 8);
 	gtk_widget_set_name(scale_bal, "scale_bal");
@@ -2875,9 +2876,9 @@ create_main_window() {
 
 
 	/* Position slider */
-        adj_pos = gtk_adjustment_new(0, 0, 100, 1, 5, 0);
+        adj_pos = G_OBJECT(gtk_adjustment_new(0, 0, 100, 1, 5, 0));
         g_signal_connect(G_OBJECT(adj_pos), "value_changed", G_CALLBACK(changed_pos), NULL);
-        scale_pos = gtk_hscale_new(GTK_ADJUSTMENT(adj_pos));
+        scale_pos = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, GTK_ADJUSTMENT(adj_pos));
 	gtk_widget_set_name(scale_pos, "scale_pos");
 	g_signal_connect(G_OBJECT(scale_pos), "button_press_event",
 			 G_CALLBACK(scale_button_press_event), NULL);
@@ -3218,6 +3219,9 @@ systray_scroll_event_cb(GtkStatusIcon * systray_icon,
 	case GDK_SCROLL_DOWN:
 		result = systray_mouse_wheel(options.systray_mouse_wheel_vertical,
 		        TRUE, time_since_last_event, GTK_SCROLL_STEP_FORWARD);
+		break;
+	case GDK_SCROLL_SMOOTH:
+		// Do nothing
 		break;
 	}
 

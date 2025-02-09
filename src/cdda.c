@@ -426,13 +426,15 @@ cdda_scan_all_drives(void) {
 		cdda_drive_t * d = cdda_get_drive_by_device_path(drives[i]);
 		if (d != NULL) { /* yes */
 			n = cdda_get_n(drives[i]);
-			touched[n] = 1;
-			if (cdda_drives[n].media_changed) {
-				cdda_scan_drive(drives[i], cdda_get_drive(n));
-				if ((cdda_drives[n].disc.hash == 0L) ||
-				    (cdda_drives[n].disc.hash != cdda_drives[n].disc.hash_prev)) {
-					/* EVENT refresh disc data */
-					cdda_send_event(CDDA_EVENT_CHANGED_DRIVE, drives[i]);
+			if (n >= 0) {
+				touched[n] = 1;
+				if (cdda_drives[n].media_changed) {
+					cdda_scan_drive(drives[i], cdda_get_drive(n));
+					if ((cdda_drives[n].disc.hash == 0L) ||
+					    (cdda_drives[n].disc.hash != cdda_drives[n].disc.hash_prev)) {
+						/* EVENT refresh disc data */
+						cdda_send_event(CDDA_EVENT_CHANGED_DRIVE, drives[i]);
+					}
 				}
 			}
 		} else { /* no, scan the drive */

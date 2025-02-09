@@ -1183,7 +1183,7 @@ export_start(export_t * export) {
         gtk_box_pack_start(GTK_BOX(hbox), export->bitrate_label, FALSE, FALSE, 0);
         gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
 
-	export->bitrate_scale = gtk_hscale_new_with_range(0, 8, 1);
+	export->bitrate_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 8, 1);
         g_signal_connect(G_OBJECT(export->bitrate_scale), "value-changed",
 			 G_CALLBACK(export_bitrate_changed), export);
 	gtk_scale_set_draw_value(GTK_SCALE(export->bitrate_scale), FALSE);

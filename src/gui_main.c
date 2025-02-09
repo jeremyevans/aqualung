@@ -3784,6 +3784,8 @@ process_metablock(metadata_t * meta) {
 			gtk_tree_path_free(p);
 		}
 	}
+
+	metadata_free(meta);
 }
 
 void
@@ -3841,6 +3843,9 @@ timeout_callback(gpointer data) {
 		case CMD_FILEINFO:
 			while (rb_read_space(rb_disk2gui) < sizeof(fileinfo_t))
 				;
+			/* free previous format_str, if there was one */
+			if (fileinfo.format_str != NULL)
+				free (fileinfo.format_str);
 			rb_read(rb_disk2gui, (char *)&fileinfo, sizeof(fileinfo_t));
 
 			sample_pos = 0;
@@ -3891,7 +3896,11 @@ timeout_callback(gpointer data) {
 			}
 
 			if (fresh_new_file && !fresh_new_file_prev) {
+				/* free previous format_str, if there was one */
+				if (disp_info.format_str != NULL)
+					free(disp_info.format_str);
 				disp_info = fileinfo;
+				disp_info.format_str = strdup(fileinfo.format_str);
 				disp_samples = total_samples;
 				if (sample_pos > status.sample_offset) {
 					disp_pos = sample_pos - status.sample_offset;

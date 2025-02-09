@@ -443,9 +443,6 @@ disk_thread(void * arg) {
 						sample_offset = 0;
 
 						send_cmd = CMD_FILEINFO;
-						/* free previous format_str, if there was one */
-						if (fileinfo_sent.format_str != NULL)
-							free (fileinfo_sent.format_str);
 						fileinfo_sent = fdec->fileinfo;
 						fileinfo_sent.format_str = strdup(fdec->fileinfo.format_str);
 						rb_write(rb_disk2gui, &send_cmd,

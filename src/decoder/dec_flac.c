@@ -405,8 +405,7 @@ flac_send_metadata(decoder_t * dec) {
 		switch (FLAC__metadata_simple_iterator_get_block_type(iter)) {
 		case FLAC__METADATA_TYPE_VORBIS_COMMENT:
 			smeta = FLAC__metadata_simple_iterator_get_block(iter);
-			FLAC__StreamMetadata_VorbisComment vc =
-				FLAC__metadata_simple_iterator_get_block(iter)->data.vorbis_comment;
+			FLAC__StreamMetadata_VorbisComment vc = smeta->data.vorbis_comment;
 			metadata_from_flac_streammeta_vc(meta, &vc);
 			found = 1;
 
@@ -414,8 +413,7 @@ flac_send_metadata(decoder_t * dec) {
 			break;
 		case FLAC__METADATA_TYPE_PICTURE:
 			smeta = FLAC__metadata_simple_iterator_get_block(iter);
-			FLAC__StreamMetadata_Picture pic =
-				FLAC__metadata_simple_iterator_get_block(iter)->data.picture;
+			FLAC__StreamMetadata_Picture pic = smeta->data.picture;
 			metadata_from_flac_streammeta_pic(meta, &pic);
 			found = 1;
 

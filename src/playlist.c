@@ -1469,9 +1469,9 @@ playlist_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpoin
 	}
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
-		if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view), event->x, event->y,
-						  &path, NULL, NULL, NULL) &&
-		    gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
+		gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(pl->view), event->x, event->y,
+					      &path, NULL, NULL, NULL);
+		if (path && gtk_tree_model_get_iter(GTK_TREE_MODEL(pl->store), &iter, path)) {
 			if (gtk_tree_selection_count_selected_rows(pl->select) == 0) {
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(pl->view), path, NULL, FALSE);
 			}
@@ -1484,6 +1484,8 @@ playlist_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpoin
 		} else {
 			gtk_widget_set_sensitive(plist__fileinfo, TRUE);
 		}
+		if (path)
+			gtk_tree_path_free(path);
 
 		playlist_menu_set_popup_sensitivity(pl);
 
@@ -2866,6 +2868,8 @@ rem__sel_cb(gpointer data) {
 	}
 	g_list_foreach(del_trefs, (GFunc)del_tref_foreach_cb, NULL);
 	g_list_foreach(recalc_albums, (GFunc)recalc_album_foreach_cb, pl);
+	g_list_free(del_trefs);
+	g_list_free(recalc_albums);
 
 	if (cursor_path != NULL) {
 		if (gtk_tree_model_get_iter(model, &iter, cursor_path)) {

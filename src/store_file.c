@@ -4888,6 +4888,9 @@ store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file)
 
 	make_title_string(buf, CHAR_ARRAY_SIZE(buf), options.title_format,
 			  artist_name, record_name, track_name);
+	g_free(artist_name);
+	g_free(record_name);
+	g_free(track_name);
 
 	*name = strndup(buf, MAXLEN-1);
 	*file = strdup(data->file);
@@ -4895,4 +4898,3 @@ store_model_func(GtkTreeModel * model, GtkTreeIter iter, char**name, char**file)
 }
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :
-

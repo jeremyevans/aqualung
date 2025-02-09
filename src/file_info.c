@@ -344,23 +344,6 @@ fi_can_close(fi_t * fi) {
 
 
 gint
-dismiss(GtkWidget * widget, gpointer data) {
-
-	fi_t * fi = (fi_t *)data;
-
-	if (fi_can_close(fi) != TRUE) {
-		return TRUE;
-	}
-
-	unregister_toplevel_window(fi->info_window);
-	gtk_widget_destroy(fi->info_window);
-
-	fi_delete(fi);
-	return TRUE;
-}
-
-
-gint
 info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 
 	fi_t * fi = (fi_t *)data;
@@ -379,6 +362,13 @@ info_window_close(GtkWidget * widget, GdkEventAny * event, gpointer data) {
 
 	fi_delete(fi);
 	return TRUE;
+}
+
+
+gint
+dismiss(GtkWidget * widget, gpointer data) {
+
+	return info_window_close(widget, NULL, data);
 }
 
 

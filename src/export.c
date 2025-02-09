@@ -983,7 +983,7 @@ export_progress_window(export_t * export) {
 	export->slot = gtk_table_new(5, 2, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), export->slot, FALSE, FALSE, 0);
 
-	gtk_table_attach(GTK_TABLE(export->slot), gtk_hseparator_new(), 0, 2, 0, 1,
+	gtk_table_attach(GTK_TABLE(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
 	insert_label_entry(export->slot, _("Source file:"), &export->prog_file_entry1, NULL, 1, 2, FALSE);
@@ -993,7 +993,7 @@ export_progress_window(export_t * export) {
         g_signal_connect(export->prog_cancel_button, "clicked", G_CALLBACK(export_cancel_event), export);
 	insert_label_progbar_button(export->slot, _("Progress:"), &export->progbar, export->prog_cancel_button, 3, 4);
 
-	gtk_table_attach(GTK_TABLE(export->slot), gtk_hseparator_new(), 0, 2, 4, 5,
+	gtk_table_attach(GTK_TABLE(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 4, 5,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         gtk_widget_grab_focus(export->prog_cancel_button);

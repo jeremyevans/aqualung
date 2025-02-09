@@ -1108,7 +1108,7 @@ aifp_transfer_files(gint mode) {
         gtk_tree_view_append_column(GTK_TREE_VIEW(list), column);
         gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 
-        vseparator = gtk_vseparator_new ();
+        vseparator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
         gtk_widget_show (vseparator);
         gtk_box_pack_start (GTK_BOX (hbox1), vseparator, FALSE, TRUE, 2);
 
@@ -1270,11 +1270,11 @@ aifp_transfer_files(gint mode) {
         gtk_widget_show(aifp_close_when_ready_check);
         gtk_box_pack_start(GTK_BOX(vbox2), aifp_close_when_ready_check, FALSE, TRUE, 0);
 
-        hseparator = gtk_hseparator_new ();
+        hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (hseparator);
         gtk_box_pack_start (GTK_BOX (vbox1), hseparator, FALSE, TRUE, 3);
 
-        hbuttonbox = gtk_hbutton_box_new ();
+        hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (hbuttonbox);
         gtk_box_pack_start (GTK_BOX (vbox1), hbuttonbox, FALSE, TRUE, 0);
         gtk_container_set_border_width (GTK_CONTAINER (hbuttonbox), 5);

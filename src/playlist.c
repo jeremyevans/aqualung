@@ -914,8 +914,6 @@ playlist_set_color(void) {
 	char active[14];
 	char inactive[14];
 
-	GdkColor color;
-
 	int rs = 0, gs = 0, bs = 0;
 	int ri = 0, gi = 0, bi = 0;
 
@@ -2836,7 +2834,6 @@ rem__sel_cb(gpointer data) {
 
 	GList* del_trefs = NULL;
 	GList* recalc_albums = NULL;
-	gint total = gtk_tree_model_iter_n_children(model, NULL);
 	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, i++)) {
 		if (gtk_tree_selection_iter_is_selected(pl->select, &iter)) {
 			enqueue_iter2tref(&del_trefs, model, &iter, &cursor_path);
@@ -4274,7 +4271,7 @@ create_playlist(void) {
 		gtk_widget_set_name(statusbar_selected_label, "label_info");
 		gtk_box_pack_end(GTK_BOX(statusbar), statusbar_selected_label, FALSE, TRUE, 0);
 
-		gtk_box_pack_end(GTK_BOX(statusbar), gtk_vseparator_new(), FALSE, TRUE, 5);
+		gtk_box_pack_end(GTK_BOX(statusbar), gtk_separator_new(GTK_ORIENTATION_VERTICAL), FALSE, TRUE, 5);
 
 		statusbar_total = gtk_label_new("");
 		gtk_widget_set_name(statusbar_total, "label_info");

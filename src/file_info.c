@@ -2295,7 +2295,7 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         arr_snprintf(temp, "%d", mdi->samples);
         gtk_label_set_text (GTK_LABEL(mod_samples_label), temp);
 
-        vseparator = gtk_vseparator_new ();
+        vseparator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
         gtk_widget_show (vseparator);
         gtk_box_pack_start (GTK_BOX (hbox2), vseparator, FALSE, FALSE, 4);
 
@@ -2345,4 +2345,3 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
 
 
 // vim: shiftwidth=8:tabstop=8:softtabstop=8 :
-

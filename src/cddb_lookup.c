@@ -323,11 +323,11 @@ create_query_progress_window(cddb_lookup_t * data) {
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(data->progbar), _("Connecting to CDDB server..."));
 	gtk_box_pack_start(GTK_BOX(vbox), data->progbar, FALSE, FALSE, 6);
 	
-        hseparator = gtk_hseparator_new ();
+        hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (hseparator);
         gtk_box_pack_start (GTK_BOX (vbox), hseparator, FALSE, TRUE, 5);
 
-	hbuttonbox = gtk_hbutton_box_new();
+	hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 

@@ -266,18 +266,12 @@ create_about_window() {
 
 	GtkWidget * frame;
 	GtkWidget * scrolled_win;
-	GtkWidget * vscrollbar;
 	GtkWidget * view;
 	GtkTextBuffer * buffer;
 	GtkTextIter iter;
 
 	GtkWidget * hbuttonbox;
 	GtkWidget * ok_btn;
-
-	GdkColor white = { 0, 49152, 51118, 52429 };
-	GdkColor blue1 = { 0, 41288, 47841, 55050 };
-	GdkColor blue2 = { 0, 45288, 51841, 60050 };
-	GdkColor blue3 = { 0, 55552, 56832,  57600};
 
 	GtkTextTag * tag;
 	GtkTextTag * tag2;
@@ -291,7 +285,6 @@ create_about_window() {
         gtk_window_set_title(GTK_WINDOW(about_window), _("About"));
         gtk_widget_set_size_request(about_window, 483, 430);
 	gtk_window_set_position(GTK_WINDOW(about_window), GTK_WIN_POS_CENTER);
-	gtk_widget_modify_bg(about_window, GTK_STATE_NORMAL, &white);
         g_signal_connect(G_OBJECT(about_window), "key_press_event", G_CALLBACK(about_key_pressed), NULL);
 
         vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -301,7 +294,7 @@ create_about_window() {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_end(GTK_BOX(vbox0), vbox, TRUE, TRUE, 0);
 
-	hbuttonbox = gtk_hbutton_box_new();
+	hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_set_name(hbuttonbox, "");
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
@@ -310,9 +303,6 @@ create_about_window() {
 	gtk_widget_set_name(ok_btn, "");
         g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);
-	gtk_widget_modify_bg(ok_btn, GTK_STATE_NORMAL, &blue1);
-	gtk_widget_modify_bg(ok_btn, GTK_STATE_PRELIGHT, &blue2);
-	gtk_widget_modify_bg(ok_btn, GTK_STATE_ACTIVE, &blue2);
 
 	frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
@@ -322,18 +312,7 @@ create_about_window() {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	vscrollbar = gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(scrolled_win));
-	gtk_widget_set_name(vscrollbar, "");
-	gtk_widget_modify_bg(vscrollbar, GTK_STATE_NORMAL, &blue1);
-	gtk_widget_modify_bg(vscrollbar, GTK_STATE_PRELIGHT, &blue2);
-	gtk_widget_modify_bg(vscrollbar, GTK_STATE_ACTIVE, &blue3);
-	gtk_widget_modify_bg(vscrollbar, GTK_STATE_INSENSITIVE, &blue2);
-
-
         view = gtk_text_view_new();
-	gtk_widget_set_name(view, "");
-
-	gtk_widget_modify_base(view, GTK_STATE_NORMAL, &blue3);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(view), 3);
 	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(view), 3);
         gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
@@ -342,7 +321,7 @@ create_about_window() {
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(view), buffer);
 
-	tag = gtk_text_buffer_create_tag(buffer, NULL, "foreground", "#0000C0", NULL);
+	tag = gtk_text_buffer_create_tag(buffer, NULL, "weight", 1000, NULL);
 	tag2 = gtk_text_buffer_create_tag(buffer, NULL, "family", "monospace", NULL);
 
 

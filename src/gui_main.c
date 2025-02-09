@@ -2623,8 +2623,6 @@ create_main_window() {
 
 	GtkWidget * sr_grid;
 
-        char path[MAXLEN];
-
 	set_win_title();
 	playing_app_title[0] = '\0';
 	
@@ -2821,13 +2819,13 @@ create_main_window() {
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_input, FALSE, FALSE, 3);
 	gtk_widget_set_name(label_input, "label_info");
 
-	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_vseparator_new(), FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_separator_new(GTK_ORIENTATION_VERTICAL), FALSE, FALSE, 3);
 
 	label_output = gtk_label_new("");
 	gtk_widget_set_name(label_output, "label_info");
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_output, FALSE, FALSE, 3);
 
-	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_vseparator_new(), FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(info_hbox), gtk_separator_new(GTK_ORIENTATION_VERTICAL), FALSE, FALSE, 3);
 
 	label_src_type = gtk_label_new("");
 	gtk_widget_set_name(label_src_type, "label_info");

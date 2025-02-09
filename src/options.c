@@ -1656,7 +1656,6 @@ create_options_window(void) {
 	GtkWidget * hbox_param;
 	GtkWidget * vbox_misc;
 	GtkWidget * vbox_cart;
-	GtkWidget * vbox_appearance;
 	GtkWidget * vbox_miscellaneous_tab;
 #ifdef HAVE_SYSTRAY
 	GtkWidget * vbox_systray;
@@ -1694,12 +1693,8 @@ create_options_window(void) {
 	GtkWidget * vbox_dsp;
 	GtkWidget * frame_ladspa;
 	GtkWidget * frame_src;
-	GtkWidget * frame_fonts;
-	GtkWidget * frame_colors;
 	GtkWidget * vbox_ladspa;
 	GtkWidget * vbox_src;
-        GtkWidget * table_fonts;
-	GtkWidget * vbox_colors;
 
 	GtkWidget * vbox_rva;
 	GtkWidget * table_rva;

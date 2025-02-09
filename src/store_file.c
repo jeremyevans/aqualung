@@ -547,7 +547,7 @@ edit_store_dialog(char * name, size_t name_size, store_data_t * data) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rel_check), data->use_relative_paths);
 	gtk_box_pack_start(GTK_BOX(content_area), rel_check, FALSE, FALSE, 5);
 
-	gtk_box_pack_start(GTK_BOX(content_area), gtk_hseparator_new(), FALSE,
+	gtk_box_pack_start(GTK_BOX(content_area), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE,
 			   FALSE, 5);
 
 	gtk_widget_grab_focus(name_entry);
@@ -3122,10 +3122,10 @@ create_tag_prog_window(void) {
 	gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
 	gtk_container_add(GTK_CONTAINER(scrollwin), tag_error_view);
 
-        hseparator = gtk_hseparator_new();
+        hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 5);
 
-	hbuttonbox = gtk_hbutton_box_new();
+	hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 

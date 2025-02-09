@@ -361,7 +361,7 @@ vol_create_gui(volume_t * vol) {
 	vol->slot = gtk_table_new(4, 3, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), vol->slot, FALSE, FALSE, 0);
 
-	gtk_table_attach(GTK_TABLE(vol->slot), gtk_hseparator_new(), 0, 3, 0, 1,
+	gtk_table_attach(GTK_TABLE(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 3, 0, 1,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -397,7 +397,7 @@ vol_create_gui(volume_t * vol) {
 	gtk_table_attach(GTK_TABLE(vol->slot), vol->cancel_button, 2, 3, 2, 3,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
-	gtk_table_attach(GTK_TABLE(vol->slot), gtk_hseparator_new(), 0, 3, 3, 4,
+	gtk_table_attach(GTK_TABLE(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 3, 3, 4,
 			 GTK_FILL, GTK_FILL, 5, 5);
 
 	gtk_widget_show_all(vol->slot);

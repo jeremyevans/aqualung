@@ -450,7 +450,7 @@ search_playlist_dialog(void) {
         gtk_tree_view_column_set_sort_column_id(GTK_TREE_VIEW_COLUMN(search_column), 0);
         gtk_tree_view_append_column(GTK_TREE_VIEW(search_list), search_column);
 
-	hbuttonbox = gtk_hbutton_box_new();
+	hbuttonbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (hbuttonbox);
         gtk_box_set_spacing(GTK_BOX(hbuttonbox), 8);
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);

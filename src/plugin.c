@@ -951,7 +951,7 @@ build_plugin_window(plugin_instance * instance) {
 	}
 
 	if ((n_toggled) && (n_untoggled)) {
-		hseparator = gtk_hseparator_new();
+		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
 		++i;
 		gtk_widget_size_request(hseparator, &req);
@@ -1147,7 +1147,7 @@ build_plugin_window(plugin_instance * instance) {
 
 
 	if (((n_toggled) || (n_untoggled)) && (n_outctl)) {
-		hseparator = gtk_hseparator_new();
+		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
 		++i;
 		gtk_widget_size_request(hseparator, &req);
@@ -1288,7 +1288,7 @@ build_plugin_window(plugin_instance * instance) {
 
 
 	if (((n_toggled) || (n_untoggled) || (n_outctl)) && (n_outlat)) {
-		hseparator = gtk_hseparator_new();
+		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
 		++i;
 		gtk_widget_size_request(hseparator, &req);

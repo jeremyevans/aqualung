@@ -218,7 +218,6 @@ draw_cover_frame(GdkPixbuf *pixbuf, gint width, gint height, gboolean bevel) {
         gint rowstride, channels;
         gint i, bc1, bc2, bc3, bc4;
         guchar *pixels, *p;
-        gchar *c = NULL;
 
         bc1 = bc2 = bc3 = bc4 = 64;      /* dark edges */
 

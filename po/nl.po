@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2012-02-28 12:28+0100\n"
 "Last-Translator: Ivo van Poorten <ivop@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -908,14 +908,11 @@ msgstr "Naam"
 msgid "STOPPING"
 msgstr "STOPPEND"
 
-msgid "Output:"
-msgstr "Uitvoer:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Geen uitvoer"
-
-msgid "SRC Type: "
-msgstr "BRON Type: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -988,11 +985,11 @@ msgstr ""
 "worden toegevoegd. Het kan zijn dat uw systeem geen systeemvak ondersteunt "
 "of dat het niet juist is ingesteld."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Instellingen"
-
-msgid "Skin chooser"
-msgstr "Kies uiterlijk"
 
 msgid "JACK port setup"
 msgstr "JACK poortinstellingen"
@@ -1666,12 +1663,6 @@ msgstr ""
 "U dient Aqualung af te sluiten en opnieuw op te starten om de volgende "
 "veranderingen effect te laten hebben:"
 
-msgid "Select a font..."
-msgstr "Selecteer een lettertype..."
-
-msgid "Disable skin support"
-msgstr "Schakel verschillende uiterlijken uit"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1911,6 +1902,9 @@ msgstr "Foutieve karakterencodering"
 
 msgid "Main window"
 msgstr "Hoofdvenster"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Reliëf van knoppen uitschakelen"
@@ -2307,46 +2301,6 @@ msgstr "Stop netwerk verkeer na:"
 msgid "seconds"
 msgstr "seconden"
 
-msgid "Appearance"
-msgstr "Uiterlijk"
-
-msgid "Override skin settings"
-msgstr ""
-"Gebruik de instellingen hieronder i.p.v. die van het ingestelde uiterlijk"
-
-msgid "Fonts"
-msgstr "Lettertypen"
-
-msgid "Playlist: "
-msgstr "Afspeellijst:"
-
-msgid "Music Store: "
-msgstr "Muziek Archief:"
-
-msgid "Big timer: "
-msgstr "Grote klok:"
-
-msgid "Small timers: "
-msgstr "Kleine klokjes:"
-
-msgid "Song title: "
-msgstr "Titel van het nummer:"
-
-msgid "Song info: "
-msgstr "Informatie over het nummer:"
-
-msgid "Statusbar: "
-msgstr "Statusbalk:"
-
-msgid "Colors"
-msgstr "Kleuren"
-
-msgid "Song in playlist: "
-msgstr "Nummer in de afspeellijst"
-
-msgid "Active song in playlist: "
-msgstr "Het actieve nummer in de afspeellijst:"
-
 msgid "(Untitled)"
 msgstr "(geen titel)"
 
@@ -2616,9 +2570,6 @@ msgstr "Zoek"
 
 msgid "Search the Playlist"
 msgstr "Doorzoek de afspeellijst"
-
-msgid "Available skins"
-msgstr "Beschikbare uiterlijken"
 
 msgid "Drive info"
 msgstr "Drive info"
@@ -3295,6 +3246,64 @@ msgstr "bit drijvende komma, dubbele precisie"
 
 msgid "encoding"
 msgstr "encodering"
+
+#~ msgid "Output:"
+#~ msgstr "Uitvoer:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "BRON Type: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Kies uiterlijk"
+
+#~ msgid "Select a font..."
+#~ msgstr "Selecteer een lettertype..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Schakel verschillende uiterlijken uit"
+
+#~ msgid "Appearance"
+#~ msgstr "Uiterlijk"
+
+#~ msgid "Override skin settings"
+#~ msgstr ""
+#~ "Gebruik de instellingen hieronder i.p.v. die van het ingestelde uiterlijk"
+
+#~ msgid "Fonts"
+#~ msgstr "Lettertypen"
+
+#~ msgid "Playlist: "
+#~ msgstr "Afspeellijst:"
+
+#~ msgid "Music Store: "
+#~ msgstr "Muziek Archief:"
+
+#~ msgid "Big timer: "
+#~ msgstr "Grote klok:"
+
+#~ msgid "Small timers: "
+#~ msgstr "Kleine klokjes:"
+
+#~ msgid "Song title: "
+#~ msgstr "Titel van het nummer:"
+
+#~ msgid "Song info: "
+#~ msgstr "Informatie over het nummer:"
+
+#~ msgid "Statusbar: "
+#~ msgstr "Statusbalk:"
+
+#~ msgid "Colors"
+#~ msgstr "Kleuren"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Nummer in de afspeellijst"
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Het actieve nummer in de afspeellijst:"
+
+#~ msgid "Available skins"
+#~ msgstr "Beschikbare uiterlijken"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

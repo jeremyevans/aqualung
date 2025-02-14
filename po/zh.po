@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2010-09-20 21:38+0800\n"
 "Last-Translator: Yinghua Wang <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com> \n"
-"Language: \n"
+"Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -912,14 +912,11 @@ msgstr "名称"
 msgid "STOPPING"
 msgstr "停止"
 
-msgid "Output:"
-msgstr "输出："
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "无输出"
-
-msgid "SRC Type: "
-msgstr "SRC 类型："
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -992,11 +989,11 @@ msgstr ""
 "Aqualung 编译时带有系统托盘支持，但无法将状态图标置入通知区域。可能您的桌面不"
 "支持系统托盘，或者系统托盘配置不正确。"
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "设置"
-
-msgid "Skin chooser"
-msgstr "选择皮肤"
 
 msgid "JACK port setup"
 msgstr "JACK 端口设置"
@@ -1669,12 +1666,6 @@ msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "您需要重新启动 Aqualung 来使以下更改生效："
 
-msgid "Select a font..."
-msgstr "选择一种字体..."
-
-msgid "Disable skin support"
-msgstr "禁用皮肤支持"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1885,6 +1876,9 @@ msgstr ""
 
 msgid "Main window"
 msgstr "主窗口"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "禁用控制按钮凸起效果"
@@ -2275,45 +2269,6 @@ msgstr "socket I/O 超时："
 msgid "seconds"
 msgstr "秒"
 
-msgid "Appearance"
-msgstr "外观"
-
-msgid "Override skin settings"
-msgstr "覆盖皮肤设置"
-
-msgid "Fonts"
-msgstr "字体"
-
-msgid "Playlist: "
-msgstr "播放列表："
-
-msgid "Music Store: "
-msgstr "音乐库："
-
-msgid "Big timer: "
-msgstr "长定时器："
-
-msgid "Small timers: "
-msgstr "短定时器："
-
-msgid "Song title: "
-msgstr "歌曲标题："
-
-msgid "Song info: "
-msgstr "歌曲信息："
-
-msgid "Statusbar: "
-msgstr "状态栏："
-
-msgid "Colors"
-msgstr "颜色"
-
-msgid "Song in playlist: "
-msgstr "播放列表中的歌曲："
-
-msgid "Active song in playlist: "
-msgstr "播放列表中活动的歌曲："
-
 msgid "(Untitled)"
 msgstr "(无标题)"
 
@@ -2579,9 +2534,6 @@ msgstr "搜索"
 
 msgid "Search the Playlist"
 msgstr "搜索播放列表"
-
-msgid "Available skins"
-msgstr "可用的皮肤"
 
 msgid "Drive info"
 msgstr "驱动器信息"
@@ -3259,6 +3211,63 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "编码"
+
+#~ msgid "Output:"
+#~ msgstr "输出："
+
+#~ msgid "SRC Type: "
+#~ msgstr "SRC 类型："
+
+#~ msgid "Skin chooser"
+#~ msgstr "选择皮肤"
+
+#~ msgid "Select a font..."
+#~ msgstr "选择一种字体..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "禁用皮肤支持"
+
+#~ msgid "Appearance"
+#~ msgstr "外观"
+
+#~ msgid "Override skin settings"
+#~ msgstr "覆盖皮肤设置"
+
+#~ msgid "Fonts"
+#~ msgstr "字体"
+
+#~ msgid "Playlist: "
+#~ msgstr "播放列表："
+
+#~ msgid "Music Store: "
+#~ msgstr "音乐库："
+
+#~ msgid "Big timer: "
+#~ msgstr "长定时器："
+
+#~ msgid "Small timers: "
+#~ msgstr "短定时器："
+
+#~ msgid "Song title: "
+#~ msgstr "歌曲标题："
+
+#~ msgid "Song info: "
+#~ msgstr "歌曲信息："
+
+#~ msgid "Statusbar: "
+#~ msgstr "状态栏："
+
+#~ msgid "Colors"
+#~ msgstr "颜色"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "播放列表中的歌曲："
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "播放列表中活动的歌曲："
+
+#~ msgid "Available skins"
+#~ msgstr "可用的皮肤"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

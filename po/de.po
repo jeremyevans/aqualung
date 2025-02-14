@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2014-08-31 21:13+0100\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: German <de@li.org>\n"
@@ -910,14 +910,11 @@ msgstr "Name"
 msgid "STOPPING"
 msgstr "Wird GESTOPPT"
 
-msgid "Output:"
-msgstr "Ausgabe:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Keine Ausgabe"
-
-msgid "SRC Type: "
-msgstr "SRC-Typ: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -991,11 +988,11 @@ msgstr ""
 "Benutzeroberfläche unterstützt möglicherweise keine Kontrollleiste oder sie "
 "wurde nicht richtig konfiguriert."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Einstellungen"
-
-msgid "Skin chooser"
-msgstr "Oberflächenauswahl"
 
 msgid "JACK port setup"
 msgstr "JACK-Verbindung einrichten"
@@ -1667,12 +1664,6 @@ msgstr ""
 "Aqualung muss neu gestartet werden, damit die folgenden Veränderungen "
 "wirksam werden:"
 
-msgid "Select a font..."
-msgstr "Schriftart wählen …"
-
-msgid "Disable skin support"
-msgstr "Oberflächen-Unterstützung deaktivieren"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1919,6 +1910,9 @@ msgstr "Fehler, ungültige Zeichenkodierung"
 
 msgid "Main window"
 msgstr "Hauptfenster"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Relief bei Kontrollknöpfen deaktivieren"
@@ -2315,45 +2309,6 @@ msgstr "Zeitüberschreitung für Sockel I/O:"
 msgid "seconds"
 msgstr "Sekunden"
 
-msgid "Appearance"
-msgstr "Aussehen"
-
-msgid "Override skin settings"
-msgstr "Oberflächen-Einstellungen überschreiben"
-
-msgid "Fonts"
-msgstr "Schriftarten"
-
-msgid "Playlist: "
-msgstr "Playliste: "
-
-msgid "Music Store: "
-msgstr "Musiksammlung: "
-
-msgid "Big timer: "
-msgstr "Große Zeitanzeige: "
-
-msgid "Small timers: "
-msgstr "Kleine Zeitanzeigen: "
-
-msgid "Song title: "
-msgstr "Titel: "
-
-msgid "Song info: "
-msgstr "Titelinformation: "
-
-msgid "Statusbar: "
-msgstr "Statusleiste: "
-
-msgid "Colors"
-msgstr "Farben"
-
-msgid "Song in playlist: "
-msgstr "Titel in der Playliste: "
-
-msgid "Active song in playlist: "
-msgstr "Aktiver Titel in der Playliste: "
-
 msgid "(Untitled)"
 msgstr "(Unbetitelt)"
 
@@ -2623,9 +2578,6 @@ msgstr "Suchen"
 
 msgid "Search the Playlist"
 msgstr "Playliste durchsuchen"
-
-msgid "Available skins"
-msgstr "Verfügbare Oberflächen"
 
 msgid "Drive info"
 msgstr "Laufwerks-Info"
@@ -3302,6 +3254,63 @@ msgstr "Bit doppelt"
 
 msgid "encoding"
 msgstr "Kodierung"
+
+#~ msgid "Output:"
+#~ msgstr "Ausgabe:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "SRC-Typ: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Oberflächenauswahl"
+
+#~ msgid "Select a font..."
+#~ msgstr "Schriftart wählen …"
+
+#~ msgid "Disable skin support"
+#~ msgstr "Oberflächen-Unterstützung deaktivieren"
+
+#~ msgid "Appearance"
+#~ msgstr "Aussehen"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Oberflächen-Einstellungen überschreiben"
+
+#~ msgid "Fonts"
+#~ msgstr "Schriftarten"
+
+#~ msgid "Playlist: "
+#~ msgstr "Playliste: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Musiksammlung: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Große Zeitanzeige: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Kleine Zeitanzeigen: "
+
+#~ msgid "Song title: "
+#~ msgstr "Titel: "
+
+#~ msgid "Song info: "
+#~ msgstr "Titelinformation: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Statusleiste: "
+
+#~ msgid "Colors"
+#~ msgstr "Farben"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Titel in der Playliste: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Aktiver Titel in der Playliste: "
+
+#~ msgid "Available skins"
+#~ msgstr "Verfügbare Oberflächen"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2017-09-21 21:15+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -905,14 +905,11 @@ msgstr "Název"
 msgid "STOPPING"
 msgstr "Zastavuje se"
 
-msgid "Output:"
-msgstr "Výstup:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Žádný výstup"
-
-msgid "SRC Type: "
-msgstr "Typ SRC: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -984,11 +981,11 @@ msgstr ""
 "ikonu se nepodařilo vložit do oznamovací oblasti. Vaše pracovní prostředí "
 "buď nemá podporou pro systémový panel, nebo to nebylo nastaveno správně."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Nastavení"
-
-msgid "Skin chooser"
-msgstr "Volič vzhledu"
 
 msgid "JACK port setup"
 msgstr "Nastavení přípojky JACK"
@@ -1656,12 +1653,6 @@ msgid ""
 "You will need to restart Aqualung for the following changes to take effect:"
 msgstr "Aby se projevily následující změny, musí se Aqualung spustit znovu:"
 
-msgid "Select a font..."
-msgstr "Vybrat písmo..."
-
-msgid "Disable skin support"
-msgstr "Zakázat podporu vzhledu"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1904,6 +1895,9 @@ msgstr "Chyba. Neplatné kódování znaků"
 
 msgid "Main window"
 msgstr "Hlavní okno"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Vypnout u ovládacích tlačítek vypouklost (plastičnost)"
@@ -2302,45 +2296,6 @@ msgstr "Lhůta před považováním spojení za ztracené:"
 msgid "seconds"
 msgstr "sekund"
 
-msgid "Appearance"
-msgstr "Vzhled"
-
-msgid "Override skin settings"
-msgstr "Přepsat nastavení vzhledu"
-
-msgid "Fonts"
-msgstr "Písma"
-
-msgid "Playlist: "
-msgstr "Seznam skladeb:"
-
-msgid "Music Store: "
-msgstr "Hudební sbírka: "
-
-msgid "Big timer: "
-msgstr "Velké hodiny: "
-
-msgid "Small timers: "
-msgstr "Malé hodiny: "
-
-msgid "Song title: "
-msgstr "Název písně: "
-
-msgid "Song info: "
-msgstr "Informace o písni: "
-
-msgid "Statusbar: "
-msgstr "Stavový řádek: "
-
-msgid "Colors"
-msgstr "Barvy"
-
-msgid "Song in playlist: "
-msgstr "Píseň v seznamu skladeb: "
-
-msgid "Active song in playlist: "
-msgstr "Činná píseň v seznamu skladeb: "
-
 msgid "(Untitled)"
 msgstr "(Bez názvu)"
 
@@ -2607,9 +2562,6 @@ msgstr "Hledat"
 
 msgid "Search the Playlist"
 msgstr "Prohledat seznam skladeb"
-
-msgid "Available skins"
-msgstr "Dostupné vzhledy"
 
 msgid "Drive info"
 msgstr "Informace o mechanice"
@@ -3285,6 +3237,63 @@ msgstr "Bit dvojitý"
 
 msgid "encoding"
 msgstr "Kódování"
+
+#~ msgid "Output:"
+#~ msgstr "Výstup:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Typ SRC: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Volič vzhledu"
+
+#~ msgid "Select a font..."
+#~ msgstr "Vybrat písmo..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Zakázat podporu vzhledu"
+
+#~ msgid "Appearance"
+#~ msgstr "Vzhled"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Přepsat nastavení vzhledu"
+
+#~ msgid "Fonts"
+#~ msgstr "Písma"
+
+#~ msgid "Playlist: "
+#~ msgstr "Seznam skladeb:"
+
+#~ msgid "Music Store: "
+#~ msgstr "Hudební sbírka: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Velké hodiny: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Malé hodiny: "
+
+#~ msgid "Song title: "
+#~ msgstr "Název písně: "
+
+#~ msgid "Song info: "
+#~ msgstr "Informace o písni: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Stavový řádek: "
+
+#~ msgid "Colors"
+#~ msgstr "Barvy"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Píseň v seznamu skladeb: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Činná píseň v seznamu skladeb: "
+
+#~ msgid "Available skins"
+#~ msgstr "Dostupné vzhledy"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

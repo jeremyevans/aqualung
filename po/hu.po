@@ -7,9 +7,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2010-10-16 21:46+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -907,14 +908,11 @@ msgstr "Név"
 msgid "STOPPING"
 msgstr "MEGÁLLÍT"
 
-msgid "Output:"
-msgstr "Kimenet:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Nincs kimenet"
-
-msgid "SRC Type: "
-msgstr "SRC Típus: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -988,11 +986,11 @@ msgstr ""
 "sikerült a tálcára helyezni. Lehet, hogy az asztalodról hiányzik a "
 "rendszertálca, vagy nincs megfelelően beállítva."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Beállítások"
-
-msgid "Skin chooser"
-msgstr "Szkin-választó"
 
 msgid "JACK port setup"
 msgstr "JACK port beállítás"
@@ -1657,12 +1655,6 @@ msgid ""
 msgstr ""
 "A következő változtatások az Aqualung újraindítása után jutnak érvényre:"
 
-msgid "Select a font..."
-msgstr "Font választása..."
-
-msgid "Disable skin support"
-msgstr "Szkinek tiltása"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1883,6 +1875,9 @@ msgstr "Hiba: érvénytelen karakter kódolás"
 
 msgid "Main window"
 msgstr "Főablak"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Vezérlőgombok kiemelkedésének tiltása"
@@ -2275,45 +2270,6 @@ msgstr "Socket I/O időkorlátja:"
 msgid "seconds"
 msgstr "másodperc"
 
-msgid "Appearance"
-msgstr "Megjelenés"
-
-msgid "Override skin settings"
-msgstr "Szkin beállítások felülbírálása"
-
-msgid "Fonts"
-msgstr "Betűtípusok"
-
-msgid "Playlist: "
-msgstr "Lejátszólista: "
-
-msgid "Music Store: "
-msgstr "Zenetár: "
-
-msgid "Big timer: "
-msgstr "Nagy időkijelző: "
-
-msgid "Small timers: "
-msgstr "Kis időkijelzők: "
-
-msgid "Song title: "
-msgstr "Szám címe: "
-
-msgid "Song info: "
-msgstr "Szám info: "
-
-msgid "Statusbar: "
-msgstr "Állapotsor: "
-
-msgid "Colors"
-msgstr "Színek"
-
-msgid "Song in playlist: "
-msgstr "Szám a Lejátszólistában: "
-
-msgid "Active song in playlist: "
-msgstr "Aktív szám a Lejátszólistában: "
-
 msgid "(Untitled)"
 msgstr "(Névtelen)"
 
@@ -2580,9 +2536,6 @@ msgstr "Keresés"
 
 msgid "Search the Playlist"
 msgstr "Keresés a Lejátszólistában"
-
-msgid "Available skins"
-msgstr "Elérhető szkinek"
 
 msgid "Drive info"
 msgstr "Meghajtó infó"
@@ -3259,6 +3212,63 @@ msgstr "bites dupla pontosságú lebegőpontos"
 
 msgid "encoding"
 msgstr "kódolású"
+
+#~ msgid "Output:"
+#~ msgstr "Kimenet:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "SRC Típus: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Szkin-választó"
+
+#~ msgid "Select a font..."
+#~ msgstr "Font választása..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Szkinek tiltása"
+
+#~ msgid "Appearance"
+#~ msgstr "Megjelenés"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Szkin beállítások felülbírálása"
+
+#~ msgid "Fonts"
+#~ msgstr "Betűtípusok"
+
+#~ msgid "Playlist: "
+#~ msgstr "Lejátszólista: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Zenetár: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Nagy időkijelző: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Kis időkijelzők: "
+
+#~ msgid "Song title: "
+#~ msgstr "Szám címe: "
+
+#~ msgid "Song info: "
+#~ msgstr "Szám info: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Állapotsor: "
+
+#~ msgid "Colors"
+#~ msgstr "Színek"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Szám a Lejátszólistában: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Aktív szám a Lejátszólistában: "
+
+#~ msgid "Available skins"
+#~ msgstr "Elérhető szkinek"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2012-08-23 15:59+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -907,14 +907,11 @@ msgstr "Ім'я"
 msgid "STOPPING"
 msgstr "ЗУПИНКА"
 
-msgid "Output:"
-msgstr "Вихід:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Немає виводу"
-
-msgid "SRC Type: "
-msgstr "Тип SRC: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -986,11 +983,11 @@ msgstr ""
 "може бути вбудована у область повідомлень. Можливо, ваш робочий стіл не "
 "підтримує системний лоток, або невірно налаштований."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Налаштування"
-
-msgid "Skin chooser"
-msgstr "Вибір жупанів"
 
 msgid "JACK port setup"
 msgstr "Налаштування порту JACK"
@@ -1658,12 +1655,6 @@ msgid ""
 msgstr ""
 "Вам знадобиться перезапустити Aqualung, щоб набули чинності наступні зміни:"
 
-msgid "Select a font..."
-msgstr "Обрати шрифт..."
-
-msgid "Disable skin support"
-msgstr "Вимкнути підтримку жупанів"
-
 msgid "rw"
 msgstr "читання/запис"
 
@@ -1906,6 +1897,9 @@ msgstr "Помилка недійсне кодування символів"
 
 msgid "Main window"
 msgstr "Головне вікно"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Вимкнути рельєф кнопок керування"
@@ -2300,45 +2294,6 @@ msgstr "Час очікування вводу/виводу сокета:"
 msgid "seconds"
 msgstr "секунд"
 
-msgid "Appearance"
-msgstr "Вигляд"
-
-msgid "Override skin settings"
-msgstr "Перекривати установки жупана"
-
-msgid "Fonts"
-msgstr "Шрифти"
-
-msgid "Playlist: "
-msgstr "Список програвання: "
-
-msgid "Music Store: "
-msgstr "Музичне Сховище: "
-
-msgid "Big timer: "
-msgstr "Великий таймер: "
-
-msgid "Small timers: "
-msgstr "Маленькі таймери:"
-
-msgid "Song title: "
-msgstr "Назва пісні: "
-
-msgid "Song info: "
-msgstr "Інформація про пісню:"
-
-msgid "Statusbar: "
-msgstr "Статусний рядок:"
-
-msgid "Colors"
-msgstr "Кольори"
-
-msgid "Song in playlist: "
-msgstr "Пісня у списку програвання: "
-
-msgid "Active song in playlist: "
-msgstr "Активна пісня у списку програвання: "
-
 msgid "(Untitled)"
 msgstr "(Без назви)"
 
@@ -2605,9 +2560,6 @@ msgstr "Шукати"
 
 msgid "Search the Playlist"
 msgstr "Шукати у списку програвання"
-
-msgid "Available skins"
-msgstr "Наявні жупани"
 
 msgid "Drive info"
 msgstr "Інформація приводу"
@@ -3283,6 +3235,63 @@ msgstr "біт подвійний"
 
 msgid "encoding"
 msgstr "кодування"
+
+#~ msgid "Output:"
+#~ msgstr "Вихід:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Тип SRC: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Вибір жупанів"
+
+#~ msgid "Select a font..."
+#~ msgstr "Обрати шрифт..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Вимкнути підтримку жупанів"
+
+#~ msgid "Appearance"
+#~ msgstr "Вигляд"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Перекривати установки жупана"
+
+#~ msgid "Fonts"
+#~ msgstr "Шрифти"
+
+#~ msgid "Playlist: "
+#~ msgstr "Список програвання: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Музичне Сховище: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Великий таймер: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Маленькі таймери:"
+
+#~ msgid "Song title: "
+#~ msgstr "Назва пісні: "
+
+#~ msgid "Song info: "
+#~ msgstr "Інформація про пісню:"
+
+#~ msgid "Statusbar: "
+#~ msgstr "Статусний рядок:"
+
+#~ msgid "Colors"
+#~ msgstr "Кольори"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Пісня у списку програвання: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Активна пісня у списку програвання: "
+
+#~ msgid "Available skins"
+#~ msgstr "Наявні жупани"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

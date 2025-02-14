@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2010-06-26 22:23+0100\n"
 "Last-Translator: Robert Wojewódzki <robwoj44@poczta.onet.pl>\n"
 "Language-Team: \n"
-"Language: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -911,14 +911,11 @@ msgstr "Nazwa"
 msgid "STOPPING"
 msgstr "Zastopowanie"
 
-msgid "Output:"
-msgstr "Wyjście:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Brak wyjścia"
-
-msgid "SRC Type: "
-msgstr "Rodzaj źródła:"
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -994,11 +991,11 @@ msgstr ""
 "statusu nie może być osadzona w obszarze powiadomień. Pulpit może nie "
 "obsługiwać systemowej tacki, albo nie został poprawnie skonfigurowany."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Ustawienia"
-
-msgid "Skin chooser"
-msgstr "Wybór skórki"
 
 msgid "JACK port setup"
 msgstr "Konfiguracja portu JACK"
@@ -1669,12 +1666,6 @@ msgstr ""
 "Musisz wystartować ponownie Aqualung żeby następujące zmiany przyniosły "
 "efekt:"
 
-msgid "Select a font..."
-msgstr "Wybierz font..."
-
-msgid "Disable skin support"
-msgstr "Wyłącz obsługę skórek"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1897,6 +1888,9 @@ msgstr ""
 
 msgid "Main window"
 msgstr "Główne okno"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Wyłącz pomoc przycisków kontroli"
@@ -2293,45 +2287,6 @@ msgstr "Czas oczekiwania dla gniazda I/O:"
 msgid "seconds"
 msgstr "sekundy"
 
-msgid "Appearance"
-msgstr "Wygląd"
-
-msgid "Override skin settings"
-msgstr "Nadpisz ustawienia skórki"
-
-msgid "Fonts"
-msgstr "Fonty"
-
-msgid "Playlist: "
-msgstr "Lista utworów: "
-
-msgid "Music Store: "
-msgstr "Kolekcja Muzyki: "
-
-msgid "Big timer: "
-msgstr "Duży zegar: "
-
-msgid "Small timers: "
-msgstr "Małe zegary: "
-
-msgid "Song title: "
-msgstr "Tytuł utworu: "
-
-msgid "Song info: "
-msgstr "Informacje o utworze: "
-
-msgid "Statusbar: "
-msgstr "Pasek stanu: "
-
-msgid "Colors"
-msgstr "Kolory"
-
-msgid "Song in playlist: "
-msgstr "Utwór w liście utworów: "
-
-msgid "Active song in playlist: "
-msgstr "Aktywny utwór w liście utworów: "
-
 msgid "(Untitled)"
 msgstr "(Bez tytułu)"
 
@@ -2598,9 +2553,6 @@ msgstr "Szukaj"
 
 msgid "Search the Playlist"
 msgstr "Wyszukaj w liście utworów"
-
-msgid "Available skins"
-msgstr "Dostępne skórki"
 
 msgid "Drive info"
 msgstr "Informacja o napędzie"
@@ -3277,6 +3229,63 @@ msgstr "bit podwójny"
 
 msgid "encoding"
 msgstr "kodowanie"
+
+#~ msgid "Output:"
+#~ msgstr "Wyjście:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Rodzaj źródła:"
+
+#~ msgid "Skin chooser"
+#~ msgstr "Wybór skórki"
+
+#~ msgid "Select a font..."
+#~ msgstr "Wybierz font..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Wyłącz obsługę skórek"
+
+#~ msgid "Appearance"
+#~ msgstr "Wygląd"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Nadpisz ustawienia skórki"
+
+#~ msgid "Fonts"
+#~ msgstr "Fonty"
+
+#~ msgid "Playlist: "
+#~ msgstr "Lista utworów: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Kolekcja Muzyki: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Duży zegar: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Małe zegary: "
+
+#~ msgid "Song title: "
+#~ msgstr "Tytuł utworu: "
+
+#~ msgid "Song info: "
+#~ msgstr "Informacje o utworze: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Pasek stanu: "
+
+#~ msgid "Colors"
+#~ msgstr "Kolory"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Utwór w liście utworów: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Aktywny utwór w liście utworów: "
+
+#~ msgid "Available skins"
+#~ msgstr "Dostępne skórki"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

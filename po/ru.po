@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2012-08-23 16:16+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -910,14 +910,11 @@ msgstr "Имя"
 msgid "STOPPING"
 msgstr "ОСТАНОВКА"
 
-msgid "Output:"
-msgstr "Вывод:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Нет вывода"
-
-msgid "SRC Type: "
-msgstr "Тип SRC:"
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -990,11 +987,11 @@ msgstr ""
 "может быть встроена в область уведомлений. Возможно, ваш рабочий стол не "
 "поддерживает системный лоток или неправильно настроен."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Настройки"
-
-msgid "Skin chooser"
-msgstr "Выбор скина"
 
 msgid "JACK port setup"
 msgstr "Настройка порта JACK"
@@ -1666,12 +1663,6 @@ msgstr ""
 "Вам придётся перезапустить Aqualung, чтобы вступили в силу следующие "
 "изменения:"
 
-msgid "Select a font..."
-msgstr "Выбрать шрифт..."
-
-msgid "Disable skin support"
-msgstr "Отключить поддержку скинов"
-
 msgid "rw"
 msgstr "чтение/запись"
 
@@ -1917,6 +1908,9 @@ msgstr "Ошибка недействительная кодировка сим�
 
 msgid "Main window"
 msgstr "Главное окно"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Отключить рельеф управляющих кнопок"
@@ -2313,45 +2307,6 @@ msgstr "Время ожидания ввода/вывода сокета:"
 msgid "seconds"
 msgstr "секунд"
 
-msgid "Appearance"
-msgstr "Внешний вид"
-
-msgid "Override skin settings"
-msgstr "Сбросить настройки скина"
-
-msgid "Fonts"
-msgstr "Шрифты"
-
-msgid "Playlist: "
-msgstr "Плей-лист: "
-
-msgid "Music Store: "
-msgstr "Музыкальная библиотека: "
-
-msgid "Big timer: "
-msgstr "Большой таймер: "
-
-msgid "Small timers: "
-msgstr "Маленькие таймеры: "
-
-msgid "Song title: "
-msgstr "Название песни: "
-
-msgid "Song info: "
-msgstr "Информация о песне: "
-
-msgid "Statusbar: "
-msgstr "Строка состояния: "
-
-msgid "Colors"
-msgstr "Цвета"
-
-msgid "Song in playlist: "
-msgstr "Песня в плей-листе: "
-
-msgid "Active song in playlist: "
-msgstr "Активная песня в плей-листе: "
-
 msgid "(Untitled)"
 msgstr "(без названия)"
 
@@ -2618,9 +2573,6 @@ msgstr "Поиск"
 
 msgid "Search the Playlist"
 msgstr "Поиск в плей-листе"
-
-msgid "Available skins"
-msgstr "Доступные скины"
 
 msgid "Drive info"
 msgstr "Информация о диске"
@@ -3296,6 +3248,63 @@ msgstr "бит двойной"
 
 msgid "encoding"
 msgstr "кодирование"
+
+#~ msgid "Output:"
+#~ msgstr "Вывод:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Тип SRC:"
+
+#~ msgid "Skin chooser"
+#~ msgstr "Выбор скина"
+
+#~ msgid "Select a font..."
+#~ msgstr "Выбрать шрифт..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Отключить поддержку скинов"
+
+#~ msgid "Appearance"
+#~ msgstr "Внешний вид"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Сбросить настройки скина"
+
+#~ msgid "Fonts"
+#~ msgstr "Шрифты"
+
+#~ msgid "Playlist: "
+#~ msgstr "Плей-лист: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Музыкальная библиотека: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Большой таймер: "
+
+#~ msgid "Small timers: "
+#~ msgstr "Маленькие таймеры: "
+
+#~ msgid "Song title: "
+#~ msgstr "Название песни: "
+
+#~ msgid "Song info: "
+#~ msgstr "Информация о песне: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Строка состояния: "
+
+#~ msgid "Colors"
+#~ msgstr "Цвета"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Песня в плей-листе: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Активная песня в плей-листе: "
+
+#~ msgid "Available skins"
+#~ msgstr "Доступные скины"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

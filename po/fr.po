@@ -15,11 +15,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2010-02-11 19:23+0100\n"
 "Last-Translator: Louis Opter <kalessin@kalessin.fr>\n"
 "Language-Team: \n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -919,14 +919,11 @@ msgstr "Nom"
 msgid "STOPPING"
 msgstr "ARRÊT"
 
-msgid "Output:"
-msgstr "Sortie :"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Pas de sortie"
-
-msgid "SRC Type: "
-msgstr "Type de source :"
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -1003,11 +1000,11 @@ msgstr ""
 "votre gestionnaire de fenêtre ne supporte pas la zone de notification ou "
 "qu'il est mal configuré."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Préférences"
-
-msgid "Skin chooser"
-msgstr "Changer d'apparence"
 
 msgid "JACK port setup"
 msgstr "Configuration de JACK"
@@ -1682,12 +1679,6 @@ msgstr ""
 "Vous devez relancer Aqualung pour que les changements suivants prennent "
 "effet :"
 
-msgid "Select a font..."
-msgstr "Sélectionnez une police..."
-
-msgid "Disable skin support"
-msgstr "Désactiver le support des thèmes"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1910,6 +1901,9 @@ msgstr "Erreur codage de caractère invalide"
 
 msgid "Main window"
 msgstr "Fenêtre Principale"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Désactiver le relief des boutons de contrôles"
@@ -2315,45 +2309,6 @@ msgstr "Délai avant de considérer une connexion comme perdue :"
 msgid "seconds"
 msgstr "secondes"
 
-msgid "Appearance"
-msgstr "Apparence"
-
-msgid "Override skin settings"
-msgstr "Surcharger les préférences du thème"
-
-msgid "Fonts"
-msgstr "Polices"
-
-msgid "Playlist: "
-msgstr "Liste de lecture : "
-
-msgid "Music Store: "
-msgstr "Discothèque : "
-
-msgid "Big timer: "
-msgstr "Grande minuterie : "
-
-msgid "Small timers: "
-msgstr "Petites minuteries : "
-
-msgid "Song title: "
-msgstr "Titre de la chanson : "
-
-msgid "Song info: "
-msgstr "Informations sur la chanson : "
-
-msgid "Statusbar: "
-msgstr "Barre d'état : "
-
-msgid "Colors"
-msgstr "Couleurs"
-
-msgid "Song in playlist: "
-msgstr "Chanson dans la liste de lecture : "
-
-msgid "Active song in playlist: "
-msgstr "Chanson active dans la liste de lecture : "
-
 msgid "(Untitled)"
 msgstr "(Sans titre)"
 
@@ -2620,9 +2575,6 @@ msgstr "Rechercher"
 
 msgid "Search the Playlist"
 msgstr "Rechercher dans la liste de lecture"
-
-msgid "Available skins"
-msgstr "Thèmes disponibles"
 
 msgid "Drive info"
 msgstr "Informations sur le lecteur"
@@ -3301,6 +3253,63 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "encodage"
+
+#~ msgid "Output:"
+#~ msgstr "Sortie :"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Type de source :"
+
+#~ msgid "Skin chooser"
+#~ msgstr "Changer d'apparence"
+
+#~ msgid "Select a font..."
+#~ msgstr "Sélectionnez une police..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Désactiver le support des thèmes"
+
+#~ msgid "Appearance"
+#~ msgstr "Apparence"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Surcharger les préférences du thème"
+
+#~ msgid "Fonts"
+#~ msgstr "Polices"
+
+#~ msgid "Playlist: "
+#~ msgstr "Liste de lecture : "
+
+#~ msgid "Music Store: "
+#~ msgstr "Discothèque : "
+
+#~ msgid "Big timer: "
+#~ msgstr "Grande minuterie : "
+
+#~ msgid "Small timers: "
+#~ msgstr "Petites minuteries : "
+
+#~ msgid "Song title: "
+#~ msgstr "Titre de la chanson : "
+
+#~ msgid "Song info: "
+#~ msgstr "Informations sur la chanson : "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Barre d'état : "
+
+#~ msgid "Colors"
+#~ msgstr "Couleurs"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Chanson dans la liste de lecture : "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Chanson active dans la liste de lecture : "
+
+#~ msgid "Available skins"
+#~ msgstr "Thèmes disponibles"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

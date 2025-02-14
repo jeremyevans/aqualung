@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-06-04 10:45-0700\n"
+"POT-Creation-Date: 2025-02-14 09:08+0100\n"
 "PO-Revision-Date: 2023-01-30 19:55+0200\n"
 "Last-Translator: Albano Battistella <albano_battistellaòhotmail.com>\n"
 "Language-Team: Italiano\n"
@@ -911,14 +911,11 @@ msgstr "Nome"
 msgid "STOPPING"
 msgstr ""
 
-msgid "Output:"
-msgstr "Uscita:"
+msgid "IDLE"
+msgstr ""
 
 msgid "No output"
 msgstr "Nessuna uscita"
-
-msgid "SRC Type: "
-msgstr "Tipo SRC: "
 
 #, c-format
 msgid "Loop range: %d-%d%% [%s - %s]"
@@ -994,11 +991,11 @@ msgstr ""
 "L'ambiente desktop da te in uso potrebbe non avere il supporto alla system "
 "tray oppure non essere configurato in maniera appropriata."
 
+msgid "Reload theme"
+msgstr ""
+
 msgid "Settings"
 msgstr "Impostazioni"
-
-msgid "Skin chooser"
-msgstr "Scelta Skin"
 
 msgid "JACK port setup"
 msgstr "Impostazioni JACK"
@@ -1666,12 +1663,6 @@ msgid ""
 msgstr ""
 "Necessiti di riavviare Aqualung affinché i seguenti cambi abbiano effetto:"
 
-msgid "Select a font..."
-msgstr "Seleziona una font..."
-
-msgid "Disable skin support"
-msgstr "Disabilita il supporto alle diverse interfacce"
-
 msgid "rw"
 msgstr "rw"
 
@@ -1855,6 +1846,9 @@ msgstr ""
 
 msgid "Main window"
 msgstr "Finestra principale"
+
+msgid "Dark theme"
+msgstr ""
 
 msgid "Disable control buttons relief"
 msgstr "Disabilita il rilievo per i pulsanti non attivi"
@@ -2249,45 +2243,6 @@ msgstr "Timeout per socket I/O:"
 msgid "seconds"
 msgstr "secondi"
 
-msgid "Appearance"
-msgstr "Apparenza"
-
-msgid "Override skin settings"
-msgstr "Modifica le impostazioni delle interfacce"
-
-msgid "Fonts"
-msgstr "Font"
-
-msgid "Playlist: "
-msgstr "Playlist: "
-
-msgid "Music Store: "
-msgstr "Music Store: "
-
-msgid "Big timer: "
-msgstr "Contatore - Cifre grandi:"
-
-msgid "Small timers: "
-msgstr "Contatore - Cifre piccole"
-
-msgid "Song title: "
-msgstr "Titolo canzone: "
-
-msgid "Song info: "
-msgstr "Info canzone: "
-
-msgid "Statusbar: "
-msgstr "Barra di stato: "
-
-msgid "Colors"
-msgstr "Colori"
-
-msgid "Song in playlist: "
-msgstr "Canzone nella playlist: "
-
-msgid "Active song in playlist: "
-msgstr "Traccia in esecuzione nella playlist: "
-
 msgid "(Untitled)"
 msgstr "(Senza titolo)"
 
@@ -2554,9 +2509,6 @@ msgstr "Cerca"
 
 msgid "Search the Playlist"
 msgstr "Cerca la Playlist"
-
-msgid "Available skins"
-msgstr "Skin disponibili"
 
 msgid "Drive info"
 msgstr "Informazioni driver"
@@ -3227,6 +3179,63 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "Codifica"
+
+#~ msgid "Output:"
+#~ msgstr "Uscita:"
+
+#~ msgid "SRC Type: "
+#~ msgstr "Tipo SRC: "
+
+#~ msgid "Skin chooser"
+#~ msgstr "Scelta Skin"
+
+#~ msgid "Select a font..."
+#~ msgstr "Seleziona una font..."
+
+#~ msgid "Disable skin support"
+#~ msgstr "Disabilita il supporto alle diverse interfacce"
+
+#~ msgid "Appearance"
+#~ msgstr "Apparenza"
+
+#~ msgid "Override skin settings"
+#~ msgstr "Modifica le impostazioni delle interfacce"
+
+#~ msgid "Fonts"
+#~ msgstr "Font"
+
+#~ msgid "Playlist: "
+#~ msgstr "Playlist: "
+
+#~ msgid "Music Store: "
+#~ msgstr "Music Store: "
+
+#~ msgid "Big timer: "
+#~ msgstr "Contatore - Cifre grandi:"
+
+#~ msgid "Small timers: "
+#~ msgstr "Contatore - Cifre piccole"
+
+#~ msgid "Song title: "
+#~ msgstr "Titolo canzone: "
+
+#~ msgid "Song info: "
+#~ msgstr "Info canzone: "
+
+#~ msgid "Statusbar: "
+#~ msgstr "Barra di stato: "
+
+#~ msgid "Colors"
+#~ msgstr "Colori"
+
+#~ msgid "Song in playlist: "
+#~ msgstr "Canzone nella playlist: "
+
+#~ msgid "Active song in playlist: "
+#~ msgstr "Traccia in esecuzione nella playlist: "
+
+#~ msgid "Available skins"
+#~ msgstr "Skin disponibili"
 
 #~ msgid ""
 #~ "Artist appears to be in all lowercase.\n"

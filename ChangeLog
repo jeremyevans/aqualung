@@ -1,3 +1,18 @@
+2025-02-15	Jeremy Evans <code at jeremyevans dot net>
+
+    * Aqualung 2.0
+        http://aqualung.jeremyevans.net
+
+	* Migrate UI to Gtk3 (depends on Gtk3 3.24, the last Gtk3 release)
+
+	* Remove skins and migrate to CSS; add an option to use dark theme
+
+	* Add more supported formats to FFmpeg decoder
+
+	* Add support for recent versions of Monkey's Audio
+
+	* Several fixes to memory handling bugs (leakage & safety)
+
 2023-06-08	Jeremy Evans <code at jeremyevans dot net>
 
     * Aqualung 1.2

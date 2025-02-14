@@ -177,8 +177,7 @@ no gaps</b></i> between adjacent tracks.
   <li>Internally working volume and balance controls (not touching the
   soundcard mixer).</li>
 
-  <li>Support for multiple skins; changing them is possible at any
-  time.</li>
+  <li>Support for dark theme; enable it in Settings.</li>
 
   <li>Support for random seeking during playback.</li>
 

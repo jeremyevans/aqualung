@@ -55,8 +55,8 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
       <th>how to turn it off</th>
     </tr>
     <tr>
-      <td>GTK+-2.0</td>
-      <td>Graphical user interface, requires version 2.18</td>
+      <td>GTK+-3.0</td>
+      <td>Graphical user interface, requires version 3.24</td>
       <td>
 	    <a href="http://www.gtk.org/">http://www.gtk.org</a>
       </td>
@@ -99,7 +99,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
     <tr>
       <td>libcddb</td>
       <td>Library to access CDDB/FreeDB server</td>
-      <td><a href="http://sourceforge.net/projects/libcddb">http://sourceforge.net/projects/libcddb</a></td>
+      <td><a href="https://libcddb.sf.net">https://libcddb.sf.net</a></td>
       <td><tt>--without-cddb</tt></td>
     </tr>
     <tr>
@@ -150,26 +150,25 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
     <tr>
       <td>libFLAC</td>
       <td>Library to decode and encode FLAC audio files</td>
-      <td><a href="http://flac.sourceforge.net/">http://flac.sourceforge.net</a></td>
+      <td><a href="https://xiph.org/flac/">https://xiph.org/flac</a></td>
       <td><tt>--without-flac</tt></td>
     </tr>
     <tr>
       <td>libvorbis<br>libvorbisfile</td>
       <td>Library to decode Ogg Vorbis audio files</td>
-      <td><a href="http://www.vorbis.com/">http://www.vorbis.com</a></td>
+      <td><a href="https://xiph.org/vorbis/">https://xiph.org/vorbis</a></td>
       <td><tt>--without-ogg</tt></td>
     </tr>
     <tr>
       <td>libvorbis<br>libvorbisenc</td>
       <td>Library to encode Ogg Vorbis audio files</td>
-      <td><a href="http://www.vorbis.com/">http://www.vorbis.com</a></td>
+      <td><a href="https://xiph.org/vorbis/">https://xiph.org/vorbis</a></td>
       <td><code>--without-vorbisenc</code></td>
     </tr>
     <tr>
       <td>liboggz<br>libspeex</td>
       <td>Library to decode Ogg Speex audio files</td>
-      <td><a href="http://www.annodex.net/software/liboggz/">http://www.annodex.net/software/liboggz/</a><br>
-      <a href="http://speex.org/">http://speex.org</a></td>
+      <td><a href="http://speex.org/">http://speex.org</a></td>
       <td><tt>--without-speex</tt></td>
     </tr>
     <tr>
@@ -199,7 +198,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
     <tr>
       <td>libmac</td>
       <td>Library to decode Monkey's Audio files</td>
-      <td><a href="http://etree.org/shnutils/shntool/support/formats/ape/unix/">http://etree.org/shnutils/shntool/support</a></td>
+      <td><a href="https://www.monkeysaudio.com/">https://www.monkeysaudio.com</a></td>
       <td><tt>--without-mac</tt></td>
     </tr>
     <tr>
@@ -246,19 +245,19 @@ packages of libavcodec, libavformat and libavutil should be OK.</td>
     <tr>
       <td>libasound</td>
       <td>ALSA sound library</td>
-      <td><a href="http://www.alsa-project.org/">http://www.alsa-project.org</a></td>
+      <td></td>
       <td><tt>--without-alsa</tt></td>
     </tr>
     <tr>
       <td>JACK</td>
       <td>JACK Audio Connection Kit</td>
-      <td><a href="http://jackit.sf.net/">http://jackit.sf.net</a></td>
+      <td><a href="https://jackaudio.org/">https://jackaudio.org</a></td>
       <td><tt>--without-jack</tt></td>
     </tr>
     <tr>
       <td>libpulse-simple</td>
       <td>PulseAudio</td>
-      <td><a href="http://pulseaudio.org/">http://pulseaudio.org</a></td>
+      <td></td>
       <td><tt>--without-pulse</tt></td>
     </tr>
   </tbody></table>
@@ -318,7 +317,7 @@ platforms, keep in mind that this is still experimental.</p>
 <h1>Installing Aqualung</h1>
 
 <p><tt>make install </tt> will put the executable, the manpage, the
-icons and the skins in the right places. What the
+icons and the themes in the right places. What the
 right places are depends on your system, and can be set manually by
 using standard <tt> ./configure </tt> options, most notably <tt>
 --prefix</tt>. If you are not familiar with this, <tt> ./configure

@@ -336,13 +336,13 @@ create_about_window() {
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Homepage:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, " http://aqualung.jeremyevans.net\n", -1);
 
-	gtk_text_buffer_insert_at_cursor(buffer, "\nCopyright (C) 2004-2014 Tom Szilagyi\n\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\nCopyright (C) 2004-2014, 2025 Tom Szilagyi\n\n\n", -1);
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert_with_tags(buffer, &iter, _("Authors:"), -1, tag, NULL);
 	gtk_text_buffer_insert_at_cursor(buffer, "\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Core design, engineering & programming:\n"), -1);
-	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <tszilagyi@users.sourceforge.net>\n\n", -1);
+	gtk_text_buffer_insert_at_cursor(buffer, "\tTom Szilagyi <https://tomscii.sig7.se/id>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Skin support, look & feel, GUI hacks:\n"), -1);
 	gtk_text_buffer_insert_at_cursor(buffer, "\tPeter Szilagyi <peterszilagyi@users.sourceforge.net>\n\n", -1);
 	gtk_text_buffer_insert_at_cursor(buffer, _("Programming, GUI engineering:\n"), -1);

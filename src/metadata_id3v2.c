@@ -536,6 +536,12 @@ meta_parse_id3v2_frame(metadata_t * meta, unsigned char * buf, int len,
 		}
 	}
 
+	if (pay_len > len) {
+		fprintf(stderr, "meta_parse_id3v2_frame: Corrupt header data, pay_len=%d\n",
+			pay_len);
+		return len;
+	}
+
 	if (frame_id[0] == 'T') {
 		if ((frame_id[1] == 'X') &&
 		    (frame_id[2] == 'X') &&

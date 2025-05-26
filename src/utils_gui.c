@@ -501,8 +501,8 @@ assign_audio_fc_filters(GtkFileChooser * fc) {
 		char * valid_ext_lavc[] = {
 			"aac", "ac3", "aiff", "ape", "asf", "au", "avi", "flac", "m4a",
 			"mpa", "mpc", "mpeg", "mpega", "mpg", "mpga", "mp1", "mp2",
-			"mp2a", "mp3", "mpa2", "ogg", "ra", "spx", "voc", "w64", "wav",
-			"wma", "wv", NULL };
+			"mp2a", "mp3", "mpa2", "ogg", "opus", "ra", "spx", "voc", "w64",
+			"wav", "wma", "wv", NULL };
 		build_filter_from_extensions(filter, filter_all, valid_ext_lavc);
 	}
         gtk_file_chooser_add_filter(fc, filter);

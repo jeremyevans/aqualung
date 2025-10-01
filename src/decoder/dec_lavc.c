@@ -360,7 +360,7 @@ lavc_decoder_close(decoder_t * dec) {
 
 	lavc_pdata_t * pd = (lavc_pdata_t *)dec->pdata;
 
-	avcodec_close(pd->avCodecCtx);
+	avcodec_free_context(&pd->avCodecCtx);
 
 	avformat_close_input(&pd->avFormatCtx);
 

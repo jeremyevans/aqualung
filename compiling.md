@@ -199,7 +199,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
       <td>libmac</td>
       <td>Library to decode Monkey's Audio files</td>
       <td><a href="https://www.monkeysaudio.com/">https://www.monkeysaudio.com</a></td>
-      <td><tt>--without-mac</tt></td>
+      <td><tt>--without-MAC</tt></td>
     </tr>
     <tr>
       <td>libwavpack</td>

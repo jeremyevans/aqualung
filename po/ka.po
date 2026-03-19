@@ -1,0 +1,3122 @@
+# Georgian translation for aqualung.
+# Copyright (C) 2026 Tom Szilagyi.
+# This file is distributed under the same license as the aqualung package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aqualung git\n"
+"Report-Msgid-Bugs-To: aqualung-friends@lists.sourceforge.net\n"
+"POT-Creation-Date: 2025-05-26 08:41+0200\n"
+"PO-Revision-Date: 2026-03-19 15:30+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+msgid "Optional features:"
+msgstr "არასავალდებულო ფუნქციები:"
+
+msgid "LADSPA plugin support\n"
+msgstr "LADSPA-ის მოდულის მხარდაჭერა\n"
+
+msgid "CDDA (Audio CD) support\n"
+msgstr "CDDA-ის (Audio CD) მხარდაჭერა\n"
+
+msgid "CDDB support\n"
+msgstr "CDDB-ის მხარდაჭერა\n"
+
+msgid "Sample Rate Converter support\n"
+msgstr "ბიტური სიჩქარის გადამყვანის მხარდაჭერა\n"
+
+msgid "iRiver iFP driver support\n"
+msgstr "iRiver iFP-ის დრაივერის მხარდაჭერა\n"
+
+msgid "JACK port management support\n"
+msgstr "JACK-ის პორტის მართვის მხარდაჭერა\n"
+
+msgid "Loop playback support\n"
+msgstr "მარყუჟის დაკვრის მხარდაჭერა\n"
+
+msgid "Systray support\n"
+msgstr "სისტემურ საათთან ჩაკეცვის მხარდაჭერა\n"
+
+msgid "Podcast support\n"
+msgstr "პოდკასტის მხარდაჭერა\n"
+
+msgid "Lua extension support\n"
+msgstr "Lua-ზე დაწერილი გაფართოებების მხარდაჭერა\n"
+
+msgid "Decoding support:"
+msgstr "დეკოდირების მხარდაჭერა:"
+
+msgid "sndfile (WAV, AIFF, etc.)\n"
+msgstr "sndfile (WAV, AIFF და ა.შ.)\n"
+
+msgid "Free Lossless Audio Codec (FLAC)\n"
+msgstr "Free Lossless Audio Codec (FLAC)\n"
+
+msgid "Ogg Vorbis\n"
+msgstr "Ogg Vorbis\n"
+
+msgid "Ogg Speex\n"
+msgstr "Ogg Speex\n"
+
+msgid "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+msgstr "MPEG Audio (MPEG 1-2.5 Layer I-III)\n"
+
+msgid "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+msgstr "MOD Audio (MOD, S3M, XM, IT, etc.)\n"
+
+msgid "Musepack\n"
+msgstr "Musepack\n"
+
+msgid "Monkey's Audio Codec\n"
+msgstr "Monkey's Audio Codec\n"
+
+msgid "WavPack\n"
+msgstr "WavPack\n"
+
+msgid "LAVC (AC3, AAC, WavPack, WMA, etc.)\n"
+msgstr "LAVC (AC3, AAC, WavPack, WMA და ა.შ.)\n"
+
+msgid "Encoding support:"
+msgstr "კოდირების მხარდაჭერა:"
+
+msgid "sndfile (WAV)\n"
+msgstr "sndfile (WAV)\n"
+
+msgid "LAME (MP3)\n"
+msgstr "LAME (MP3)\n"
+
+msgid "Output driver support:"
+msgstr "გამოტანის დრაივერის მხარდაჭერა:"
+
+msgid "sndio Audio\n"
+msgstr "sndio Audio\n"
+
+msgid "OSS Audio\n"
+msgstr "OSS Audio\n"
+
+msgid "ALSA Audio\n"
+msgstr "ALSA Audio\n"
+
+msgid "JACK Audio Server\n"
+msgstr "აუდიოსერვერი JACK\n"
+
+msgid "PulseAudio\n"
+msgstr "PulseAudio\n"
+
+msgid "Win32 Sound API\n"
+msgstr "Win32-ის ხმის API\n"
+
+msgid "About"
+msgstr "შესახებ"
+
+msgid "Build version: "
+msgstr "აგების ვერსია: "
+
+msgid "Homepage:"
+msgstr "საწყისი გვერდი:"
+
+msgid "Authors:"
+msgstr "ავტორები:"
+
+msgid "Core design, engineering & programming:\n"
+msgstr "ძირითადი დიზაინი, ინჟინერია და პროგრამირება:\n"
+
+msgid "Skin support, look & feel, GUI hacks:\n"
+msgstr "სკინების მხარდაჭერა, გარეგნობა, ინტერფეისის მორგება:\n"
+
+msgid "Programming, GUI engineering:\n"
+msgstr "პროგრამირება, ინტერფეისის ინჟინერია\n"
+
+msgid "OpenBSD compatibility, metadata tweaks:\n"
+msgstr "OpenBSD-ისთან თავსებადობა, მეტამონაცემთა შესწორებები:\n"
+
+msgid "Miscellaneous, minimalism:\n"
+msgstr "სხვადასხვა, მინიმალიზმი:\n"
+
+msgid "Translators:"
+msgstr "მთარგმნელები:"
+
+msgid "Chinese (simplified):\n"
+msgstr "ჩინური (გამარტივებული):\n"
+
+msgid "Czech:\n"
+msgstr "ჩეხური:\n"
+
+msgid "Dutch:\n"
+msgstr "ჰოლანდიური:\n"
+
+msgid "French:\n"
+msgstr "ფრანგული:\n"
+
+msgid "German:\n"
+msgstr "გერმანული:\n"
+
+msgid "Hungarian:\n"
+msgstr "უნგრული:\n"
+
+msgid "Italian:\n"
+msgstr "იტალიური:\n"
+
+msgid "Japanese:\n"
+msgstr "იაპონური:\n"
+
+msgid "Polish:\n"
+msgstr "პოლონური:\n"
+
+msgid "Russian:\n"
+msgstr "რუსული:\n"
+
+msgid "Spanish:\n"
+msgstr "ესპანური:\n"
+
+msgid "Swedish:\n"
+msgstr "შვედური:\n"
+
+msgid "Ukrainian:\n"
+msgstr "უკრაინული:\n"
+
+msgid "Graphics:"
+msgstr "გრაფიკა:"
+
+msgid "Logo, icons:\n"
+msgstr "ლოგო, ხატულები:\n"
+
+msgid "This Aqualung binary is compiled with:"
+msgstr "ეს Aqualung-ის ბინარული ფაილი აგებულია პარამეტრებით:"
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
+msgstr ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 675 Mass "
+"Ave, Cambridge, MA 02139, USA."
+
+msgid "Enabled"
+msgstr "ჩართულია"
+
+msgid "Source"
+msgstr "წყარო"
+
+msgid "CDDB"
+msgstr "&CDDB"
+
+msgid "CDDB (not available)"
+msgstr "CDDB (ხელმისაწვდომი არაა)"
+
+msgid "Metadata"
+msgstr "მეტამონაცემები"
+
+msgid "Filesystem"
+msgstr "ფაილური სისტემა"
+
+msgid "Capitalization"
+msgstr "მთავრული ასოებით წერა"
+
+msgid "Capitalize: "
+msgstr "გადაყვანა დიდ ასოებში: "
+
+msgid "All words"
+msgstr "ყველა სიტყვა"
+
+msgid "First word only"
+msgstr "მხოლოდ პირველი სიტყვა"
+
+msgid "Force case: "
+msgstr "ნაძალადევად: "
+
+msgid "Force other letters to lowercase"
+msgstr "სხვა ასოების დაპატარავება"
+
+msgid "Regular expression"
+msgstr "რეგულარული გამოსახულება"
+
+msgid "Regexp:"
+msgstr "რეგგამოს:"
+
+msgid "Replace:"
+msgstr "ჩანაცვლება:"
+
+msgid "Predefined transformations"
+msgstr "წინასწარ განსაზღვრული ტრანსფორმაციები"
+
+msgid "Remove file extension"
+msgstr "ფაილის გაფართოების წაშლა"
+
+msgid "Remove leading number"
+msgstr "თავში მიწერილი ნომრის წაშლა"
+
+msgid "Convert underscore to space"
+msgstr "ქვედა ტირეს ჰარედ გადაკეთება"
+
+msgid "Trim leading, tailing and duplicate spaces"
+msgstr "თავში, ბოლოში და გამეორებული ჰარეების წაკვეთა"
+
+msgid "Regexp matches empty string"
+msgstr "რეგგამოსი ცარიელ სტრიონს ემთხვევა"
+
+msgid "Please select the root directory."
+msgstr "აირჩიეთ ძირითადი საქაღალდე."
+
+msgid "Select build type"
+msgstr "აირჩიეთ აგების ტიპი"
+
+msgid "Directory driven"
+msgstr "საქაღალდის მიხედვით"
+
+msgid ""
+"Follows the directory structure to identify the artists and\n"
+"records. The files are added on a record basis."
+msgstr ""
+
+msgid "Independent"
+msgstr "დამოუკიდებელი"
+
+msgid ""
+"Recursive search from the root directory for audio files.\n"
+"The files are processed independently, so only metadata\n"
+"and filename transformation are available."
+msgstr ""
+
+msgid "Load settings from Music Store file"
+msgstr "პარამეტრების ჩატვირთვა მუსიკის ბიბლიოთეკის ფაილიდან"
+
+msgid "Build/Update store"
+msgstr "აგება/ბიბლიოთეკის განახლება"
+
+msgid "General"
+msgstr "ზოგადი"
+
+msgid "Directory structure"
+msgstr "საქაღალდის სტრუქტურა"
+
+msgid "Root path:"
+msgstr "Root ბილიკი:"
+
+msgid "_Browse..."
+msgstr "_დათვალიერება..."
+
+msgid "Structure:"
+msgstr "სტრუქტურა:"
+
+msgid "root / record / track"
+msgstr "ძირითადი / ჩანაწერი / ბილიკი"
+
+msgid "root / artist / record / track"
+msgstr "ძირითადი / შემსრულებელი / ჩანაწერი / ბილიკი"
+
+msgid "root / artist / artist / record / track"
+msgstr "ძირითადი / შემსრულებელი / შემსრულებელი / ჩანაწერი / ბილიკი"
+
+msgid "root / artist / artist / artist / record / track"
+msgstr ""
+"ძირითადი / შემსრულებელი / შემსრულებელი / შემსრულებელი / ჩანაწერი / ბილიკი"
+
+msgid "Exclude files matching wildcard"
+msgstr "ვაილდკარდის შესაბამისი ფაილების გამორიცხვა"
+
+msgid "Include only files matching wildcard"
+msgstr "მხოლოდ, ვაილდკარდის შესაბამისი ფაილების ჩასმა"
+
+msgid "Reread data for existing tracks"
+msgstr "მონაცემების თავიდან წაკითხვა არსებული ტრეკებისთვის"
+
+msgid "Remove non-existing files from store"
+msgstr "არარსებული ფაილების მოცილება ბიბლიოთეკიდან"
+
+msgid "Artist"
+msgstr "შემსრულებელი"
+
+msgid "Sort artists by"
+msgstr "შემსრულებლების დალაგების პირობა"
+
+msgid "Artist name"
+msgstr "შემსრულებლის სახელი"
+
+msgid "Artist name (lowercase)"
+msgstr "შემსრულებლის სახელი (პატარა ასოებით)"
+
+msgid "Directory name"
+msgstr "საქაღალდის სახელი"
+
+msgid "Directory name (lowercase)"
+msgstr "საქაღალდის სახელი (პატარა ასოებით)"
+
+msgid "Record"
+msgstr "ჩაწერა"
+
+msgid "Sort records by"
+msgstr "ჩანაწერების დალაგების პირობა"
+
+msgid "Record name"
+msgstr "ჩანაწერის სახელი"
+
+msgid "Record name (lowercase)"
+msgstr "ჩანაწერის სახელი (პატარა ასოებით)"
+
+msgid "Year"
+msgstr "წელი"
+
+msgid "Add year to the comments of new records"
+msgstr "წლის დამატება ახალი ჩანაწერების კომენტარში"
+
+msgid "Track"
+msgstr "ტრეკი"
+
+msgid "Import Replaygain tag as manual RVA"
+msgstr "Replaygain-ის ჭდის შემოტანა მორგებული RVA-ის სახით"
+
+msgid "Import Comment tag"
+msgstr "კომენტარის ჭდის შემოტანა"
+
+msgid "Sandbox"
+msgstr "სენდბოქსი"
+
+msgid "Filename:"
+msgstr "ფაილის სახელი:"
+
+msgid "Test"
+msgstr "შემოწმება"
+
+msgid "Building store from filesystem"
+msgstr "ბიბლიოთეკის აგება ფაილური სისტემიდან"
+
+msgid "Processing:"
+msgstr "დამუშავება:"
+
+msgid "Action:"
+msgstr "ქმედება:"
+
+msgid "Abort"
+msgstr "შეწყვეტა"
+
+msgid "Unknown Artist"
+msgstr "უცნობი შემსრულებელი"
+
+msgid "Unknown Record"
+msgstr "უცნობი ჩანაწერი"
+
+msgid "Scanning files"
+msgstr "ფაილების სკანირება"
+
+msgid "Processing metadata"
+msgstr "მეტამონაცემების დამუშავება"
+
+msgid "CDDB lookup"
+msgstr "CDDB ძებნა"
+
+msgid "Name transformation"
+msgstr "სახელის გარდაქმნა"
+
+msgid "Reading file"
+msgstr "ფაილის კითხვა"
+
+msgid "Removing non-existing files"
+msgstr "არარსებული ფაილების წაშლა"
+
+msgid "Please select the directory for ripped files."
+msgstr "აირჩიეთ საქაღალდე დარიპული ფაილებისთვის."
+
+msgid "(none)"
+msgstr "(არცერთი)"
+
+msgid "fast"
+msgstr "სწრაფი"
+
+msgid "best"
+msgstr "საუკეთესო"
+
+msgid "Compression level:"
+msgstr "შეკუმშვის დონე:"
+
+msgid "Bitrate [kbps]:"
+msgstr "ბიტური სიჩქარე [კბწმ]:"
+
+msgid "Artist/Album already existing, not empty"
+msgstr "შემსრულებელი/ალბომი უკვე არსებობს. ცარიელი არაა"
+
+msgid ""
+"\n"
+"The Music Store you selected has a matching Artist and Album, already "
+"containing some tracks. If you press OK, these tracks will be removed. The "
+"files themselves will be left intact, but they will be removed from the "
+"destination Music Store. Press Cancel to get back to change the Artist/Album "
+"or the destination Music Store."
+msgstr ""
+
+msgid "Rip CD"
+msgstr "CD-ის დარიპვა"
+
+msgid "Artist:"
+msgstr "შემსრულებელი:"
+
+msgid "Album:"
+msgstr "ალბომი:"
+
+msgid "Year:"
+msgstr "წელი:"
+
+msgid "Genre:"
+msgstr "ჟანრი:"
+
+msgid "Rip"
+msgstr "რიპი"
+
+msgid "No."
+msgstr "ნომერი."
+
+msgid "Title"
+msgstr "სათაური"
+
+msgid "Select"
+msgstr "არჩევა"
+
+msgid "All"
+msgstr "ყველა"
+
+msgid "None"
+msgstr "არცერთი"
+
+msgid "Output"
+msgstr "გამოტანა"
+
+msgid "Destination"
+msgstr "სამიზნე"
+
+msgid "Target directory for ripped files"
+msgstr "სამიზნე საქაღალდე დარიპული ფაილებისთვის"
+
+msgid "Add to Music Store"
+msgstr "დამატება მუსიკის ბიბლიოთეკაში"
+
+msgid "Format"
+msgstr "ფორმატი"
+
+msgid "File format:"
+msgstr "ფაილის ფორმატი:"
+
+msgid "VBR encoding"
+msgstr "VBR კოდირება"
+
+msgid "Tag files with metadata"
+msgstr "ფაილებზე ჭდეების დადება მეტამონაცემებით"
+
+msgid "Paranoia"
+msgstr "Paranoia"
+
+msgid "Paranoia error correction"
+msgstr "Paranoia-ის შეცდომების გასწორება"
+
+msgid "Perform overlapped reads"
+msgstr "გადაფარვადი წაკითხვების შესრულება"
+
+msgid "Verify data integrity"
+msgstr "მონაცემთა მთლიანობის შემოწმება"
+
+msgid "Unlimited retry on failed reads (never skip)"
+msgstr "შეუზღუდავი გამეორება ჩავარდნილ წაკითხვებზე (არასდროს გამოტოვება)"
+
+msgid "Maximum number of retries:"
+msgstr "თავიდან ცდების მაქს. რაოდენობა:"
+
+msgid "Error"
+msgstr "შეცდომა"
+
+msgid ""
+"\n"
+"Destination directory is not read-write accessible!"
+msgstr ""
+"\n"
+"სამიზნე საქაღალდეზე ჩაწერა/წაკითხვის წვდომები არ გვაქვს!"
+
+msgid "Total"
+msgstr "სულ"
+
+msgid "(audio only)"
+msgstr "(მხოლოდ აუდიო)"
+
+msgid "Ripping CD tracks"
+msgstr "CD-ის ბილიკების დარიპვა"
+
+msgid "Begin"
+msgstr "დაწყება"
+
+msgid "Length"
+msgstr "სიგრძე"
+
+msgid "Progress"
+msgstr "მიმდინარეობა"
+
+msgid "Close window when complete"
+msgstr "ფანჯრის დახურვა დასრულების შემდეგ"
+
+msgid "Close"
+msgstr "დახურვა"
+
+msgid "Unknown disc"
+msgstr "უცნობი დისკი"
+
+msgid "No disc"
+msgstr "დისკი არ დევს"
+
+msgid "CDDB query"
+msgstr "CDDB მოთხოვნა"
+
+msgid "Retrieving matches from server..."
+msgstr "დამთხვევების მიღება სერვერიდან..."
+
+msgid "Connecting to CDDB server..."
+msgstr "CDDB სერვერთან დაკავშირება..."
+
+msgid "An error occurred while attempting to connect to the CDDB server."
+msgstr "CDDB სერვერთან დაკავშირების მცდელობისას აღმოჩენილია შეცდომა."
+
+msgid "Warning"
+msgstr "გაფრთხილება"
+
+msgid "No matching record found."
+msgstr "შესაბამისი ჩანაწერი აღმოჩენილი არაა."
+
+msgid "Import as Sort Key"
+msgstr "შემოტანა დალაგების გასაღებად"
+
+msgid "Import as Title"
+msgstr "შემოტანა სათაურად"
+
+msgid "Import as Year"
+msgstr "შემოტანა წლად"
+
+msgid "Matches:"
+msgstr "ემთხვევა:"
+
+msgid "Title:"
+msgstr "სათაური:"
+
+msgid "Category:"
+msgstr "კატეგორია:"
+
+msgid "Extended data:"
+msgstr "გაფართოებული მონაცემები:"
+
+msgid "Import as Artist"
+msgstr "შემოტანა შემსრულებლად"
+
+msgid "Add to Comments"
+msgstr "კომენტარებში დამატება"
+
+msgid "Tracks"
+msgstr "ტრეკი"
+
+msgid "Unknown Album"
+msgstr "უცნობი ალბომი"
+
+msgid "Unknown Track"
+msgstr "უცნობი ტრეკი"
+
+msgid "Please select the directory for exported files."
+msgstr "აირჩიეთ საქაღალდე გატანილი ფაილებისთვის."
+
+msgid "Copy"
+msgstr "კოპირება"
+
+msgid "Help"
+msgstr "დახმარება"
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct the filename of "
+"the exported files. The Original filename, Artist, Record and Track names "
+"are denoted by %%o, %%a, %%r and %%t. The track number and format-dependent "
+"file extension are denoted by %%n and %%x, respectively. %%i gives an "
+"identifier which is unique within an export session."
+msgstr ""
+
+msgid "Exporting files"
+msgstr "ფაილების გატანა"
+
+msgid "Source file:"
+msgstr "წყარო ფაილი:"
+
+msgid "Target file:"
+msgstr "სამიზნე ფაილი:"
+
+msgid "Progress:"
+msgstr "მიმდინარეობა:"
+
+msgid "Error in format string"
+msgstr "შეცდომა ფორმატის სტრიქონში"
+
+msgid "Export files"
+msgstr "ფალების გატანა"
+
+msgid "Location and filename"
+msgstr "მდებარეობა და ფაილის სახელი"
+
+msgid "Target directory:"
+msgstr "სამიზნე საქაღალდე:"
+
+msgid "Create subdirectories for artists"
+msgstr "ქვესაქაღალდეების შექმნა შემსრულებლებისთვის"
+
+msgid "Create subdirectories for albums"
+msgstr "ქვესაქაღალდეების შექმნა ალბომებისთვის"
+
+msgid ""
+"Subdirectory name\n"
+"length limit:"
+msgstr ""
+"ქვესაქაღალდის სახელის\n"
+"სიგრძის ზღვარი:"
+
+msgid "Filename template:"
+msgstr "ფაილის სახელის შაბლონი:"
+
+msgid "Filter"
+msgstr "ფილტრი"
+
+msgid "Do not reencode files already being in the target format"
+msgstr ""
+"არ მოხდეს იმ ფაილების თავიდან კოდირება, რომლებიც უკვე სამიზნე ფორმატშია"
+
+msgid ""
+"Do not reencode files\n"
+"matching wildcard:"
+msgstr ""
+"არ მოხდება თავიდან კოდირება ფაილებისა,\n"
+"რომლებიც ემთხვევიან ვაილდკარდს:"
+
+msgid "*File info"
+msgstr "*ფაილის ინფორმაცია"
+
+msgid "File info"
+msgstr "ფაილის ინფორმაცია"
+
+msgid "There are unsaved changes to the file metadata."
+msgstr "ფაილის მეტამონაცემებში არსებობს შეუნახავი ცვლილებები."
+
+msgid "Save and close"
+msgstr "შენახვა და დახურვა"
+
+msgid "Discard changes"
+msgstr "ცვლილებების გაუქმება"
+
+msgid "Do not close"
+msgstr "არ დახურო"
+
+#, c-format
+msgid ""
+"Conversion error in field %s:\n"
+"'%s' does not conform to format '%s'!"
+msgstr ""
+"გადაყვანის შეცდომა ველში %s:\n"
+"'%s' არ შეესაბამება ფორმატს '%s'!"
+
+msgid ""
+"Attached Picture frame with no image set!\n"
+"Please set an image or remove the frame."
+msgstr ""
+"მიმაგრებულია სურათის ჩარჩო სურათის გარეშე!\n"
+"დააყენეთ გამოსახულება, ან წაშალეთ ჩარჩო."
+
+#, c-format
+msgid ""
+"Failed to write metadata to file.\n"
+"Reason: %s"
+msgstr ""
+"მეტამონაცემების ფაილში ჩაწერა ჩავარდა.\n"
+"მიზეზი: %s"
+
+#, c-format
+msgid ""
+"Error converting field %s to Year:\n"
+"'%s' is not an integer number!"
+msgstr ""
+"ველის %s წელში გადაყვანის შეცდომა:\n"
+"'%s' მთელი რიცხვი არაა!"
+
+msgid "Please specify the file to save the image to."
+msgstr "მიუთითეთ ფაილი, რომელშიც გამოსახულების ჩაწერა მოხდება."
+
+msgid "(no image)"
+msgstr "(გამოსახულების გარეშე)"
+
+msgid "(error loading image)"
+msgstr "(გამოსახულების ჩატვირთვის შეცდომა)"
+
+msgid "Please specify the file to load the image from."
+msgstr "მიუთითეთ ფაილი, საიდანაც გამოსახულების წაკითხვა მოხდება."
+
+#, c-format
+msgid ""
+"Could not load image from:\n"
+"%s"
+msgstr ""
+"გამოსახულების ჩატვირთვა შეუძლებელია ფაილიდან:\n"
+"%s"
+
+#, c-format
+msgid "MIME type: %s"
+msgstr "MIME ტიპი: %s"
+
+msgid "Picture type:"
+msgstr "სურათის ტიპი:"
+
+msgid "Description:"
+msgstr "აღწერა:"
+
+msgid "(no description)"
+msgstr "(აღწერა არაა ხელმისაწვდომი)"
+
+msgid "Change"
+msgstr "ცვლილება"
+
+msgid "Save"
+msgstr "შენახვა"
+
+msgid "Import as Record"
+msgstr "შემოტანა ჩანაწერის სახით"
+
+msgid "Import as Track No."
+msgstr "შემოტანა ტრეკის ნომრის სახით."
+
+msgid "Import as RVA"
+msgstr "შემოტანა RVA-ის სახით"
+
+msgid "Add"
+msgstr "დამატება"
+
+msgid "field:"
+msgstr "ველი:"
+
+msgid "tag:"
+msgstr "ჭდე:"
+
+#, c-format
+msgid "%ld Hz"
+msgstr "%ld ჰც"
+
+msgid "MONO"
+msgstr "მონო"
+
+msgid "STEREO"
+msgstr "სტერეო"
+
+msgid "Audio CD"
+msgstr "აუდიო CD"
+
+msgid "Track:"
+msgstr "ტრეკი:"
+
+msgid "File:"
+msgstr "ფაილი:"
+
+msgid "Audio data"
+msgstr "აუდიომონაცემები"
+
+msgid "Format:"
+msgstr "ფორმატი:"
+
+msgid "Length:"
+msgstr "ხანგრძლივობა:"
+
+msgid "Samplerate:"
+msgstr "სემპლებისსიჩქარე:"
+
+msgid "Channel count:"
+msgstr "არხების რაოდენობა:"
+
+msgid "Bandwidth:"
+msgstr "გამტარობა:"
+
+msgid "Total samples:"
+msgstr "სულ ნიმუშები:"
+
+msgid "Mode:"
+msgstr "რეჟიმი:"
+
+msgid "Type:"
+msgstr "ტიპი:"
+
+msgid "Channels:"
+msgstr "არხები:"
+
+msgid "Patterns:"
+msgstr "ნიმუშები:"
+
+msgid "Samples:"
+msgstr "სემპლები:"
+
+msgid "Instruments:"
+msgstr "ინსტრუმენტები:"
+
+msgid "Samples"
+msgstr "სემპლები"
+
+msgid "Instruments"
+msgstr "ინსტრუმენტები"
+
+msgid "Name"
+msgstr "სახელი"
+
+msgid "STOPPING"
+msgstr "გაჩერება"
+
+msgid "IDLE"
+msgstr "უმოქმედო"
+
+msgid "No output"
+msgstr "გამოტანის გარეშე"
+
+#, c-format
+msgid "Loop range: %d-%d%% [%s - %s]"
+msgstr "მარყუჟის შუალედი: %d-%d%% [%s - %s]"
+
+#, c-format
+msgid "Loop range: %d-%d%%"
+msgstr "მარყუჟის შუალედი: %d-%d%%"
+
+msgid ""
+"One or more stores in Music Store have been modified.\n"
+"Do you want to save them before exiting?"
+msgstr ""
+"ერთი, ან მეტი მუსიკის ბიბლიოთეკა შეიცვალა.\n"
+"გნებავთ მისი შენახვა გასვლამდე?"
+
+msgid "Do not exit"
+msgstr "არ გახვიდე"
+
+msgid "Quit"
+msgstr "გასვლა"
+
+#, c-format
+msgid "Position: %d%%"
+msgstr "პოზიცია: %d%%"
+
+msgid "Mute"
+msgstr "დადუმება"
+
+#, c-format
+msgid "%d dB"
+msgstr "%d დბ"
+
+#, c-format
+msgid "Volume: %s"
+msgstr "ხმის დონე: %s"
+
+#, c-format
+msgid "%d%% R"
+msgstr "%d%% მარჯ"
+
+#, c-format
+msgid "%d%% L"
+msgstr "%d%% მარცხ"
+
+msgid "C"
+msgstr "ცენტრ"
+
+#, c-format
+msgid "Balance: %s"
+msgstr "ბალანსი: %s"
+
+msgid "JACK connection lost"
+msgstr "JACK-თან კავშირი დაიკარგა"
+
+#, c-format
+msgid "JACK has either been shutdown or it disconnected Aqualung. Reason: %s"
+msgstr "JACK ან გამოირთო, ან გაითიშა Aqualung-იდან. მიზეზი: %s"
+
+msgid "Warn me if the Window Manager does not support system tray"
+msgstr ""
+"გამაფრთხილე, თუ ფანჯრების მმართველს სისტემურ საათთან ხატულას მხარდაჭერა არ "
+"აქვს"
+
+msgid ""
+"Aqualung is compiled with system tray support, but the status icon could not "
+"be embedded in the notification area. Your desktop may not have support for "
+"a system tray, or it has not been configured correctly."
+msgstr ""
+"Aqualung აგებულია სისტემურ საათთან ხატულას მხარდაჭერით, მაგრამ "
+"გაფრთხილებების არეში სტატუსის ხატულას ჩაშენება შეუძლებელია. ან თქვენს "
+"სამუშაო მაგიდას სისტემური საათის მხარდაჭერა არ აქვს, ან მისი კონფიგურაცია "
+"არასწორია."
+
+msgid "Reload theme"
+msgstr "თემის გადატვირთვა"
+
+msgid "Settings"
+msgstr "მორგება"
+
+msgid "JACK port setup"
+msgstr "JACK-ის პორტის მორგება"
+
+msgid "Previous song"
+msgstr "წინა სიმღერა"
+
+msgid "Stop"
+msgstr "გაჩერება"
+
+msgid "Next song"
+msgstr "შემდეგი სიმღერა"
+
+msgid "Play/Pause"
+msgstr "დაკვრა/პაუზა"
+
+msgid "Play"
+msgstr "დაკვრა"
+
+msgid "Pause"
+msgstr "შეჩერება"
+
+msgid "Repeat current song"
+msgstr "მიმდინარე სიმღერის გამეორება"
+
+msgid "Repeat all songs"
+msgstr "ყველა სიმღერის გამეორება"
+
+msgid "Shuffle songs"
+msgstr "სიმღერების არევა"
+
+msgid "Toggle playlist"
+msgstr "დასაკრავი სიის გადართვა"
+
+msgid "Toggle music store"
+msgstr "მუსიკის ბიბლიოთეკის გადართვა"
+
+msgid "Toggle LADSPA patch builder"
+msgstr "LADSPA-ის პაჩის ამგების გადართვა"
+
+msgid "Show Aqualung"
+msgstr "Aqualung-ის ჩვენება"
+
+msgid "Hide Aqualung"
+msgstr "Aqualung-ის დამალვა"
+
+msgid "Previous"
+msgstr "წინა"
+
+msgid "Next"
+msgstr "შემდეგი"
+
+#, c-format
+msgid "%.1f MB / %.1f MB"
+msgstr "%.1f მბ / %.1f მბ"
+
+#, c-format
+msgid "%d / %d files"
+msgstr "%d / %d ფაილი"
+
+#, c-format
+msgid "%d / %d directories"
+msgstr "%d / %d საქაღალდე"
+
+msgid "Cannot write to selected directory. Please select another directory."
+msgstr "არჩეულ საქაღალდეში ჩაწერა შეუძლებელია. აირჩიეთ სხვა საქაღალდე."
+
+msgid "Done"
+msgstr "მზადაა"
+
+msgid "Aborted..."
+msgstr "შეწყდა..."
+
+msgid "Please enter directory name."
+msgstr "შეიყვანეთ საქაღალდის სახელი."
+
+msgid "Create directory"
+msgstr "საქაღალდის შექმნა"
+
+msgid "Please enter a new name."
+msgstr "შეიყვანეთ ახალი სახელი."
+
+msgid "Rename"
+msgstr "სახელის გადარქმევა"
+
+#, c-format
+msgid ""
+"Directory '%s' will be removed with its entire contents.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"საქაღალდე '%s' მისი შემცველობიანად წაიშლება.\n"
+"\n"
+"გააგრძელებთ?"
+
+#, c-format
+msgid ""
+"File '%s' will be removed.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"ფაილი '%s' წაიშლება.\n"
+"\n"
+"გააგრძელებთ?"
+
+msgid "Remove"
+msgstr "წაშლა"
+
+#, c-format
+msgid " (%.1f MB)"
+msgstr " (%.1f მბ)"
+
+#, c-format
+msgid " (capacity = %.1f MB)"
+msgstr " (მოცულობა = %.1f მბ)"
+
+#, c-format
+msgid " Free space (%.1f MB)"
+msgstr " თავისუფალი ადგილი (%.1f მბ)"
+
+msgid ""
+"No suitable iRiver iFP device found.\n"
+"Perhaps it is unplugged or turned off."
+msgstr ""
+"შესაბამისი iRiver iFP მოწყობილობა აღმოჩენილი არაა.\n"
+"ის, ალბათ, გამორთულია, ან გამომძვრალი."
+
+msgid ""
+"Device is busy.\n"
+"(Aqualung was unable to claim its interface.)"
+msgstr ""
+"მოწყობილობა დაკავებულია.\n"
+"(Aqualung-მა მისი ინტერფეისი ვერ მიიღო.)"
+
+msgid ""
+"Device is not responding.\n"
+"Try jiggling the handle."
+msgstr ""
+"მოწყობილობა არ პასუხობს.\n"
+"სცადეთ გაანჯღრიოთ."
+
+msgid "Please select a local path."
+msgstr "აირჩიეთ ლოკალური ბილიკი."
+
+msgid "Please select at least one valid song from playlist."
+msgstr "აირჩიეთ, სულ ცოტა, ერთი სწორი სიმღერა დასაკრავი სიიდან."
+
+msgid ""
+"One song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"ერთ სიმღერას აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ მხარდაჭერილი "
+"არაა.\n"
+"\n"
+"გააგრძელებთ?"
+
+#, c-format
+msgid ""
+"%d of %d songs have format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"%d სიმღერას %d-დან აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ მხარდაჭერილი "
+"არა.\n"
+"\n"
+"გააგრძელებთ?"
+
+msgid ""
+"The selected song has format unsupported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"არჩეული სიმღერის ფორმატი თქვენი დამკვრელის მიერ მხარდაჭერილი არაა.\n"
+"\n"
+"გააგრძელებთ?"
+
+msgid ""
+"None of the selected songs has format supported by your player.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+"არჩეული სიმღერებიდან თქვენი დამკვრელის მიერ მხარდაჭერილი არცერთია.\n"
+"\n"
+"გააგრძელებთ?"
+
+msgid "iFP device manager (upload mode)"
+msgstr "iFP მოწყობილობის მმართველი (ატვირთვის რეჟიმი)"
+
+msgid "iFP device manager (download mode)"
+msgstr "iFP მოწყობილობის მმართველი (გადმოწერის რეჟიმი)"
+
+msgid "Selected files:"
+msgstr "მონიშნული ფაილები:"
+
+msgid "<b>Songs info</b>"
+msgstr "<b>ინფორმაცია სიმღერებზე</b>"
+
+msgid "Model:"
+msgstr "მოდელი:"
+
+msgid "Battery"
+msgstr "ელემენტი"
+
+msgid "Free space"
+msgstr "თავისუფალი ადგილი"
+
+msgid "<b>Device status</b>"
+msgstr "<b>მოწყობილობის სტატუსი</b>"
+
+msgid "Size"
+msgstr "ზომა"
+
+msgid "Create a new directory"
+msgstr "ახალი საქაღალდის შექმნა"
+
+msgid "<b>Remote directory</b>"
+msgstr "<b>დაშორებული საქაღალდე</b>"
+
+msgid "<b>Local directory</b>"
+msgstr "<b>ლოკალური საქაღალდე</b>"
+
+msgid "Browse"
+msgstr "პოვნა"
+
+msgid "File name: "
+msgstr "ფაილის სახელი: "
+
+msgid "Current file: "
+msgstr "მიმდინარე ფაილი: "
+
+msgid "Overall: "
+msgstr "საერთო ჯამში: "
+
+msgid "Idle"
+msgstr "უმოქმედო"
+
+msgid "<b>Transfer progress</b>"
+msgstr "<b>გადაცემის მიმდინარეობა</b>"
+
+msgid "Close window when transfer complete"
+msgstr "ფანჯრის დახურვა გადაცემის დასრულების შემდეგ"
+
+msgid "_Upload"
+msgstr "_ატვირთვა"
+
+msgid "_Download"
+msgstr "_გადმოწერა"
+
+msgid "_Abort"
+msgstr "_შეწყვეტა"
+
+msgid "Album"
+msgstr "ალბომი"
+
+msgid "Date"
+msgstr "თარიღი"
+
+msgid "Genre"
+msgstr "ჟანრი"
+
+msgid "Track No."
+msgstr "აუდიობილიკის ნომ."
+
+msgid "Comment"
+msgstr "კომენტარი"
+
+msgid "Disc"
+msgstr "დისკის #"
+
+msgid "Performer"
+msgstr "შემსრულებელი"
+
+msgid "Description"
+msgstr "აღწერა"
+
+msgid "Organization"
+msgstr "ორგანიზაცია"
+
+msgid "Location"
+msgstr "მდებარეობა"
+
+msgid "Contact"
+msgstr "კონტაქტი"
+
+msgid "License"
+msgstr "ლიცენზია"
+
+msgid "Copyright"
+msgstr "საავტორო უფლებები"
+
+msgid "ISRC"
+msgstr "ISRC"
+
+msgid "Version"
+msgstr "ვერსია"
+
+msgid "Subtitle"
+msgstr "სუბტიტრები"
+
+msgid "Debut Album"
+msgstr "პირველი ალბომი"
+
+msgid "Publisher"
+msgstr "გამომცემელი"
+
+msgid "Conductor"
+msgstr "დირიჟორი"
+
+msgid "Composer"
+msgstr "კომპოზიტორი"
+
+msgid "Publication Right"
+msgstr "გამოცემის უფლება"
+
+msgid "File"
+msgstr "ფაილი"
+
+msgid "EAN/UPC"
+msgstr "EAN/UPC"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Catalog Number"
+msgstr "კატალოგის ნომერი"
+
+msgid "Label Code"
+msgstr "ჭდის კოდი"
+
+msgid "Record Date"
+msgstr "ჩანაწერის თარიღი"
+
+msgid "Record Location"
+msgstr "ჩაწერის მდებარეობა"
+
+msgid "Media"
+msgstr "მედია"
+
+msgid "Index"
+msgstr "ინდექსი"
+
+msgid "Related"
+msgstr "მსგავსი"
+
+msgid "Abstract"
+msgstr "ანოტაცია"
+
+msgid "Language"
+msgstr "ენა"
+
+msgid "Bibliography"
+msgstr "ბიბლიოგრაფია"
+
+msgid "Introplay"
+msgstr "შესავალი"
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Encoding Time"
+msgstr "კოდირების დრო"
+
+msgid "Playlist Delay"
+msgstr "დასაკრავი სიის დაყოვნება"
+
+msgid "Original Release Time"
+msgstr "საწყისი რელიზის დრო"
+
+msgid "Release Time"
+msgstr "გათავისუფლების დრო"
+
+msgid "Tagging Time"
+msgstr "ჭდის დადებსი დრო"
+
+msgid "Encoded by"
+msgstr "ენკოდერის სახელი"
+
+msgid "Lyricist/Text Writer"
+msgstr "ლირიკის/ტექსტის ავტორი"
+
+msgid "File Type"
+msgstr "ფაილის ტიპი"
+
+msgid "Involved People"
+msgstr "ჩარეული ხალხი"
+
+msgid "Content Group"
+msgstr "შემცველოგის ჯგუფი"
+
+msgid "Initial key"
+msgstr "საწყისი ტონალობა"
+
+msgid "Musician Credits"
+msgstr "მუსიკოსის კრედიტები"
+
+msgid "Mood"
+msgstr "ხასიათი"
+
+msgid "Original Album"
+msgstr "საწყისი ალბომი"
+
+msgid "Original Filename"
+msgstr "ორიგინალური ფაილის სახელი"
+
+msgid "Original Lyricist"
+msgstr "საწყისი ლირიკოსი"
+
+msgid "Original Artist"
+msgstr "ორიგინალი შემსრულებელი"
+
+msgid "File Owner"
+msgstr "ფაილის მფლობელი"
+
+msgid "Band/Orchestra"
+msgstr "ბენდი/ორკესტრი"
+
+msgid "Interpreted/Remixed"
+msgstr "ინტერპრეტაცია/რემიქსი"
+
+msgid "Part Of A Set"
+msgstr "ნაკრების ნაწილი"
+
+msgid "Produced"
+msgstr "გამოცემულია"
+
+msgid "Internet Radio Station Name"
+msgstr "ინტერნეტ-რადიოსადგურის სახელი"
+
+msgid "Internet Radio Station Owner"
+msgstr "ინტერნეტ-რადიოსადგურის მფლობელი"
+
+msgid "Album Sort Order"
+msgstr "ალბომის დალაგების მიმდევრობა"
+
+msgid "Performer Sort Order"
+msgstr "შემსრულებლის დალაგების მიმდევრობა"
+
+msgid "Title Sort Order"
+msgstr "სათაურის დალაგების მიმდევრობა"
+
+msgid "Software"
+msgstr "პროგრამები"
+
+msgid "Set Subtitle"
+msgstr "სუბტიტრების დაყენება"
+
+msgid "User Defined Text"
+msgstr "ხელით მითითებული ტექსტი"
+
+msgid "Commercial Information"
+msgstr "სარეკლამო ინფორმაცია"
+
+msgid "Copyright/Legal Information"
+msgstr "საავტორო უფლებების/იურიდიული ინფორმაცა"
+
+msgid "Official Audio File Website"
+msgstr "აუდიოფაილის ოფიციალური ვებსაიტი"
+
+msgid "Official Artist Website"
+msgstr "შემსრულებლის ოფიციალური ვებსაიტი"
+
+msgid "Official Audio Source Website"
+msgstr "აუდიოს წყაროს ოფიციალური ვებსაიტი"
+
+msgid "Official Radio Station Website"
+msgstr "რადიოსადგურის ოფიციალური ვებსაიტი"
+
+msgid "Payment"
+msgstr "გადახდა"
+
+msgid "Publisher's Official Website"
+msgstr "გამომცემლის ოფიციალური ვებსაიტი"
+
+msgid "User Defined URL"
+msgstr "მომხმარებლის მიერ განსაზღვრული ბმული"
+
+msgid "Vendor"
+msgstr "მომწოდებელი"
+
+msgid "ReplayGain Reference Loudness"
+msgstr "შედარებითი ხმაური"
+
+msgid "ReplayGain Track Gain"
+msgstr "ტრეკის ხმის სიმაღლე"
+
+msgid "ReplayGain Track Peak"
+msgstr "ხმის სიმაღლე: ტრეკის პიკი"
+
+msgid "ReplayGain Album Gain"
+msgstr "ალბომის ხმის სიმაღლე"
+
+msgid "ReplayGain Album Peak"
+msgstr "ალბომის ხმის სიმაღლის პიკი"
+
+msgid "Icy-Name"
+msgstr "სადგურის სახელი"
+
+msgid "Icy-Description"
+msgstr "სადგურის აღწერა"
+
+msgid "Icy-Genre"
+msgstr "სადგურის ჟანრი"
+
+msgid "RVA"
+msgstr "RVA"
+
+msgid "Attached Picture"
+msgstr "მიმაგრებული სურათი"
+
+msgid "Binary Object"
+msgstr "ბინარული ობიექტი"
+
+msgid "NULL"
+msgstr "NULL"
+
+msgid "ID3v1"
+msgstr "ID3v1"
+
+msgid "ID3v2"
+msgstr "ID3v2"
+
+msgid "APE"
+msgstr "APE"
+
+msgid "Ogg Xiph Comments"
+msgstr "Ogg Xiph-ის კომენტარები"
+
+msgid "FLAC Pictures"
+msgstr "FLAC-ის სურათები"
+
+msgid "Musepack ReplayGain"
+msgstr "Musepack-ის ხმის გასწორება"
+
+msgid "Generic StreamMeta"
+msgstr "ნაკადის ზოგადი მეტამონაცემები"
+
+msgid "MPEG StreamMeta"
+msgstr "MPEG ნაკადის მეტამონაცემები"
+
+msgid "Module info"
+msgstr "ინფორმაცია მოდულის შესახებ"
+
+msgid "Unknown"
+msgstr "უცნობი"
+
+msgid "Success"
+msgstr "წარმატება"
+
+msgid "Memory allocation error"
+msgstr "მეხსიერების გამოყოფის შეცდომა"
+
+msgid "Unable to open file"
+msgstr "ფაილის გახსნა შეუძლებელია"
+
+msgid "No metadata support for this format"
+msgstr "ამ ფორმატისთვის მეტამონაცემების მხარდაჭერა არ არსებობს"
+
+msgid "File is not writable"
+msgstr "ფაილი ჩაწერადი არაა"
+
+msgid "Invalid 'Track no.' field value"
+msgstr "არასწორი მნიშვნელობა ველისთვის 'ბილიკის ნომ.'"
+
+msgid "Invalid 'Genre' field value"
+msgstr "არასწორი მნიშვნელობა ველისთვის 'ჟანრი'"
+
+msgid "Conversion to target charset failed"
+msgstr "სამიზნე სიმბოლოთა ნაკრებში გადაყვანა ჩავარდა"
+
+msgid "Internal error"
+msgstr "შიდა შეცდომა"
+
+msgid "Unknown error"
+msgstr "უცნობი შეცდომა"
+
+msgid "Other"
+msgstr "სხვა"
+
+msgid "File icon (32x32 PNG)"
+msgstr "ფაილის ხატულა (32x32 PNG)"
+
+msgid "File icon (other)"
+msgstr "ფაილის ხატულა (სხვა)"
+
+msgid "Front cover"
+msgstr "წინა ყდა"
+
+msgid "Back cover"
+msgstr "უკანა ყდა"
+
+msgid "Leaflet page"
+msgstr "ბროშურის გვერდი"
+
+msgid "Album image"
+msgstr "ალბომის გამოსახულება"
+
+msgid "Lead artist/performer"
+msgstr "წამყვანი შემსრულებელი/სოლისტი"
+
+msgid "Artist/performer"
+msgstr "შემსრულებელი"
+
+msgid "Band/orchestra"
+msgstr "ბენდი/ორკესტრი"
+
+msgid "Lyricist/text writer"
+msgstr "ტექსტის ავტორი"
+
+msgid "Recording location/studio"
+msgstr "ჩაწერის მდებარეობა/სტუდია"
+
+msgid "During recording"
+msgstr "ჩაწერისას"
+
+msgid "During performance"
+msgstr "შესრულებისას"
+
+msgid "Movie/video screen capture"
+msgstr "ფილმი/ეკრანის ჩანაწერი"
+
+msgid "A large, coloured fish"
+msgstr "კაშკაშა ფერადი თევზი"
+
+msgid "Illustration"
+msgstr "ილუსტრაცია"
+
+msgid "Band/artist logotype"
+msgstr "ბენდის/შემსრულებლის ლოგოტიპი"
+
+msgid "Publisher/studio logotype"
+msgstr "გამომცემლის/სტუდიის ლოგოტიპი"
+
+msgid "Music Store"
+msgstr "მუსიკალური ბიბლიოთეკა"
+
+msgid "Search..."
+msgstr "ძებნა..."
+
+msgid "Collapse all items"
+msgstr "ყველა ელემენტის ჩაკეცვა"
+
+msgid "Edit item..."
+msgstr "ელემენტის ჩასწორება..."
+
+msgid "Add item..."
+msgstr "ელემენტის დამატება..."
+
+msgid "Remove item..."
+msgstr "ელემენტის წაშლა..."
+
+msgid "Save all stores"
+msgstr "ყველა ბიბლიოთეკის შენახვა"
+
+msgid "Create empty store..."
+msgstr "ცარიელი ბიბლიოთეკის შექმნა..."
+
+msgid "*Music Store"
+msgstr "*მუსიკალური ბიბლიოთეკა"
+
+#, c-format
+msgid "Do you want to save store \"%s\" before removing from Music Store?"
+msgstr "გნებავთ ბიბლიოთეკის \"%s\" შენახვა მუსიკის ბიბლიოთეკიდან წაშლამდე?"
+
+msgid ""
+"You will need to restart Aqualung for the following changes to take effect:"
+msgstr ""
+"შემდეგი ცვლილებების ძალაში შესასვლელად საჭიროა Aqualung-ის გადატვირთვა:"
+
+msgid "rw"
+msgstr "ჩაწ/წაკითხ"
+
+msgid "r"
+msgstr "r"
+
+msgid "unreachable"
+msgstr "მიუწვდომელი"
+
+msgid "Please select a Lua Extension File."
+msgstr "აირჩიეთ Lua-ის გაფართოების ფაილი."
+
+msgid "Please select a Music Store database."
+msgstr "აირჩიეთ მუსიკის ბიბლიოთეკის მონაცემთა ბაზა."
+
+msgid "Paths must either be absolute or starting with a tilde."
+msgstr "ბილიკები ან აბსოლუტური უნდა იყოს, ან ტილდათი უნდა იწყებოდეს."
+
+msgid "The specified store has already been added to the list."
+msgstr "მითითებული ბიბლიოთეკა უკვე დამატებულია სიაში."
+
+#, c-format
+msgid ""
+"\n"
+"The template string you enter here will be used to construct a single title "
+"line from an Artist, a Record and a Track name. These are denoted by %%a, "
+"%%r and %%t, respectively.\n"
+msgstr ""
+
+msgid ""
+"\n"
+"If you have non-standard ID3v1/ID3v2 character encoding MPEG audio file, "
+"please enter suitable character encoding in this entry (see below). If this "
+"entry is blank, the standard character encoding (ISO-8859-1) is used.\n"
+"\n"
+"For example:\n"
+"  Japanese: CP932 (SHIFT_JIS variant)\n"
+"  Korean: EUC-KR\n"
+"  Simp. Chinese: GB2312\n"
+"  Trad. Chinese: BIG5\n"
+"  Greek: ISO-8859-7\n"
+"  Hebrew: ISO-8859-8\n"
+"  Cyrillic: CP1251\n"
+"  Thai: ISO-8859-11\n"
+"  Arabic: CP1256\n"
+"  Turkish: ISO-8859-9\n"
+"  Latin Extended: ISO-8859-2\n"
+"  Central European: CP1250\n"
+"  Latin1 (standard): ISO-8859-1\n"
+"\n"
+"NOTE: There might be a more suitable character encoding for your language."
+msgstr ""
+
+msgid ""
+"\n"
+"The file you enter/choose here will set the Lua program to use to extend "
+"Aqualung. See the Aqualung manual for details. Here is a quick example of "
+"what you can use in the file:\n"
+"\n"
+"function playlist_title()\n"
+"  return m('artist') .. '-' .. m('title') .. ' (' .. m('album') .. ') (' .. "
+"i('filename') .. ')'\n"
+"end"
+msgstr ""
+
+msgid ""
+"\n"
+"The string you enter here will be parsed as a command line before parsing "
+"the actual command line parameters. What you enter here will act as a "
+"default setting and may or may not be overridden from the 'real' command "
+"line.\n"
+"\n"
+"Example: enter '-o alsa -R' below to use ALSA output running realtime as a "
+"default.\n"
+msgstr ""
+
+msgid ""
+"Paths must either be absolute or starting with a tilde, which will be "
+"expanded to the user's home directory.\n"
+"\n"
+"Drag and drop entries in the list to set the store order in the Music Store."
+msgstr ""
+
+msgid ""
+"\n"
+"Set the drive speed for CD playing in CD-ROM speed units. One speed unit "
+"equals to 176 kBps raw data reading speed. Warning: not all drives honor "
+"this setting.\n"
+"\n"
+"Lower speed usually means less drive noise. However, when using Paranoia "
+"error correction modes for increased accuracy, generally much larger speeds "
+"are required to prevent buffer underruns (and thus audible drop-outs).\n"
+"\n"
+"Please note that these settings do not apply to CD Ripping, which always "
+"happens with maximum available speed and with error correction modes "
+"manually set before every run."
+msgstr ""
+
+msgid ""
+"\n"
+"Most drives let Aqualung know when a CD has been inserted or removed by "
+"providing a 'media changed' flag. However, some drives don't set this flag "
+"properly, and thus it may happen that a newly inserted CD remains unnoticed "
+"to Aqualung. In such cases, enabling this option should help."
+msgstr ""
+
+msgid ""
+"\n"
+"Here you should enter a comma-separated list of domains\n"
+"that should be accessed without using the proxy set above.\n"
+"Example: localhost, .localdomain, .my.domain.com"
+msgstr ""
+
+msgid "Embed playlist into main window"
+msgstr "დასაკრავი სიის ჩაშენება მთავარ ფანჯარაში"
+
+msgid "Enable systray"
+msgstr "სისტემურ საათთან ხატულას ჩართვა"
+
+msgid "Do nothing"
+msgstr "არაფრის გაკეთება"
+
+msgid "Change volume"
+msgstr "ხმის შეცვლა"
+
+msgid "Change balance"
+msgstr "ბალანსის შეცვლა"
+
+msgid "Change song position"
+msgstr "სიმღერის მდებარეობის შეცვლა"
+
+msgid "Change current song"
+msgstr "მიმდინარე სიმღერის შეცვლა"
+
+msgid "Left button"
+msgstr "მარცხენა ღილაკი"
+
+msgid "Middle button"
+msgstr "შუა ღილაკი"
+
+msgid "Right button"
+msgstr "მარჯვენა ღილაკი"
+
+msgid "Button"
+msgstr "ღილაკი"
+
+msgid "Left and right mouse buttons are reserved."
+msgstr "თაგუნას მარცხენა და მარჯვენა ღილაკები შეცვლილია."
+
+msgid "This button is already assigned."
+msgstr "ეს ღილაკი უკვე მინიჭებულია."
+
+msgid "Add mouse button command"
+msgstr "თაგუნას ღილაკის ბრძანების დამატება"
+
+msgid "Mouse button"
+msgstr "თაგუნას ღილაკი"
+
+msgid "Click here to set mouse button"
+msgstr "დააწკაპუნეთ აქ თაგუნას ღილაკის დასაყენებლად"
+
+msgid "Command"
+msgstr "ბრძანება"
+
+msgid "Error in title format string"
+msgstr "შეცდომა სახელის ფორმატის სტრიქონში"
+
+msgid "Error invalid character encoding"
+msgstr "შეცდომა: არასწორი სიმბოლოების კოდირება"
+
+msgid "Main window"
+msgstr "მთავარი ფანჯარა"
+
+msgid "Dark theme"
+msgstr "ბნელი თემა"
+
+msgid "Disable control buttons relief"
+msgstr "კონტროლის ღილაკების რელიეფის გამორთვა"
+
+msgid "Combine play and pause buttons"
+msgstr "დაკვრისა და შეჩერების ღილაკების კომბინაცია"
+
+msgid "Keep main window always on top"
+msgstr "მთავარი ფანჯარა, ყოველთვის, ყველაზე ზემოთ იქნება"
+
+msgid "Show song name in the main window's title"
+msgstr "სიმღერის სახელის ჩვენება მთავარი ფანჯრის სათაურში"
+
+msgid "Title Format"
+msgstr "სათაურის ფორმატი"
+
+msgid "Lua extension file"
+msgstr "Lua-ის გაფართოების ფაილი"
+
+msgid "Systray"
+msgstr "ხატულა სისტემურ საათთან"
+
+msgid "Start minimized"
+msgstr "ჩაკეცილად გაშვება"
+
+msgid "Play/Stop song"
+msgstr "სიმღერის დაკვრა/გაჩერება"
+
+msgid "Play/Pause song"
+msgstr "სიმღერის დაკვრა/შეჩერება"
+
+msgid "Mouse wheel"
+msgstr "თაგუნას რგოლი"
+
+msgid "Vertical mouse wheel:"
+msgstr "თაგუნას ვერტიკალური ბორბალი:"
+
+msgid "Horizontal mouse wheel:"
+msgstr "თაგუნას ჰორიზონტალური ბორბალი:"
+
+msgid "Mouse buttons"
+msgstr "თაგუნას ღილაკები"
+
+msgid "Miscellaneous"
+msgstr "სხვადასხვა"
+
+msgid "Implicit command line"
+msgstr "ნაგულისხმევი ბრძანების სტრიქონი"
+
+msgid "Cover art"
+msgstr "ყდის სურათი"
+
+msgid "Default cover width:"
+msgstr "ნაგულისხმევი ყდის სიგანე:"
+
+msgid "50 pixels"
+msgstr "50 პიქსელი"
+
+msgid "100 pixels"
+msgstr "100 პიქსელი"
+
+msgid "200 pixels"
+msgstr "200 პიქსელი"
+
+msgid "300 pixels"
+msgstr "300 პიქსელი"
+
+msgid "use browser window width"
+msgstr "ბრაუზერის ფანჯრის სიგანის გამოყენება"
+
+msgid "Do not magnify images with smaller width"
+msgstr "არ გაადიდო გამოსახულებები უფრო მცირე სიგანით"
+
+msgid "Show cover thumbnail for Music Store tracks only"
+msgstr "ყდის მინიატურის, მხოლოდ, მუსიკის ბიბლიოთეკის ტრეკებისთვის ჩვენება"
+
+msgid "Don't show cover thumbnail in the main window"
+msgstr "ყდის მინიატურა მთავარ მენიუში ნაჩვენები არ იქნება"
+
+msgid "Use cover from external graphics file first"
+msgstr "ყდის ჯერ გარე გრაფიკული ფაილიდან ჩვენება"
+
+msgid "Enable tooltips"
+msgstr "მინიშნებების ჩვენება"
+
+msgid "Simple view in LADSPA patch builder"
+msgstr "მარტივი ხედი LADSPA პაჩის ამგებში"
+
+msgid "United windows minimization"
+msgstr "გაერთიანებული ფანჯრების ჩაკეცვა"
+
+msgid "Show hidden files and directories in file choosers"
+msgstr "დამალული ფაილების და საქაღალდეების ჩვენება ფაილის ამრჩევებში"
+
+msgid "Show tags tab first in the file info dialog"
+msgstr "ფაილის ინფორმაციის დიალოგში ჯერ ჭდეების ჩანართის ჩვენება"
+
+msgid "Playlist"
+msgstr "დასაკრავი სია"
+
+msgid "Put control buttons at the bottom of playlist"
+msgstr "საკონტროლო ღილაკების მოთავსება დასაკრავი სიის ბოლოში"
+
+msgid "Save and restore the playlist on exit/startup"
+msgstr "დასაკრავი სიის შენახვა და აღდგენა გასვლისას/გაშვებისას"
+
+msgid "Save playlist periodically [min]:"
+msgstr "დასაკრავი სიის პერიოდული შენახვა [წთ]:"
+
+msgid "Album mode is the default when adding entire records"
+msgstr "ალბომის რეჟიმი ნაგულისხმევია მთელი ჩანაწერების დამატებისას"
+
+msgid "Always show the tab bar"
+msgstr "ჩანართების ზოლის ყოველთვის ჩვენება"
+
+msgid "Show close button in tab"
+msgstr "ჩანართებზე დახურვის ღილაკის ჩვენება"
+
+msgid "When shuffling, records added in Album mode are played in order"
+msgstr ""
+"შერევისას ალბომის რეჟიმში ჩამატებული ჩანაწერების დაკვრა მიმდევრობით მოხდება"
+
+msgid "Enable statusbar"
+msgstr "სტატუსის ზოლის ჩართვა"
+
+msgid "Enable statusbar in playlist"
+msgstr "სტატუსის ზოლის ჩართვა დასაკრავ სიაში"
+
+msgid "Show soundfile size in statusbar"
+msgstr "ხმის ფაილის ზომის ჩვენება სტატუსის ზოლზე"
+
+msgid "Show RVA values"
+msgstr "RVA მნიშვნელობების ჩვენება"
+
+msgid "Show track lengths"
+msgstr "ბილიკის სიგრძეების ჩვენება"
+
+msgid "Show active track name in bold"
+msgstr "აქტიური ბილიკის სახელის სქლად ჩვენება"
+
+msgid "Automatically roll to active track"
+msgstr "ავტომატური გადახვევა აქტიურ ბილიკზე"
+
+msgid "Enable rules hint"
+msgstr "წესების მინიშნების ჩართვა"
+
+msgid "Playlist column order"
+msgstr "დასაკრავი სიის სვეტების მიმდევრობა"
+
+msgid ""
+"Drag and drop entries in the list below \n"
+"to set the column order in the Playlist."
+msgstr ""
+"დასაკრავ სიაში სვეტების მიმდევრობის დასაყენებლად\n"
+"გადაათრიეთ და დაყარეთ ჩანაწერები სიაში ქვემოთ."
+
+msgid "Column"
+msgstr "სვეტი"
+
+msgid "Track titles"
+msgstr "სიმღერების სათაურები"
+
+msgid "RVA values"
+msgstr "RVA მნიშვნელობები"
+
+msgid "Track lengths"
+msgstr "ბილიკის სიგრძეები"
+
+msgid "Hide comment pane"
+msgstr "კომენტარების პანელის დამალვა"
+
+msgid "Hide the Music Store comment pane"
+msgstr "მუსიკის ბიბლიოთეკის კომენტარების პანელის დამალვა"
+
+msgid "Enable toolbar"
+msgstr "ხელსაწყოთა პანელის ჩართვა"
+
+msgid "Enable toolbar in Music Store"
+msgstr "ხელსაწყოთა პანელის ჩართვა მუსიკის ბიბლიოთეკაში"
+
+msgid "Enable statusbar in Music Store"
+msgstr "სტატუსის პანელის ჩართვა მუსიკის ბიბლიოთეკაში"
+
+msgid "Expand Stores on startup"
+msgstr "ბიბლიოთეკების ჩამოშლა გაშვებისას"
+
+msgid "Enable tree node icons"
+msgstr "ხის კვანძის ხატულების ჩართვა"
+
+msgid "Enable Music Store tree node icons"
+msgstr "მუსიკის ბიბლიოთეკის ხის კვანძის ხატულების ჩართვა"
+
+msgid "Ask for confirmation when removing items"
+msgstr "დადასტურების მოთხოვნა ელემენტების წაშლისას"
+
+msgid "Paths to Music Store databases"
+msgstr "ბილიკები მუსიკის ბიბლიოთეკის მონაცემთა ბაზებამდე"
+
+msgid "Path"
+msgstr "ბილიკი"
+
+msgid "Access"
+msgstr "წვდომა"
+
+msgid "Refresh"
+msgstr "განახლება"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "LADSPA plugin processing"
+msgstr "LADSPA-ის მოდულების დამუშავება"
+
+msgid "Pre Fader (before Volume & Balance)"
+msgstr "მინავლება დასაწყისში (ხმამდე და ბალანსამდე)"
+
+msgid "Post Fader (after Volume & Balance)"
+msgstr "მინავლება ბოლოში (ხმისა და ბალანსის შემდეგ)"
+
+msgid ""
+"Aqualung is compiled without LADSPA plugin support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+
+msgid "Sample Rate Converter type"
+msgstr "ბიტური სიჩქარის გადამყვანის ტიპი"
+
+msgid ""
+"Aqualung is compiled without Sample Rate Converter support.\n"
+"See the About box and the documentation for details."
+msgstr ""
+
+msgid "Playback RVA"
+msgstr "დაკვრის RVA"
+
+msgid "Enable playback RVA"
+msgstr "დაკვრის RVA-ის ჩართვა"
+
+msgid "Listening environment:"
+msgstr "მოსმენის გარემო:"
+
+msgid "Audiophile"
+msgstr "აუდიოფილი"
+
+msgid "Living room"
+msgstr "სასტუმრო ოთახი"
+
+msgid "Office"
+msgstr "ოფისი"
+
+msgid "Noisy workshop"
+msgstr "ხმაურიანი სახელოსნო"
+
+msgid "Reference volume [dBFS] :"
+msgstr "საყრდნობი ხმა [dBFS] :"
+
+msgid "Steepness [dB/dB] :"
+msgstr "სიმკვეთრე [დბ/დბ] :"
+
+msgid "RVA for Unmeasured Files [dB] :"
+msgstr "RVA გაუზომავი ფაილებისთვის [დბ] :"
+
+msgid "Apply averaged RVA to tracks of the same record"
+msgstr ""
+
+msgid "Drop statistical aberrations based on"
+msgstr ""
+
+#, no-c-format
+msgid "% of standard deviation"
+msgstr "სტანდარტული გადახრის %"
+
+msgid "Linear threshold [dB]"
+msgstr "წრფივი ზღვარი [დბ]"
+
+msgid "Linear threshold [dB] :"
+msgstr "წრფივი ზღვარი [დბ] :"
+
+#, no-c-format
+msgid "% of standard deviation :"
+msgstr "სტანდარტული გადახრის % :"
+
+msgid "ReplayGain tag to use (with fallback to the other): "
+msgstr ""
+
+msgid "Replaygain_track_gain"
+msgstr "Replaygain_track_gain"
+
+msgid "Replaygain_album_gain"
+msgstr "Replaygain_album_gain"
+
+msgid "Adding files to Playlist"
+msgstr "ფაილების დამატება დასაკრავ სიაში"
+
+msgid ""
+"Use basename only instead of full path\n"
+"if no metadata is available."
+msgstr ""
+
+msgid "Metadata editor (File info dialog)"
+msgstr "მეტამონაცემების რედაქტორი (ფაილის ინფორმაციის დიალოგი)"
+
+msgid ""
+"When adding new frames, try to set their contents\n"
+"from another tag's equivalent frame."
+msgstr ""
+
+msgid "MPEG audio ID3v1/ID3v2 character encoding"
+msgstr ""
+
+msgid "Batch update & encode (mass tagger, CD ripper, file export)"
+msgstr ""
+
+msgid "Tags to add when creating or updating MPEG audio files:"
+msgstr ""
+
+msgid ""
+"Note: pre-existing tags will be updated even though they\n"
+"might not be checked here."
+msgstr ""
+
+msgid "CD Audio"
+msgstr "CD აუდიო"
+
+msgid "CD drive speed:"
+msgstr "CD ამძრავის სიჩქარე:"
+
+msgid "\tMaximum number of retries:"
+msgstr "\tთავიდან ცდების მაქს. რაოდენობა:"
+
+msgid "Force TOC re-read on every drive scan"
+msgstr ""
+
+msgid "Automatically add CDs to Playlist"
+msgstr "CD-ების ავტომატური დამატება დასაკრავ სიაში"
+
+msgid "Automatically remove CDs from Playlist"
+msgstr "CD-ების ავტომატური წაშლა დასაკრავი სიიდან"
+
+msgid "CDDB server:"
+msgstr "CDDB სერვერი:"
+
+msgid "Connection timeout [sec]:"
+msgstr "დაკავშირების მოლოდინის დრო [წმ]:"
+
+msgid "Protocol for querying (direct connection only):"
+msgstr ""
+
+msgid "CDDBP (port 8880)"
+msgstr "CDDBP (პორტი 8880)"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (პორტო 80)"
+
+msgid "Internet"
+msgstr "ინტერნეტი"
+
+msgid "Direct connection to the Internet"
+msgstr "პირდაპირი კავშირი ინტერნეტთან"
+
+msgid "Connect via HTTP proxy"
+msgstr "HTTP პროქსით დაკავსირება"
+
+msgid "Proxy settings"
+msgstr "პროქსის მორგება"
+
+msgid "Proxy host:"
+msgstr "პროქსის ჰოსტი:"
+
+msgid "Port:"
+msgstr "პორტი:"
+
+msgid "No proxy for:"
+msgstr "პროქსის არგამოყენება:"
+
+msgid "Timeout for socket I/O:"
+msgstr "მოლოდინის დრო სოკეტის I/O-ისთვის:"
+
+msgid "seconds"
+msgstr "წამი"
+
+msgid "(Untitled)"
+msgstr "(უსახელო)"
+
+#, c-format
+msgid " (%d/%d)"
+msgstr " (%d/%d)"
+
+msgid "Select files"
+msgstr "მონიშნეთ ფაილები"
+
+msgid "Select directory"
+msgstr "აირჩიეთ საქაღალდე"
+
+msgid "Add URL"
+msgstr "ბმულის დამატება"
+
+msgid "URL:"
+msgstr "URL:"
+
+msgid "Please specify the file to save the playlist to."
+msgstr ""
+
+msgid "Please specify the file to load the playlist from."
+msgstr ""
+
+msgid ""
+"Playback RVA is currently disabled.\n"
+"Do you want to enable it now?"
+msgstr ""
+
+msgid "counting..."
+msgstr "დათვლა..."
+
+msgid "track"
+msgstr "ტრეკი"
+
+msgid "tracks"
+msgstr "ტრეკები"
+
+msgid "Rename playlist"
+msgstr "დასაკრავი სიის სახელის გადარქმევა"
+
+msgid "Name:"
+msgstr "სახელი:"
+
+msgid "New tab"
+msgstr "ახალი ჩანართი"
+
+msgid "Close tab"
+msgstr "ჩანართის დახურვა"
+
+msgid "Undo close tab"
+msgstr "ჩანართის დახურვის გაუქმება"
+
+msgid "Close other tabs"
+msgstr "სხვა ჩანართების დახურვა"
+
+msgid " Selected: "
+msgstr " არჩეულია: "
+
+msgid "Total: "
+msgstr "სულ: "
+
+msgid "Add files"
+msgstr "ფაილების დამატება"
+
+msgid ""
+"Add files to playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+
+msgid "Select all"
+msgstr "ყველას მონიშვნა"
+
+msgid ""
+"Select all songs in playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+
+msgid "Remove selected"
+msgstr "მონიშნულის წაშლა"
+
+msgid ""
+"Remove selected songs from playlist\n"
+"(Press right mouse button for menu)"
+msgstr ""
+
+msgid "Add directory"
+msgstr "საქაღალდის დამატება"
+
+msgid "Select none"
+msgstr "მონიშვნის მოხსნა"
+
+msgid "Invert selection"
+msgstr "მონიშვნის ინვერსია"
+
+msgid "Remove all"
+msgstr "ყველას წაშლა"
+
+msgid "Remove dead"
+msgstr "მკვდრების ამოღება"
+
+msgid "Cut selected"
+msgstr "მონიშნულის ამოჭრა"
+
+msgid "Save playlist"
+msgstr "დასაკრავი სიის შენახვა"
+
+msgid "Save all playlists"
+msgstr "ყველა დასაკრავი სიის შენახვა"
+
+msgid "Load playlist in new tab"
+msgstr "დასაკრავი სიის ჩატვირთვა ახალ ჩანართში"
+
+msgid "Load playlist"
+msgstr "დასაკრავი სიის ჩატვირთვა"
+
+msgid "Enqueue playlist"
+msgstr "დასაკრავი სიის რიგში ჩასმა"
+
+msgid "Send to iFP device"
+msgstr "გაგზავნა iFP მოწყობილობაზე"
+
+msgid "Calculate RVA"
+msgstr "RVA-ის გამოთვლა"
+
+msgid "Separate"
+msgstr "ცალ-ცალკე"
+
+msgid "Average"
+msgstr "საშუალო"
+
+msgid "Reread file metadata"
+msgstr "ფაილის მეტამონაცემების თავიდან წაკითხვა"
+
+msgid "File info..."
+msgstr "ფაილის ინფორმაცია..."
+
+msgid "Roll to active song"
+msgstr "გადახვევა აქტიურ ბილიკზე"
+
+msgid "Stop adding files"
+msgstr "ფაილების დამატების გაჩერება"
+
+msgid "Files selected for removal"
+msgstr "წასაშლელად მონიშნული ფაილები"
+
+msgid "Remove files"
+msgstr "ფაილების წაშლა"
+
+msgid ""
+"The selected files will be deleted from the filesystem. No recovery will be "
+"possible after this operation.\n"
+"\n"
+"Do you want to proceed?"
+msgstr ""
+
+#, c-format
+msgid "Unable to remove %d file."
+msgstr "%d ფაილის წაშლა შეუძლებელია."
+
+#, c-format
+msgid "Unable to remove %d files."
+msgstr "%d ფაილის წაშლა შეუძლებელია."
+
+msgid "LADSPA patch builder"
+msgstr "LADSPA პაჩის ამგები"
+
+msgid "Available plugins"
+msgstr "ხელმისაწვდომი დამატებები"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Category"
+msgstr "კატეგორია"
+
+msgid "Inputs"
+msgstr "შეყვანები"
+
+msgid "Outputs"
+msgstr "გამოტანები"
+
+msgid "Running plugins"
+msgstr "გაშვებული დამატებები"
+
+msgid "_Configure"
+msgstr "_მორგება"
+
+msgid "Enable all plugins"
+msgstr "ყველა დამატების ჩართვა"
+
+msgid "Disable all plugins"
+msgstr "ყველა დამატების გამორთვა"
+
+msgid "Invert current state"
+msgstr "მიმდინარე მდგომარეობის ინვერსია"
+
+msgid "Clear list"
+msgstr "სიის გასუფთავება"
+
+msgid "Untitled"
+msgstr "უსათაურო"
+
+msgid "JACK Port Setup"
+msgstr "JACK-ის პორტის მორგება"
+
+msgid "Rescan"
+msgstr "თავიდან სკანირება"
+
+msgid "Available connections"
+msgstr "ხელმისაწვდომი კავშირები"
+
+msgid "Clear connections"
+msgstr "კავშირების გასუფთავება"
+
+msgid " out L"
+msgstr " გამომ მარცხ"
+
+msgid " out R"
+msgstr " გამომ მარჯვ"
+
+msgid "Search the Music Store"
+msgstr "მუსიკის ბიბლიოთეკის მოძებნა"
+
+msgid "Key: "
+msgstr "გასაღები: "
+
+msgid "Case sensitive"
+msgstr "დიდი და პატარა ასოების განსხვავება"
+
+msgid "Exact matches only"
+msgstr "მხოლოდ ზუსტი დამთხვევები"
+
+msgid "Select first and close window"
+msgstr "პირველის არჩევა და ფანჯრის დახურვა"
+
+msgid "Search in:"
+msgstr "ძებნა სად:"
+
+msgid "Artist names"
+msgstr "შემსრულებლის სახელები"
+
+msgid "Record titles"
+msgstr "ჩანაწერის სახელები"
+
+msgid "Comments"
+msgstr "კომენტარები"
+
+msgid "Search"
+msgstr "ძებნა"
+
+msgid "Search the Playlist"
+msgstr "დასაკრავ სიაში ძებნა"
+
+msgid "Drive info"
+msgstr "ინფორმაცია დისკის შესახებ"
+
+msgid "Device path:"
+msgstr "მოწყობილობის ბილიკი:"
+
+msgid "Vendor:"
+msgstr "მომწოდებელი:"
+
+msgid "Revision:"
+msgstr "რევიზია:"
+
+msgid ""
+"The information below is reported by the drive, and\n"
+"may not reflect the actual capabilities of the device."
+msgstr ""
+
+msgid "Eject"
+msgstr "გამოღება"
+
+msgid "Close tray"
+msgstr "უჯრის დახურვა"
+
+msgid "Disable manual eject"
+msgstr "ხელით გამოღების გამორთვა"
+
+msgid "Select juke-box disc"
+msgstr "დისკის არჩევა CD-ჩეინჯერში"
+
+msgid "Set drive speed"
+msgstr "დისკის სიჩქარის დაყენება"
+
+msgid "Detect media change"
+msgstr "მედიის ცვლილების დადგენა"
+
+msgid "Read multiple sessions"
+msgstr "ერთზე მეტი სესიის წაკითხვა"
+
+msgid "Hard reset device"
+msgstr "მოწყობილობის მაგარი ჩამოყრა"
+
+msgid "Reading"
+msgstr "კითხვა"
+
+msgid "Play CD Audio"
+msgstr "CD აუდიოს დაკვრა"
+
+msgid "Read CD-DA"
+msgstr "CD-DA-ის წაკითხვა"
+
+msgid "Read CD+G"
+msgstr "CD+G-ის წაკითხვა"
+
+msgid "Read CD-R"
+msgstr "CD-R-ის წაკითხვა"
+
+msgid "Read CD-RW"
+msgstr "CD-RW-ის წაკითხვა"
+
+msgid "Read DVD-R"
+msgstr "DVD-R-ის წაკითხვა"
+
+msgid "Read DVD+R"
+msgstr "DVD+R-ის წაკითხვა"
+
+msgid "Read DVD-RW"
+msgstr "DVD-RW-ის წაკითხვა"
+
+msgid "Read DVD+RW"
+msgstr "DVD+RW-ის წაკითხვა"
+
+msgid "Read DVD-RAM"
+msgstr "DVD-RAM-ის წაკითხვა"
+
+msgid "Read DVD-ROM"
+msgstr "DVD-ROM-ის წაკითხვა"
+
+msgid "C2 Error Correction"
+msgstr "შეცდომების გასწორება C2"
+
+msgid "Read Mode 2 Form 1"
+msgstr "რეჟიმი 2 ფორმა 1-ის წაკითხვა"
+
+msgid "Read Mode 2 Form 2"
+msgstr "რეჟიმი 2 ფორმა 2-ის წაკითხვა"
+
+msgid "Read MCN"
+msgstr "MCN-ის წაკითხვა"
+
+msgid "Read ISRC"
+msgstr "ISRC-ის წაკითხვა"
+
+msgid "Writing"
+msgstr "ჩაწერა"
+
+msgid "Write CD-R"
+msgstr "CD-R-ის ჩაწერა"
+
+msgid "Write CD-RW"
+msgstr "CD-RW-ის ჩაწერა"
+
+msgid "Write DVD-R"
+msgstr "DVD-R-ის ჩაწერა"
+
+msgid "Write DVD+R"
+msgstr "DVD+R-ის ჩაწერა"
+
+msgid "Write DVD-RW"
+msgstr "DVD-RW-ის ჩაწერა"
+
+msgid "Write DVD+RW"
+msgstr "DVD+RW-ის ჩაწერა"
+
+msgid "Write DVD-RAM"
+msgstr "DVD-RAM-ის ჩაწერა"
+
+msgid "Mount Rainier"
+msgstr "პაკეტური ჩაწერა"
+
+msgid "Burn Proof"
+msgstr "რეჟიმი Burn Proof"
+
+msgid "Disc info"
+msgstr "ინფორმაცია დისკზე"
+
+msgid "This CD does not contain CD-Text information."
+msgstr "ეს CD არ შეიცავს CD-Text ინფორმაციას."
+
+msgid "drive"
+msgstr "დისკი"
+
+msgid "drives"
+msgstr "დისკები"
+
+msgid "record"
+msgstr "ჩაწერა"
+
+msgid "records"
+msgstr "ჩანაწერი"
+
+msgid "Add to playlist"
+msgstr "დასაკრავი სიაში დამატება"
+
+msgid "Add to playlist (Album mode)"
+msgstr "დასაკრავ სიაში ჩამატება (ალბომის რეჟიმი)"
+
+msgid "CDDB query for this CD..."
+msgstr "CDDB მოთხოვნა ამ CD-ისთვის..."
+
+msgid "Rip CD..."
+msgstr "CD-ის დარიპვა..."
+
+msgid "Disc info..."
+msgstr "ინფორმაცია დისკზე..."
+
+msgid "Drive info..."
+msgstr "ინფორმაცია დისკის შესახებ..."
+
+msgid "Comments:"
+msgstr "კომენტარები:"
+
+msgid "Please select the xml file for this store."
+msgstr "აირჩიეთ xml ფაილი ამ ბიბლიოთეკისთვის."
+
+msgid "Create empty store"
+msgstr "ცარიელი ბიბლიოთეკის შექმნა"
+
+msgid "Visible name:"
+msgstr "ხილული სახელი:"
+
+msgid "Edit Store"
+msgstr "ბიბლიოთეკის ჩასწორება"
+
+msgid "Use relative paths in store file"
+msgstr "ფარდობითი ბილიკების გამოყენება ბიბლიოთეკის ფაილში"
+
+msgid "Add Artist"
+msgstr "შემსრულებლის დამატება"
+
+msgid "Name to sort by:"
+msgstr "სახელი დასალაგებლად:"
+
+msgid "Edit Artist"
+msgstr "შემსრულებლის ჩასწორება"
+
+msgid "Please select the audio files for this record."
+msgstr "აირჩიეთ აუდიოფაილები ამ ჩანაწერისთვის."
+
+msgid "Add Record"
+msgstr "ჩანაწერის დამატება"
+
+msgid "Auto-create tracks from these files:"
+msgstr "ტრეკების ავტოშექმნა ამ ფაილებიდან:"
+
+msgid "_Add files..."
+msgstr "ფ_აილების დამატება…"
+
+msgid "Edit Record"
+msgstr "ჩანაწერის ჩასწორება"
+
+msgid "Please select the audio file for this track."
+msgstr "აირჩიეთ აუდიოფაილი ამ ტრეკისთვის."
+
+msgid "Add Track"
+msgstr "ტრეკის დამატება"
+
+msgid "Edit Track"
+msgstr "ტრეკის ჩასწორება"
+
+msgid "Duration:"
+msgstr "ხანგრძლივობა:"
+
+msgid "Unmeasured"
+msgstr "გაუზომელი"
+
+msgid "Volume level:"
+msgstr "ხმის დონე:"
+
+msgid "Use manual RVA value [dB]"
+msgstr "RVA-ის მორგებული მნიშვნელობის გამოყენება [დბ]"
+
+#, c-format
+msgid "Really remove \"%s\" from the Music Store?"
+msgstr "მართლა წავშალო \"%s\" მუსიკის ბიბლიოთეკიდან?"
+
+msgid "Stop adding songs"
+msgstr "სიმღერების დამატების გაჩერება"
+
+#, c-format
+msgid ""
+"The store '%s' already exists.\n"
+"Add it on the Settings/Music Store tab."
+msgstr ""
+"ბიბლიოთეკა '%s' უკვე არსებობს.\n"
+"დაამატეთ ის ჩანართში მორგება/მუსიკის ბიბლიოთეკები."
+
+#, c-format
+msgid "Really remove store \"%s\" from the Music Store?"
+msgstr "მართლა წავშალო ბიბლიოთეკა \"%s\" მუსიკის ბიბლიოთეკიდან?"
+
+msgid "Remove Store"
+msgstr "ბიბლიოთეკის წაშლა"
+
+msgid "Do you want to save the store before removing?"
+msgstr "გნებავთ ბიბლიოთეკის შენახვა მის წაშლამდე?"
+
+msgid "Remove Artist"
+msgstr "შემსრულებლის წაშლა"
+
+msgid "Remove Record"
+msgstr "ჩანაწერის წაშლა"
+
+msgid "Remove Track"
+msgstr "აუდიობილიკის წაშლა"
+
+msgid "Update file metadata"
+msgstr "მეტამონაცემების განახლება"
+
+msgid "Track name"
+msgstr "ტრეკის სახელი"
+
+msgid "Track comment"
+msgstr "ტრეკის კომენტარი"
+
+msgid "Track number"
+msgstr "აუდიობილიკის ნომერი"
+
+msgid "Failed to set metadata for the following files:"
+msgstr "მეტამონაცემების დაყენება ჩავარდა შემდეგი ფაილებისთვის:"
+
+msgid "Filename"
+msgstr "ფაილის სახელი"
+
+msgid "Reason"
+msgstr "მიზეზი"
+
+msgid "(no comment)"
+msgstr "(კომენტარის გარეშე)"
+
+msgid "artist"
+msgstr "შემსრულებელი"
+
+msgid "artists"
+msgstr "შემსრულებლები"
+
+#, c-format
+msgid ""
+"File \"%s\" does not exist or your write permission has been withdrawn. "
+"Check if the partition containing the store file has been unmounted."
+msgstr ""
+
+msgid "Build / Update store from filesystem..."
+msgstr "ბიბლიოთეკის აგება / განახლება ფაილური სისტემიდან..."
+
+msgid "Edit store..."
+msgstr "ბიბლიოთეკის ჩასწორება..."
+
+msgid "Export store..."
+msgstr "ბიბლიოთეკის გატანა..."
+
+msgid "Save store"
+msgstr "ბიბლიოთეკის შენახვა"
+
+msgid "Remove store"
+msgstr "ბიბლიოთეკის წაშლა"
+
+msgid "Add new artist to this store..."
+msgstr "ახალი შემსრულებლის ჩამატება ამ ბიბლიოთეკაში..."
+
+msgid "Calculate volume (recursive)"
+msgstr "ხმის გამოთვლა (რეკურსიულად)"
+
+msgid "Unmeasured tracks only"
+msgstr "მხოლოდ, გაუზომელი ტრეკები"
+
+msgid "All tracks"
+msgstr "ყველა ტრეკი"
+
+msgid "Batch-update file metadata..."
+msgstr "ერთზე მეტი ფაილის მეტამონაცემების განახლება..."
+
+msgid "Add new artist..."
+msgstr "ახალი შემსრულებლის დამატება..."
+
+msgid "Edit artist..."
+msgstr "შემსრულებლის ჩასწორება..."
+
+msgid "Export artist..."
+msgstr "შემსრულებლის გატანა..."
+
+msgid "Remove artist"
+msgstr "შემსრულებლის წაშლა"
+
+msgid "Add new record to this artist..."
+msgstr "ახალი ჩანაწერის დამატება ამ შემსრულებლისთვის..."
+
+msgid "Add new record..."
+msgstr "ახალი ჩანაწერის დამატება..."
+
+msgid "Edit record..."
+msgstr "ჩანაწერის ჩასწორება..."
+
+msgid "Export record..."
+msgstr "ჩანაწერის გატანა..."
+
+msgid "Remove record"
+msgstr "ჩანაწერის წაშლა"
+
+msgid "Add new track to this record..."
+msgstr "ახალი ტრეკის დამატება ამ ჩანაწერისთვის..."
+
+msgid "CDDB query for this record..."
+msgstr "CDDB მოთხოვნა ამ ჩანაწერისთვის..."
+
+msgid "Add new track..."
+msgstr "ახალი ტრეკის დამატება..."
+
+msgid "Edit track..."
+msgstr "ტრეკის ჩასწორება..."
+
+msgid "Export track..."
+msgstr "ბილიკის გატანა..."
+
+msgid "Remove track"
+msgstr "ტრეკის წაშლა"
+
+msgid "Calculate volume"
+msgstr "ხმის გამოთვლა"
+
+msgid "Only if unmeasured"
+msgstr "მხოლოდ, თუ გაზომილია"
+
+msgid "In any case"
+msgstr "ნებისმიერ შემთხვევაში"
+
+msgid "Update file metadata..."
+msgstr "ფაილის მეტამონაცემების განახლება..."
+
+msgid "Please select the download directory for this podcast."
+msgstr "აირჩიეთ გადმოწერის საქაღალდე ამ პოდკასტისთვის."
+
+msgid "Subscribe to new feed"
+msgstr "გამოიწერეთ ახალი ლენტა"
+
+msgid "Edit feed settings"
+msgstr "ლენტის პარამეტრების ჩასწორება"
+
+msgid "Podcast URL:"
+msgstr "პოდკასტის URL:"
+
+msgid "Download directory:"
+msgstr "გადმოწერის საქაღალდე:"
+
+msgid "Auto-check interval [hour]:"
+msgstr "ავტოშემოწმების ინტერვალი [სთ]:"
+
+msgid ""
+"Automatic update has been disabled for all feeds\n"
+"in the Podcasts store popup menu."
+msgstr ""
+
+msgid "Limits"
+msgstr "ლიმიტები"
+
+msgid "Maximum number of items:"
+msgstr "ელემენტების მაქს. რაოდენობა:"
+
+msgid "Remove older items [day]:"
+msgstr "ძველი ელემენტების წაშლა [დღე]:"
+
+msgid "Maximum space to use [MB]:"
+msgstr "მაქს. გამოსაყენებელი ადგილი [მბ]:"
+
+msgid "Podcasts"
+msgstr "პოდკასტები"
+
+msgid "Updating..."
+msgstr "განახლება..."
+
+msgid "Delete downloaded items from the filesystem"
+msgstr "გადმოწერილი ელემენტების წაშლა ფაილური სისტემიდან"
+
+msgid "Remove feed"
+msgstr "ლენტის წაშლა"
+
+#, c-format
+msgid "Really remove '%s' from the Music Store?"
+msgstr "მართლა წავშალო '%s' მუსიკის ბიბლიოთეკიდან?"
+
+msgid "Reorder feeds"
+msgstr "ლენტების გადალაგება"
+
+msgid ""
+"Drag and drop entries in the list\n"
+"to set the feed order in the Music Store."
+msgstr ""
+
+#, c-format
+msgid "Downloading %d/%d (%d%%) ..."
+msgstr "მიმდინარეობს გადმოწერა %d/%d (%d%%) ..."
+
+msgid "item"
+msgstr "ელემენტი"
+
+msgid "items"
+msgstr "ელემენტი"
+
+msgid "new item"
+msgstr "ახალი ელემენტი"
+
+msgid "new items"
+msgstr "ახალი ელემენტები"
+
+msgid "feed"
+msgstr "ლენტა"
+
+msgid "feeds"
+msgstr "ლენტები"
+
+msgid "Export item..."
+msgstr "ელემენტის გატანა..."
+
+msgid "Add all items to playlist"
+msgstr "ყველა ელემენტის ჩამატება დასაკრავ სიაში"
+
+msgid "Add all items to playlist (Album mode)"
+msgstr "ყველა ელემენტის ჩამატება დასაკრავ სიაში (ალბომის რეჟიმი)"
+
+msgid "Add new items to playlist"
+msgstr "ახალი ელემენტების ჩამატება დასაკრავ სიაში"
+
+msgid "Add new items to playlist (Album mode)"
+msgstr "ახალი ელემენტების ჩამატება დასაკრავ სიაში (ალბომის რეჟიმი)"
+
+msgid "Edit feed"
+msgstr "ლენტის ჩასწორება"
+
+msgid "Export all items..."
+msgstr "ყველა ელემენტის გატანა..."
+
+msgid "Export new items..."
+msgstr "ახალი ელემენტების გატანა..."
+
+msgid "Update feed"
+msgstr "ლენტის განახლება"
+
+msgid "Abort ongoing update"
+msgstr "მიმდინარე განახლების შეწყვეტა"
+
+msgid "Update all feeds"
+msgstr "ყველა ლენტის განახლება"
+
+msgid "Automatically update feeds"
+msgstr "ლენტების ავტომატური განახლება"
+
+msgid "Unexpected end of string after '?'."
+msgstr "სტრიქონის მოულოდნელი დასასრული '?'-ის შემდეგ."
+
+msgid "Expected '}' after '{', but end of string found."
+msgstr "მოველოდი '}'-ს '{'-ის შემდეგ, მაგრამ აღმოჩენილია სტრიქონის ბოლო."
+
+#, c-format
+msgid "Unknown conversion type character found after '%%'."
+msgstr "'%%'-ის შემდეგ აღმოჩენილია უცნობი გადაყვანის ტიპის სიმბოლო."
+
+msgid "Unknown conversion type character found after '?'."
+msgstr "'?'-ის შემდეგ აღმოჩენილია უცნობი გადაყვანის ტიპის სიმბოლო."
+
+msgid "day"
+msgstr "დღე"
+
+msgid "days"
+msgstr "დღე"
+
+msgid "All Files"
+msgstr "ყველა ფაილი"
+
+msgid "Lua Extension Files (*.lua)"
+msgstr "Lua-ის გაფართოების ფაილები (*.lua)"
+
+msgid "Music Store Files (*.xml)"
+msgstr "მუსიკის ბიბლიოთეკის ფაილები (*.xml)"
+
+msgid "Aqualung playlist (*.xml)"
+msgstr "Aqualung-ის დასაკრავი სია (*.xml)"
+
+msgid "MP3 Playlist (*.m3u)"
+msgstr "MP3-ის დასაკრავი სია (*.m3u)"
+
+msgid "Multimedia Playlist (*.pls)"
+msgstr "მულტიმედიის დასაკრავი სია (*.pls)"
+
+msgid "All Playlist Files"
+msgstr "ყველა დასაკრავი სიის ფაილი"
+
+msgid "All Audio Files"
+msgstr "ყველა აუდიო ფაილი"
+
+msgid "Sound Files (*.wav, *.aiff, *.au, ...)"
+msgstr "ხმის ფაილები (*.wav, *.aiff, *.au, ...)"
+
+msgid "Free Lossless Audio Codec (*.flac)"
+msgstr "Free Lossless Audio Codec (*.flac)"
+
+msgid "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+msgstr "MPEG Audio (*.mp3, *.mpa, *.mpega, ...)"
+
+msgid "Ogg Vorbis (*.ogg)"
+msgstr "Ogg Vorbis (*.ogg)"
+
+msgid "Ogg Speex (*.spx)"
+msgstr "Ogg Speex (*.spx)"
+
+msgid "Musepack (*.mpc)"
+msgstr "Musepack (*.mpc)"
+
+msgid "Monkey's Audio Codec (*.ape)"
+msgstr "Monkey's Audio Codec (*.ape)"
+
+msgid "Modules (*.xm, *.mod, *.it, *.s3m, ...)"
+msgstr "მოდულები (*.xm, *.mod, *.it, *.s3m, ...)"
+
+msgid "Compressed modules (*.gz, *.bz2)"
+msgstr "შეკუმშული მოდულები (*.gz, *.bz2)"
+
+msgid "Compressed modules (*.gz)"
+msgstr "შეკუმშული მოდულები (*.gz)"
+
+msgid "Compressed modules (*.bz2)"
+msgstr "შეკუმშული მოდულები (*.bz2)"
+
+msgid "WavPack (*.wv)"
+msgstr "WavPack (*.wv)"
+
+msgid "LAVC audio/video files"
+msgstr "LAVC აუდიო/ვიდეო ფაილები"
+
+msgid "Resume"
+msgstr "გაგრძელება"
+
+msgid "Calculating volume level"
+msgstr "ხმის დონის გამოთვლა"
+
+msgid "Compression: Fast"
+msgstr "შეკუმშვა: სწრაფი"
+
+msgid "Compression: Normal"
+msgstr "შეკუმშვა: ნორმალური"
+
+msgid "Compression: High"
+msgstr "შეკუმშვა: მაღალი"
+
+msgid "Compression: Extra High"
+msgstr "შეკუმშვა: ძალიან მაღალი"
+
+msgid "Compression: Insane"
+msgstr "შეკუმშვა: წარმოუდგენელი"
+
+msgid "Profile: Telephone"
+msgstr "პროფილი: ტელეფონი"
+
+msgid "Profile: Thumb"
+msgstr "პროფილი: ესკიზი"
+
+msgid "Profile: Radio"
+msgstr "პროფილი: რადიო"
+
+msgid "Profile: Standard"
+msgstr "პროფილი: სტანდარტული"
+
+msgid "Profile: Xtreme"
+msgstr "პროფილი: ექსტრემალური"
+
+msgid "Profile: Insane"
+msgstr "პროფილი: წარმოუდგენელი"
+
+msgid "Profile: Braindead"
+msgstr "პროფილი: უტვინო"
+
+msgid "Layer I"
+msgstr "Layer I"
+
+msgid "Layer II"
+msgstr "Layer II"
+
+msgid "Layer III"
+msgstr "Layer III"
+
+msgid "Unrecognized"
+msgstr "უცნობი"
+
+msgid "Single channel"
+msgstr "ერთი არხი"
+
+msgid "Dual channel"
+msgstr "ორი არხი"
+
+msgid "Joint stereo"
+msgstr "გაერთიანებული სტერეო"
+
+msgid "Stereo"
+msgstr "სტერეო"
+
+msgid "Emphasis: none"
+msgstr "აქცენტი: არცერთი"
+
+msgid "Emphasis:"
+msgstr "აქცენტი:"
+
+msgid "Emphasis: reserved"
+msgstr "აქცენტი: დაცულია"
+
+msgid "bit signed"
+msgstr "ბიტი ნიშნით"
+
+msgid "bit unsigned"
+msgstr "ბიტი უნიშნო"
+
+msgid "bit float"
+msgstr "ბიტი მცურავნიშნიანი"
+
+msgid "bit double"
+msgstr "ბიტი ორმაგი"
+
+msgid "encoding"
+msgstr "კოდირება"

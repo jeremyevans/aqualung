@@ -16,8 +16,7 @@ the Content-Type field, and the whole file must be encoded in UTF-8.
 
 Next step is translation itself.  You are suggested using a decent
 editor with .po syntax support to make the process easier.  When
-finished with translating, send the file to the aqualung-friends
-mailing list.  We will include it in the distribution.
+finished with translating, open a pull request with your translation.
 
 To test your translation, add it into the list in LINGUAS, then run
 `make' and `make install', after which your installed Aqualung should
@@ -35,5 +34,5 @@ You can merge the changes to your language file by typing
 $ make XX.po
 
 Now you can edit the .po file and translate new strings, fix fuzzy
-entries and remove obsolete ones.  Finally, send the updated version
-of your .po file to the mailing list.
+entries and remove obsolete ones.  Finally, open a pull request with
+your updated .po file.

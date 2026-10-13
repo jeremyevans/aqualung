@@ -2973,12 +2973,8 @@ main(int argc, char ** argv) {
 
 		printf("Probing ALSA driver... ");
 
-		if (device_name == NULL) {
-			device_name = strdup("default");
-		}
-
 		thread_info.out_SR = rate;
-		thread_info.pcm_name = strdup(device_name);
+		thread_info.pcm_name = strdup(device_name != NULL ? device_name : "default");
 
 		ret = alsa_init(&thread_info, 0);
 		if (ret == -1) {

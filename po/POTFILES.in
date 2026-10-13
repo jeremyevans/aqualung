@@ -7,7 +7,6 @@ src/cddb_lookup.c
 src/export.c
 src/file_info.c
 src/gui_main.c
-src/ifp_device.c
 src/metadata.c
 src/metadata_api.c
 src/metadata_id3v2.c

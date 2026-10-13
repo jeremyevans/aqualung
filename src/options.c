@@ -3331,8 +3331,6 @@ save_config(void) {
 	SAVE_INT(playlist_show_close_button_in_tab);
 	SAVE_INT(album_shuffle_mode);
 	SAVE_INT_SH(enable_playlist_statusbar);
-	SAVE_INT(ifpmanager_size_x);
-	SAVE_INT(ifpmanager_size_y);
 	SAVE_INT(repeat_on);
 	SAVE_INT(repeat_all_on);
 	SAVE_INT(shuffle_on);
@@ -3723,8 +3721,6 @@ load_config(void) {
 		LOAD_INT(playlist_show_close_button_in_tab);
 		LOAD_INT(album_shuffle_mode);
 		LOAD_INT_SH(enable_playlist_statusbar);
-		LOAD_INT(ifpmanager_size_x);
-		LOAD_INT(ifpmanager_size_y);
 		LOAD_INT(repeat_on);
 		LOAD_INT(repeat_all_on);
 		LOAD_INT(shuffle_on);

@@ -73,8 +73,6 @@ typedef struct {
 
 	int search_pl_flags;
 	int search_ms_flags;
-        int ifpmanager_size_x;
-        int ifpmanager_size_y;
 	float loop_range_start;
 	float loop_range_end;
 	int wm_systray_warn;

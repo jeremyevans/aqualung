@@ -56,11 +56,6 @@
 #else /* HAVE_SRC */
 #define BUILT_W_SRC BUILT_IN
 #endif /* HAVE_SRC */
-#ifndef HAVE_IFP
-#define BUILT_W_IFP LEFT_OUT
-#else /* HAVE_IFP */
-#define BUILT_W_IFP BUILT_IN
-#endif /* HAVE_IFP */
 #ifndef HAVE_JACK_MGMT
 #define BUILT_W_JACK_MGMT LEFT_OUT
 #else /* HAVE_JACK_MGMT */
@@ -223,7 +218,6 @@ about_build(void) {
 		BUILT_W_CDDA, _("CDDA (Audio CD) support\n"),
 		BUILT_W_CDDB, _("CDDB support\n"),
 		BUILT_W_SRC, _("Sample Rate Converter support\n"),
-		BUILT_W_IFP, _("iRiver iFP driver support\n"),
 		BUILT_W_JACK_MGMT, _("JACK port management support\n"),
 		BUILT_W_LOOP, _("Loop playback support\n"),
 		BUILT_W_SYSTRAY, _("Systray support\n"),

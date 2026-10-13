@@ -2337,10 +2337,8 @@ set_prog_action_label(build_store_t * data, char * action) {
 	aqualung_idle_add(set_prog_action_label_idle, data);
 }
 
-/* XXX This function needs reviewing for string bounds checking */
 void
 file_transform(char * buf, file_transform_t * model) {
-
 
 	int i;
 	char tmp[MAXLEN];
@@ -2354,6 +2352,7 @@ file_transform(char * buf, file_transform_t * model) {
 
 	if (model->regexp[0] != '\0') {
 
+		GString * str = g_string_new(NULL);
 		p = buf;
 
 		while (!regexec(&model->compiled, p + offs, 10, regmatch, 0)) {
@@ -2361,7 +2360,7 @@ file_transform(char * buf, file_transform_t * model) {
 			int i = 0;
 			int b = strlen(model->replacement) - 1;
 
-			strncat(tmp, p + offs, regmatch[0].rm_so);
+			g_string_append_len(str, p + offs, regmatch[0].rm_so);
 
 			for (i = 0; i < b; i++) {
 
@@ -2374,23 +2373,23 @@ file_transform(char * buf, file_transform_t * model) {
 						continue;
 					}
 
-					strncat(tmp, p + offs + regmatch[j].rm_so,
-						regmatch[j].rm_eo - regmatch[j].rm_so);
+					g_string_append_len(str, p + offs + regmatch[j].rm_so,
+							    regmatch[j].rm_eo - regmatch[j].rm_so);
 					i++;
 				} else {
-					strncat(tmp, model->replacement + i, 1);
+					g_string_append_c(str, model->replacement[i]);
 				}
 			}
 
-			strncat(tmp, model->replacement + i, 1);
+			if (model->replacement[i] != '\0') {
+				g_string_append_c(str, model->replacement[i]);
+			}
 			offs += regmatch[0].rm_eo;
 		}
 
-		if (!*tmp) {
-			arr_strlcpy(tmp, p + offs);
-		} else {
-			arr_strlcat(tmp, p + offs);
-		}
+		g_string_append(str, p + offs);
+		arr_strlcpy(tmp, str->str);
+		g_string_free(str, TRUE);
 
 	} else {
 		arr_strlcpy(tmp, buf);
@@ -2459,7 +2458,7 @@ file_transform(char * buf, file_transform_t * model) {
 		strcpy(p, t);
 	}
 
-	strncpy(buf, p, MAXLEN-1);
+	g_strlcpy(buf, p, MAXLEN);
 }
 
 

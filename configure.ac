@@ -375,13 +375,6 @@ AQUALUNG_DETECT([cdda], [Compact Disc Digital Audio],
         ],
         [AQUALUNG_MISSING([cdda], [$cdio_PKG_ERRORS])])])
 
-AQUALUNG_DETECT([ifp], [iRiver iFP],
-    [AC_CHECK_LIB([usb], [usb_init],
-        [AC_CHECK_LIB([ifp], [ifp_find_device],
-            [AQUALUNG_FOUND([ifp], [-lusb -lifp])],
-            [AQUALUNG_MISSING([ifp], [iRiver iFP support requires libifp])])],
-        [AQUALUNG_MISSING([ifp], [iRiver iFP support requires libusb])])])
-
 
 #
 # Miscellaneous Library Options
@@ -430,7 +423,6 @@ AC_MSG_NOTICE([summary
       CDDA (Audio CD) support             :  $with_cdda
       CDDB support                        :  $with_cddb
       Sample Rate Converter support       :  $with_src
-      iRiver iFP driver support           :  $with_ifp
       JACK port management support        :  $enable_jack_mgmt
       Loop playback support               :  $enable_loop
       Systray support                     :  $enable_systray

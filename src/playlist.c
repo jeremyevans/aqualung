@@ -37,10 +37,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#ifdef HAVE_IFP
-#include "ifp_device.h"
-#endif /* HAVE_IFP */
-
 #ifdef HAVE_TRANSCODING
 #include "export.h"
 #endif /* HAVE_TRANSCODING */
@@ -124,9 +120,6 @@ GtkWidget * plist__reread_file_meta;
 GtkWidget * plist__fileinfo;
 GtkWidget * plist__search;
 GtkWidget * plist__roll;
-#ifdef HAVE_IFP
-GtkWidget * plist__send_songs_to_iriver;
-#endif /* HAVE_IFP */
 #ifdef HAVE_TRANSCODING
 GtkWidget * plist__export;
 #endif /* HAVE_TRANSCODING */
@@ -1317,15 +1310,6 @@ playlist_window_key_pressed(GtkWidget * widget, GdkEventKey * kevent) {
 				playlist_tab_new(NULL);
 			}
 		}
-#ifdef HAVE_IFP
-		else {
-			if (kevent->state & GDK_SHIFT_MASK) {   /* SHIFT T */
-                                aifp_transfer_files(DOWNLOAD_MODE);
-                        } else {
-                                aifp_transfer_files(UPLOAD_MODE);
-                        }
-                }
-#endif /* HAVE_IFP */
 		return TRUE;
 	case GDK_KEY_r:
 	case GDK_KEY_R:
@@ -1444,9 +1428,6 @@ playlist_menu_set_popup_sensitivity(playlist_t * pl) {
 #ifdef HAVE_TRANSCODING
 	gtk_widget_set_sensitive(plist__export, has_selection && (file_types == 0));
 #endif /* HAVE_TRANSCODING */
-#ifdef HAVE_IFP
-	gtk_widget_set_sensitive(plist__send_songs_to_iriver, has_selection && (file_types == 0));
-#endif  /* HAVE_IFP */
 }
 
 gint
@@ -2506,15 +2487,6 @@ plist__export_cb(gpointer data) {
 	export_start(export);
 }
 #endif /* HAVE_TRANSCODING */
-
-#ifdef HAVE_IFP
-void
-plist__send_songs_to_iriver_cb(gpointer data) {
-
-        aifp_transfer_files(UPLOAD_MODE);
-
-}
-#endif /* HAVE_IFP */
 
 void
 plist__fileinfo_cb(gpointer user_data) {
@@ -5393,9 +5365,6 @@ init_plist_menu(GtkWidget *append_menu) {
         plist__load_tab = gtk_menu_item_new_with_label(_("Load playlist in new tab"));
         plist__load = gtk_menu_item_new_with_label(_("Load playlist"));
         plist__enqueue = gtk_menu_item_new_with_label(_("Enqueue playlist"));
-#ifdef HAVE_IFP
-        plist__send_songs_to_iriver = gtk_menu_item_new_with_label(_("Send to iFP device"));
-#endif  /* HAVE_IFP */
 #ifdef HAVE_TRANSCODING
         plist__export = gtk_menu_item_new_with_label(_("Export files"));
 #endif /* HAVE_TRANSCODING */
@@ -5429,9 +5398,6 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), separator);
 	gtk_widget_show(separator);
 
-#ifdef HAVE_IFP
-        gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__send_songs_to_iriver);
-#endif  /* HAVE_IFP */
 #ifdef HAVE_TRANSCODING
         gtk_menu_shell_append(GTK_MENU_SHELL(append_menu), plist__export);
 #endif /* HAVE_TRANSCODING */
@@ -5466,9 +5432,6 @@ init_plist_menu(GtkWidget *append_menu) {
         g_signal_connect_swapped(G_OBJECT(plist__rva_average), "activate", G_CALLBACK(plist__rva_average_cb), NULL);
         g_signal_connect_swapped(G_OBJECT(plist__reread_file_meta), "activate", G_CALLBACK(plist__reread_file_meta_cb), NULL);
 
-#ifdef HAVE_IFP
-        g_signal_connect_swapped(G_OBJECT(plist__send_songs_to_iriver), "activate", G_CALLBACK(plist__send_songs_to_iriver_cb), NULL);
-#endif  /* HAVE_IFP */
 #ifdef HAVE_TRANSCODING
         g_signal_connect_swapped(G_OBJECT(plist__export), "activate", G_CALLBACK(plist__export_cb), NULL);
 #endif /* HAVE_TRANSCODING */
@@ -5487,9 +5450,6 @@ init_plist_menu(GtkWidget *append_menu) {
         gtk_widget_show(plist__rva_separate);
         gtk_widget_show(plist__rva_average);
         gtk_widget_show(plist__reread_file_meta);
-#ifdef HAVE_IFP
-        gtk_widget_show(plist__send_songs_to_iriver);
-#endif  /* HAVE_IFP */
 #ifdef HAVE_TRANSCODING
         gtk_widget_show(plist__export);
 #endif /* HAVE_TRANSCODING */

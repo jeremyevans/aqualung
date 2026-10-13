@@ -2056,13 +2056,6 @@ print_version(void) {
 #endif /* HAVE_SRC */
 	fprintf(stderr, "Sample Rate Converter support\n");
 
-#ifdef HAVE_IFP
-	fprintf(stderr, V_YES);
-#else
-	fprintf(stderr, V_NO);
-#endif /* HAVE_IFP */
-	fprintf(stderr, "iRiver iFP driver support\n");
-
 #ifdef HAVE_JACK_MGMT
 	fprintf(stderr, V_YES);
 #else

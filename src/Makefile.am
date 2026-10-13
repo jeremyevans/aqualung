@@ -38,7 +38,7 @@ aqualung_LDADD = $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
                  $(speex_LIBS) $(vorbis_LIBS) $(vorbisenc_LIBS) \
                  $(wavpack_LIBS) \
                  $(lrdf_LIBS) $(src_LIBS) \
-                 $(cdio_LIBS) $(ifp_LIBS) \
+                 $(cdio_LIBS) \
                  $(cddb_LIBS) $(lua_LIBS)
 
 aqualung_SOURCES = \
@@ -94,10 +94,6 @@ endif
 
 if HAVE_FLAC
 aqualung_SOURCES += metadata_flac.h metadata_flac.c decoder/dec_flac.h decoder/dec_flac.c
-endif
-
-if HAVE_IFP
-aqualung_SOURCES += ifp_device.h ifp_device.c
 endif
 
 if HAVE_JACK_MGMT

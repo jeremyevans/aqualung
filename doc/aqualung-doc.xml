@@ -2889,10 +2889,6 @@
           </tr>
           <hline/>
           <tr>
-            <td>t, T</td>
-            <td>send selected songs to iRiver iFP device</td>
-          </tr>
-          <tr>
             <td>i, I, F1</td>
             <td>bring up the File info dialog (also accessible from the right-click popup menu)</td>
           </tr>

@@ -2419,7 +2419,7 @@ file_transform(char * buf, file_transform_t * model) {
 
 		if (*p) {
 			buf[0] = '\0';
-			strcpy(buf, p);
+			g_strlcpy(buf, p, MAXLEN);
 		}
 	}
 
@@ -2455,7 +2455,7 @@ file_transform(char * buf, file_transform_t * model) {
 
 		t[j] = '\0';
 
-		strcpy(p, t);
+		g_strlcpy(p, t, MAXLEN);
 	}
 
 	g_strlcpy(buf, p, MAXLEN);

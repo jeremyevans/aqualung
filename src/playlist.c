@@ -835,21 +835,18 @@ playlist_disable_bold_font(void) {
 void
 playlist_set_markup(playlist_t * pl) {
 
+	GdkRGBA color;
+
 	if (pl->playing) {
 		gchar * str = g_markup_printf_escaped("<b>%s</b>", pl->name);
 		gtk_label_set_markup(GTK_LABEL(pl->label), str);
 		g_free(str);
-		gtk_widget_modify_fg(pl->label, GTK_STATE_NORMAL,
-				     &gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_ACTIVE]);
-		gtk_widget_modify_fg(pl->label, GTK_STATE_ACTIVE,
-				     &gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_ACTIVE]);
+		gui_style_get_color(playlist_color_indicator, GTK_STATE_FLAG_ACTIVE, FALSE, &color);
 	} else {
 		gtk_label_set_text(GTK_LABEL(pl->label), pl->name);
-		gtk_widget_modify_fg(pl->label, GTK_STATE_NORMAL,
-				     &gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_NORMAL]);
-		gtk_widget_modify_fg(pl->label, GTK_STATE_ACTIVE,
-				     &gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_NORMAL]);
+		gui_style_get_color(playlist_color_indicator, GTK_STATE_FLAG_NORMAL, FALSE, &color);
 	}
+	gui_widget_set_fg_color(pl->label, &color);
 }
 
 void
@@ -910,13 +907,17 @@ playlist_set_color(void) {
 	int rs = 0, gs = 0, bs = 0;
 	int ri = 0, gi = 0, bi = 0;
 
-	rs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].red;
-	gs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].green;
-	bs = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_SELECTED].blue;
+	GdkRGBA color;
 
-	ri = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].red;
-	gi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].green;
-	bi = gtk_widget_get_style(playlist_color_indicator)->fg[GTK_STATE_INSENSITIVE].blue;
+	gui_style_get_color(playlist_color_indicator, GTK_STATE_FLAG_SELECTED, FALSE, &color);
+	rs = color.red * 65535 + 0.5;
+	gs = color.green * 65535 + 0.5;
+	bs = color.blue * 65535 + 0.5;
+
+	gui_style_get_color(playlist_color_indicator, GTK_STATE_FLAG_INSENSITIVE, FALSE, &color);
+	ri = color.red * 65535 + 0.5;
+	gi = color.green * 65535 + 0.5;
+	bi = color.blue * 65535 + 0.5;
 
 	arr_snprintf(active, "#%04X%04X%04X", rs, gs, bs);
 	arr_snprintf(inactive, "#%04X%04X%04X", ri, gi, bi);
@@ -1468,8 +1469,7 @@ playlist_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpoin
 
 		playlist_menu_set_popup_sensitivity(pl);
 
-		gtk_menu_popup(GTK_MENU(plist_menu), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(plist_menu), (GdkEvent *)event);
 		return TRUE;
 	}
 	return FALSE;
@@ -1928,8 +1928,8 @@ add_url(GtkWidget * widget, gpointer data) {
         dialog = gtk_dialog_new_with_buttons(_("Add URL"),
                                              options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
         gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, -1);
@@ -1938,18 +1938,18 @@ add_url(GtkWidget * widget, gpointer data) {
         g_signal_connect (G_OBJECT (dialog), "key_press_event",
                         G_CALLBACK (add_url_key_press_cb), NULL);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			   table, FALSE, TRUE, 2);
 
 	url_label = gtk_label_new(_("URL:"));
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), url_label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 5, 5);
 
 	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox2, 1, 0, 1, 1,
+			TRUE, FALSE, 0, 5);
 
         url_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(url_entry), MAXLEN - 1);
@@ -2538,8 +2538,7 @@ add_cb(GtkWidget * widget, GdkEvent * event) {
 
                 if (bevent->button == 3) {
 
-			gtk_menu_popup(GTK_MENU(add_menu), NULL, NULL, NULL, NULL,
-				       bevent->button, bevent->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(add_menu), (GdkEvent *)bevent);
 
 			return TRUE;
 		}
@@ -2556,8 +2555,7 @@ sel_cb(GtkWidget * widget, GdkEvent * event) {
                 GdkEventButton * bevent = (GdkEventButton *) event;
 
                 if (bevent->button == 3) {
-			gtk_menu_popup(GTK_MENU(sel_menu), NULL, NULL, NULL, NULL,
-				       bevent->button, bevent->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(sel_menu), (GdkEvent *)bevent);
 			return TRUE;
 		}
 		return FALSE;
@@ -2573,8 +2571,7 @@ rem_cb(GtkWidget * widget, GdkEvent * event) {
                 GdkEventButton * bevent = (GdkEventButton *) event;
 
                 if (bevent->button == 3) {
-			gtk_menu_popup(GTK_MENU(rem_menu), NULL, NULL, NULL, NULL,
-				       bevent->button, bevent->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(rem_menu), (GdkEvent *)bevent);
 			return TRUE;
 		}
 		return FALSE;
@@ -3031,7 +3028,6 @@ playlist_reorder_columns_foreach(gpointer data, gpointer user_data) {
 					 options.show_rva_in_playlist);
 	gtk_tree_view_column_set_visible(GTK_TREE_VIEW_COLUMN(pl->length_column),
 					 options.show_length_in_playlist);
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), options.enable_pl_rules_hint);
 }
 
 void
@@ -3655,8 +3651,7 @@ playlist_tab_label_clicked(GtkWidget * widget, GdkEventButton * event, gpointer 
 		} else {
 			gtk_widget_set_sensitive(pl->tab__close_undo, FALSE);
 		}
-		gtk_menu_popup(GTK_MENU(pl->tab_menu), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(pl->tab_menu), (GdkEvent *)event);
 		return TRUE;
 	}
 
@@ -3691,8 +3686,8 @@ tab__rename_cb(gpointer data) {
         dialog = gtk_dialog_new_with_buttons(_("Rename playlist"),
                                              options.playlist_is_embedded ? GTK_WINDOW(main_window) : GTK_WINDOW(playlist_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
         gtk_widget_set_size_request(GTK_WIDGET(dialog), 400, -1);
@@ -3701,18 +3696,18 @@ tab__rename_cb(gpointer data) {
         g_signal_connect (G_OBJECT (dialog), "key_press_event",
                         G_CALLBACK (tab__rename_key_press_cb), NULL);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
 			   table, FALSE, TRUE, 2);
 
 	label = gtk_label_new(_("Name:"));
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 5, 5);
 
 	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox2, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox2, 1, 0, 1, 1,
+			TRUE, FALSE, 0, 5);
 
         entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(entry), MAXLEN - 1);
@@ -3914,10 +3909,6 @@ create_playlist_gui(playlist_t * pl) {
 
 	g_signal_connect(G_OBJECT(pl->view), "key_press_event",
 			 G_CALLBACK(playlist_key_pressed), NULL);
-
-	if (options.enable_pl_rules_hint) {
-		gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(pl->view), TRUE);
-	}
 
 	for (i = 0; i < 3; i++) {
 		switch (options.plcol_idx[i]) {

@@ -60,7 +60,15 @@ void aqualung_status_icon_set_tooltip_text(GtkStatusIcon * icon, const gchar * t
 #endif /* HAVE_SYSTRAY */
 void aqualung_widget_set_tooltip_text(GtkWidget * widget, const gchar * text);
 
-GtkWidget* gui_stock_label_button(gchar *label, const gchar *stock);
+GtkWidget* gui_stock_label_button(gchar *label, const gchar *icon_name);
+
+void gui_style_get_color(GtkWidget * widget, GtkStateFlags state, gboolean background, GdkRGBA * color);
+
+void gui_widget_set_css(GtkWidget * widget, const gchar * css);
+void gui_widget_set_fg_color(GtkWidget * widget, const GdkRGBA * color);
+
+void gui_grid_attach(GtkGrid * grid, GtkWidget * child, gint left, gint top, gint width, gint height,
+		     gboolean hexpand, gboolean vexpand, guint xpad, guint ypad);
 
 GSList * file_chooser(char * title, GtkWidget * parent,
 		      GtkFileChooserAction action, int filter, gint multiple, char * destpath, size_t destpath_size);

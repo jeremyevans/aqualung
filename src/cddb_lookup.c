@@ -331,7 +331,7 @@ create_query_progress_window(cddb_lookup_t * data) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        abort_button = gui_stock_label_button(_("Abort"), GTK_STOCK_CANCEL);
+        abort_button = gui_stock_label_button(_("Abort"), "process-stop");
         g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(abort_cb), data);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), abort_button);   
@@ -909,8 +909,8 @@ cddb_dialog(cddb_lookup_t * data) {
         dialog = gtk_dialog_new_with_buttons(NULL,
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -918,12 +918,12 @@ cddb_dialog(cddb_lookup_t * data) {
 
 	gtk_window_set_title(GTK_WINDOW(dialog), _("CDDB query"));
 
-	table = gtk_table_new(8, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-			   table, FALSE, FALSE, 2);
+			   table, TRUE, TRUE, 2);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 5, 3);
         label = gtk_label_new(_("Matches:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
@@ -940,62 +940,62 @@ cddb_dialog(cddb_lookup_t * data) {
         gtk_combo_box_set_active(GTK_COMBO_BOX(data->combo), 0);
         g_signal_connect(data->combo, "changed", G_CALLBACK(changed_combo), data);
                  
-        gtk_table_attach(GTK_TABLE(table), data->combo, 1, 3, 0, 1, GTK_FILL, GTK_FILL, 5, 3);
+        gui_grid_attach(GTK_GRID(table), data->combo, 1, 0, 2, 1, FALSE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Artist:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	data->artist_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->artist_entry, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	gui_grid_attach(GTK_GRID(table), data->artist_entry, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 2, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Title:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	data->title_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->title_entry, 1, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	gui_grid_attach(GTK_GRID(table), data->title_entry, 1, 2, 1, 1,
+			TRUE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 3, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Year:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	data->year_spinner = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
-	gtk_table_attach(GTK_TABLE(table), data->year_spinner, 1, 2, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	gui_grid_attach(GTK_GRID(table), data->year_spinner, 1, 3, 1, 1,
+			TRUE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 4, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Category:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
         data->category_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(data->category_entry), FALSE);
-        gtk_table_attach(GTK_TABLE(table), data->category_entry, 1, 2, 4, 5,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+        gui_grid_attach(GTK_GRID(table), data->category_entry, 1, 4, 1, 1,
+                        TRUE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 5, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Genre:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	data->genre_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->genre_entry, 1, 2, 5, 6,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	gui_grid_attach(GTK_GRID(table), data->genre_entry, 1, 5, 1, 1,
+			TRUE, FALSE, 5, 3);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 6, 1, 1, FALSE, FALSE, 5, 3);
 	label = gtk_label_new(_("Extended data:"));
         gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 2);
 
 	data->ext_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->ext_entry, 1, 2, 6, 7,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+	gui_grid_attach(GTK_GRID(table), data->ext_entry, 1, 6, 1, 1,
+			TRUE, FALSE, 5, 3);
 
 	if (iter_get_store_type(&data->iter_record) == STORE_TYPE_FILE) {
 
@@ -1006,31 +1006,31 @@ cddb_dialog(cddb_lookup_t * data) {
 
 		button = gtk_button_new_with_label(_("Import as Artist"));
 		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(import_as_artist), data);
-		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), button, 2, 1, 1, 1, FALSE, FALSE, 5, 3);
 
 		data->title_import_button = gtk_button_new_with_label(_("Import as Title"));
 		g_signal_connect(G_OBJECT(data->title_import_button), "clicked",
 				 G_CALLBACK(import_as_title), data);
-		gtk_table_attach(GTK_TABLE(table), data->title_import_button,
-				 2, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), data->title_import_button, 2, 2, 1, 1,
+				FALSE, FALSE, 5, 3);
 
 		data->year_import_button = gtk_button_new_with_label(_("Import as Year"));
 		g_signal_connect(G_OBJECT(data->year_import_button), "clicked",
 				 G_CALLBACK(import_as_year), data);
-		gtk_table_attach(GTK_TABLE(table), data->year_import_button,
-				 2, 3, 3, 4, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), data->year_import_button, 2, 3, 1, 1,
+				FALSE, FALSE, 5, 3);
 
 		button = gtk_button_new_with_label(_("Add to Comments"));
 		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_category_to_comments), data);
-		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 4, 5, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), button, 2, 4, 1, 1, FALSE, FALSE, 5, 3);
 
 		button = gtk_button_new_with_label(_("Add to Comments"));
 		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_genre_to_comments), data);
-		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 5, 6, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), button, 2, 5, 1, 1, FALSE, FALSE, 5, 3);
 
 		button = gtk_button_new_with_label(_("Add to Comments"));
 		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_ext_to_comments), data);
-		gtk_table_attach(GTK_TABLE(table), button, 2, 3, 6, 7, GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), button, 2, 6, 1, 1, FALSE, FALSE, 5, 3);
 	}
 
 	data->track_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
@@ -1051,8 +1051,8 @@ cddb_dialog(cddb_lookup_t * data) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrollwin, -1, 200);
-        gtk_table_attach(GTK_TABLE(table), viewport, 0, 3, 7, 8,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 3);
+        gui_grid_attach(GTK_GRID(table), viewport, 0, 7, 3, 1,
+			TRUE, TRUE, 5, 3);
         gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
         gtk_container_add(GTK_CONTAINER(scrollwin), data->track_list);
 

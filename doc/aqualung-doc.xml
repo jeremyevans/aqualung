@@ -2574,11 +2574,10 @@
 
         <p>The purpose and usage of Music Store and database files
         have been <ref refkey="store">covered</ref>. On this page you
-        can somewhat customize the Music Store, decide whether to hide
-        the comment pane or the status bar, or to enable rules
-        hint. If you choose to expand stores on startup, all toplevel
-        tree nodes will automatically be expanded after starting
-        Aqualung.</p>
+        can somewhat customize the Music Store and decide whether to
+        hide the comment pane or the status bar. If you choose to
+        expand stores on startup, all toplevel tree nodes will
+        automatically be expanded after starting Aqualung.</p>
 
         <p>As already mentioned before, this page is also the place to
         manage music store database files too. Pressing the

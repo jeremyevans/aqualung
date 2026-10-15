@@ -251,12 +251,12 @@ insert_check_label_spin(GtkWidget * table, GtkWidget ** check, char * ltext, Gtk
 
 	*check = gtk_check_button_new_with_label(ltext);
 	gtk_widget_set_name(*check, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), *check, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), *check, 0, y1, 1, y2 - y1, FALSE, FALSE, 5, 5);
 
 	*spin = gtk_spin_button_new_with_range(min, max, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
-        gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 2, 5);
+        gui_grid_attach(GTK_GRID(table), *spin, 1, y1, 1, y2 - y1,
+                        TRUE, FALSE, 2, 5);
 
 	g_signal_connect(G_OBJECT(*check), "toggled",
 			 G_CALLBACK(check_button_toggle_sensitivity), *spin);
@@ -289,15 +289,15 @@ podcast_dialog(podcast_t ** podcast, int create) {
         dialog = gtk_dialog_new_with_buttons(create ? _("Subscribe to new feed") : _("Edit feed settings"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(content_area), table, FALSE, TRUE, 2);
 
 	insert_label_entry(table, _("Podcast URL:"), &url_entry,
@@ -321,17 +321,17 @@ podcast_dialog(podcast_t ** podcast, int create) {
 	} else {
 		GtkWidget * label = gtk_label_new(_("Automatic update has been disabled for all feeds\n"
 						    "in the Podcasts store popup menu."));
-		GtkWidget * icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_BUTTON);
+		GtkWidget * icon = gtk_image_new_from_icon_name("dialog-warning", GTK_ICON_SIZE_BUTTON);
 		GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 		gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 5);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-		gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4, GTK_FILL, GTK_FILL, 5, 5);
+		gui_grid_attach(GTK_GRID(table), hbox, 0, 3, 2, 1, FALSE, FALSE, 5, 5);
 	}
 
 	frame = gtk_frame_new(_("Limits"));
         gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, TRUE, 5);
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(frame), table);
 
 	insert_check_label_spin(table, &count_check, _("Maximum number of items:"), &count_spin,
@@ -906,8 +906,8 @@ podcast_store__reorder_cb(gpointer data) {
         dialog = gtk_dialog_new_with_buttons(_("Reorder feeds"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
@@ -1586,16 +1586,13 @@ store_podcast_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path)
 
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
-				gtk_menu_popup(GTK_MENU(podcast_store_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(podcast_store_menu), (GdkEvent *)bevent);
 				break;
 			case 2:
-				gtk_menu_popup(GTK_MENU(podcast_feed_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(podcast_feed_menu), (GdkEvent *)bevent);
 				break;
 			case 3:
-				gtk_menu_popup(GTK_MENU(podcast_track_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(podcast_track_menu), (GdkEvent *)bevent);
 				break;
 			}
 		}

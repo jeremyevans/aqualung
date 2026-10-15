@@ -142,7 +142,6 @@ typedef struct {
 	int show_length_in_playlist;
 	int show_active_track_name_in_bold;
 	int auto_roll_to_active_track;
-	int enable_pl_rules_hint;
 	int plcol_idx[3];
 
 	/* Music Store */
@@ -154,7 +153,6 @@ typedef struct {
    	int enable_mstore_toolbar;
 	int enable_mstore_toolbar_shadow;
 	int autoexpand_stores;
-	int enable_ms_rules_hint;
 	int enable_ms_tree_icons;
 	int enable_ms_tree_icons_shadow;
 	int ms_confirm_removal;

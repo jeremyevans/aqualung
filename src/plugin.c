@@ -636,7 +636,7 @@ update_plugin_outputs(gpointer data) {
 		if (LADSPA_IS_PORT_OUTPUT(instance->descriptor->PortDescriptors[k])
 		    && LADSPA_IS_PORT_CONTROL(instance->descriptor->PortDescriptors[k])) {
 			
-			gtk_adjustment_value_changed(instance->adjustments[k]);
+			g_signal_emit_by_name(instance->adjustments[k], "value-changed");
 		}
 	}
 	return TRUE;
@@ -728,7 +728,7 @@ plugin_scale_btn_pressed(GtkWidget * widget, GdkEventButton * event, gpointer * 
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(widget));
 	gtk_adjustment_set_value(adj, btnpdata->start);
-	gtk_adjustment_value_changed(adj);
+	g_signal_emit_by_name(adj, "value-changed");
 
         return TRUE;
 }
@@ -899,10 +899,10 @@ build_plugin_window(plugin_instance * instance) {
 	gtk_box_pack_start(GTK_BOX(vbox), scrwin, TRUE, TRUE, 2);
 
 	inner_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), inner_vbox);
+	gtk_container_add(GTK_CONTAINER(scrwin), inner_vbox);
 
 	if ((n_toggled) || (n_untoggled) || (n_outctl) || (n_outlat)) {
-		table = gtk_table_new(n_rows, 3, FALSE);
+		table = gtk_grid_new();
 		gtk_box_pack_start(GTK_BOX(inner_vbox), table, TRUE, TRUE, 2);
 	}
 
@@ -920,9 +920,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_label_new(plugin->PortNames[k]);
 			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
-					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), hbox, 0, i, 1, 1,
+					FALSE, TRUE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.width > max_width)
 				max_width = req.width;
@@ -932,8 +932,10 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_toggle_button_new();
 			gtk_widget_set_name(widget, "plugin_toggled");
 			gtk_widget_set_size_request(widget, 14, 14);
-			gtk_table_attach(GTK_TABLE(table), widget, 2, 3, i, i+1, 0, 0, 0, 0);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), widget, 2, i, 1, 1, FALSE, FALSE, 0, 0);
+			gtk_widget_set_halign(widget, GTK_ALIGN_CENTER);
+			gtk_widget_set_valign(widget, GTK_ALIGN_CENTER);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			if (req.height > max_height)
 				max_height = req.height;
 			height += max_height;
@@ -952,9 +954,9 @@ build_plugin_window(plugin_instance * instance) {
 
 	if ((n_toggled) && (n_untoggled)) {
 		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
+		gui_grid_attach(GTK_GRID(table), hseparator, 0, i, 3, 1, FALSE, FALSE, 2, 2);
 		++i;
-		gtk_widget_size_request(hseparator, &req);
+		gtk_widget_get_preferred_size(hseparator, &req, NULL);
 		height += req.height + 5;
 	}
 
@@ -972,9 +974,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_label_new(plugin->PortNames[k]);
                         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
-					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), hbox, 0, i, 1, 1,
+					FALSE, TRUE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.width > max_width)
 				max_width = req.width;
@@ -1066,15 +1068,15 @@ build_plugin_window(plugin_instance * instance) {
 
                                 combo = gtk_combo_box_text_new ();
 				gtk_widget_set_name(combo, "plugin_combo");
-				gtk_table_attach(GTK_TABLE(table), combo, 1, 3, i, i+1,
-						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+				gui_grid_attach(GTK_GRID(table), combo, 1, i, 2, 1,
+						TRUE, FALSE, 2, 2);
 
 				for (j = 0; j < defs->count; j++) {
 	                                gtk_combo_box_text_append_text(
                                            GTK_COMBO_BOX_TEXT (combo), defs->items[j].label);
 				}
 
-				gtk_widget_size_request(combo, &req);
+				gtk_widget_get_preferred_size(combo, &req, NULL);
 				req.height += 2;
 				if (req.height > max_height)
 					max_height = req.height;
@@ -1109,10 +1111,10 @@ build_plugin_window(plugin_instance * instance) {
 					gtk_widget_set_name(widget, "plugin_scale");
 					gtk_widget_set_size_request(widget, 200, -1);
 					gtk_scale_set_digits(GTK_SCALE(widget), dp);
-					gtk_table_attach(GTK_TABLE(table), widget, 1, 2, i, i+1,
-							 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+					gui_grid_attach(GTK_GRID(table), widget, 1, i, 1, 1,
+							TRUE, FALSE, 2, 2);
 					gtk_scale_set_draw_value(GTK_SCALE(widget), FALSE);
-					gtk_widget_size_request(widget, &req);
+					gtk_widget_get_preferred_size(widget, &req, NULL);
 					req.height += 2;
 					if (req.height > max_height)
 						max_height = req.height;
@@ -1132,9 +1134,9 @@ build_plugin_window(plugin_instance * instance) {
 				
 				widget = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), step, dp);
 				gtk_widget_set_size_request(widget, 70, -1);
-				gtk_table_attach(GTK_TABLE(table), widget, 2, 3, i, i+1,
-						 GTK_FILL, GTK_FILL, 2, 2);
-				gtk_widget_size_request(widget, &req);
+				gui_grid_attach(GTK_GRID(table), widget, 2, i, 1, 1,
+						FALSE, FALSE, 2, 2);
+				gtk_widget_get_preferred_size(widget, &req, NULL);
 				req.height += 2;
 				if (req.height > max_height)
 					max_height = req.height;
@@ -1148,9 +1150,9 @@ build_plugin_window(plugin_instance * instance) {
 
 	if (((n_toggled) || (n_untoggled)) && (n_outctl)) {
 		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
+		gui_grid_attach(GTK_GRID(table), hseparator, 0, i, 3, 1, FALSE, FALSE, 2, 2);
 		++i;
-		gtk_widget_size_request(hseparator, &req);
+		gtk_widget_get_preferred_size(hseparator, &req, NULL);
 		height += req.height + 5;
 	}
 
@@ -1168,9 +1170,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_label_new(plugin->PortNames[k]);
                         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
-					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), hbox, 0, i, 1, 1,
+					FALSE, TRUE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.width > max_width)
 				max_width = req.width;
@@ -1262,11 +1264,11 @@ build_plugin_window(plugin_instance * instance) {
 				gtk_widget_set_name(widget, "plugin_scale");
 				gtk_widget_set_size_request(widget, 200, -1);
 				gtk_scale_set_digits(GTK_SCALE(widget), dp);
-				gtk_table_attach(GTK_TABLE(table), widget, 1, 2, i, i+1,
-						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+				gui_grid_attach(GTK_GRID(table), widget, 1, i, 1, 1,
+						TRUE, FALSE, 2, 2);
 				gtk_scale_set_draw_value(GTK_SCALE(widget), FALSE);
 				gtk_widget_set_sensitive(widget, FALSE);
-				gtk_widget_size_request(widget, &req);
+				gtk_widget_get_preferred_size(widget, &req, NULL);
 				req.height += 2;
 				if (req.height > max_height)
 					max_height = req.height;
@@ -1275,9 +1277,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), step, dp);
 			gtk_widget_set_size_request(widget, 70, -1);
 			gtk_widget_set_sensitive(widget, FALSE);
-			gtk_table_attach(GTK_TABLE(table), widget, 2, 3, i, i+1,
-					 GTK_FILL, GTK_FILL, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), widget, 2, i, 1, 1,
+					FALSE, FALSE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.height > max_height)
 				max_height = req.height;
@@ -1289,9 +1291,9 @@ build_plugin_window(plugin_instance * instance) {
 
 	if (((n_toggled) || (n_untoggled) || (n_outctl)) && (n_outlat)) {
 		hseparator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_table_attach(GTK_TABLE(table), hseparator, 0, 3, i, i+1, GTK_FILL, GTK_FILL, 2, 2);
+		gui_grid_attach(GTK_GRID(table), hseparator, 0, i, 3, 1, FALSE, FALSE, 2, 2);
 		++i;
-		gtk_widget_size_request(hseparator, &req);
+		gtk_widget_get_preferred_size(hseparator, &req, NULL);
 		height += req.height + 5;
 	}
 
@@ -1309,9 +1311,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_label_new(plugin->PortNames[k]);
                         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
                         gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i+1,
-					 GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), hbox, 0, i, 1, 1,
+					FALSE, TRUE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.width > max_width)
 				max_width = req.width;
@@ -1403,11 +1405,11 @@ build_plugin_window(plugin_instance * instance) {
 				gtk_widget_set_name(widget, "plugin_scale");
 				gtk_widget_set_size_request(widget, 200, -1);
 				gtk_scale_set_digits(GTK_SCALE(widget), dp);
-				gtk_table_attach(GTK_TABLE(table), widget, 1, 2, i, i+1,
-						 GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
+				gui_grid_attach(GTK_GRID(table), widget, 1, i, 1, 1,
+						TRUE, FALSE, 2, 2);
 				gtk_scale_set_draw_value(GTK_SCALE(widget), FALSE);
 				gtk_widget_set_sensitive(widget, FALSE);
-				gtk_widget_size_request(widget, &req);
+				gtk_widget_get_preferred_size(widget, &req, NULL);
 				req.height += 2;
 				if (req.height > max_height)
 					max_height = req.height;
@@ -1416,9 +1418,9 @@ build_plugin_window(plugin_instance * instance) {
 			widget = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), step, dp);
 			gtk_widget_set_size_request(widget, 70, -1);
 			gtk_widget_set_sensitive(widget, FALSE);
-			gtk_table_attach(GTK_TABLE(table), widget, 2, 3, i, i+1,
-					 GTK_FILL, GTK_FILL, 2, 2);
-			gtk_widget_size_request(widget, &req);
+			gui_grid_attach(GTK_GRID(table), widget, 2, i, 1, 1,
+					FALSE, FALSE, 2, 2);
+			gtk_widget_get_preferred_size(widget, &req, NULL);
 			req.height += 2;
 			if (req.height > max_height)
 				max_height = req.height;
@@ -1431,7 +1433,7 @@ build_plugin_window(plugin_instance * instance) {
 	if ((!n_toggled) && (!n_untoggled) && (!n_outctl) && (!n_outlat)) {
 		widget = gtk_label_new("This LADSPA plugin has no user controls");
 		gtk_box_pack_start(GTK_BOX(inner_vbox), widget, TRUE, TRUE, 2);
-		gtk_widget_size_request(widget, &req);
+		gtk_widget_get_preferred_size(widget, &req, NULL);
 		gtk_widget_set_size_request(scrwin, req.width + 20, req.height + 20);
 	} else {
 		gtk_widget_set_size_request(scrwin, (max_width + 280) * 1.1,
@@ -1632,8 +1634,7 @@ running_list_button_pressed(GtkWidget * widget, GdkEventButton * event) {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3 &&
 	    gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(running_store), &iter, NULL, 0)) {
 
-		gtk_menu_popup(GTK_MENU(rp_menu), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(rp_menu), (GdkEvent *)event);
 		return TRUE;
         }
 
@@ -1820,7 +1821,7 @@ create_fxbuilder(void) {
 	viewport_avail = gtk_viewport_new(NULL, NULL);
         gtk_box_pack_start(GTK_BOX(vbox), viewport_avail, TRUE, TRUE, 3);
 	
-        add_button = gtk_button_new_from_stock (GTK_STOCK_ADD); 
+        add_button = gtk_button_new_with_mnemonic(_("_Add"));
         g_signal_connect(add_button, "clicked", G_CALLBACK(add_clicked), NULL);
         gtk_box_pack_start(GTK_BOX(vbox), add_button, FALSE, TRUE, 3);
 
@@ -1927,11 +1928,11 @@ create_fxbuilder(void) {
         gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, TRUE, 3);
 
-        remove_button = gtk_button_new_from_stock (GTK_STOCK_REMOVE); 
+        remove_button = gtk_button_new_with_mnemonic(_("_Remove"));
         g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), remove_button, TRUE, TRUE, 0);
 
-	conf_button = gui_stock_label_button(_("_Configure"), GTK_STOCK_PREFERENCES);
+	conf_button = gui_stock_label_button(_("_Configure"), "preferences-system");
         g_signal_connect(conf_button, "clicked", G_CALLBACK(conf_clicked), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_buttons), conf_button, TRUE, TRUE, 0);
 

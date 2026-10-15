@@ -388,14 +388,14 @@ create_dialog_layout(char * title, GtkWidget ** dialog, GtkWidget ** table, int 
         *dialog = gtk_dialog_new_with_buttons(title,
 					      GTK_WINDOW(browser_window),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
-					      GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					      GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					      _("_OK"), GTK_RESPONSE_ACCEPT,
+					      _("_Cancel"), GTK_RESPONSE_REJECT,
 					      NULL);
         gtk_widget_set_size_request(*dialog, 400, -1);
 	gtk_window_set_position(GTK_WINDOW(*dialog), GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_dialog_set_default_response(GTK_DIALOG(*dialog), GTK_RESPONSE_ACCEPT);
 
-	*table = gtk_table_new(rows, 2, FALSE);
+	*table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(*dialog))),
 			   *table, FALSE, TRUE, 2);
 
@@ -800,7 +800,7 @@ add_record_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
                          "clicked", G_CALLBACK(clicked_tracklist_header), store);
         gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
 
-	browse_button = gui_stock_label_button(_("_Add files..."), GTK_STOCK_ADD);
+	browse_button = gui_stock_label_button(_("_Add files..."), "list-add");
         gtk_box_pack_start(GTK_BOX(content_area), browse_button, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(browse_button), "clicked", G_CALLBACK(browse_button_record_clicked), store);
 
@@ -1070,21 +1070,20 @@ edit_track_dialog(char * name, size_t name_size, char * sort, size_t sort_size, 
 	}
 	insert_label_entry(table, _("Volume level:"), &volume_entry, str, 4, 5, FALSE);
 
-        table2 = gtk_table_new(1, 2, FALSE);
-        gtk_table_attach(GTK_TABLE(table), table2, 0, 2, 5, 6,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+        table2 = gtk_grid_new();
+        gui_grid_attach(GTK_GRID(table), table2, 0, 5, 2, 1, TRUE, FALSE, 0, 0);
 
 	check_button = gtk_check_button_new_with_label(_("Use manual RVA value [dB]"));
 	gtk_widget_set_name(check_button, "check_on_window");
-        gtk_table_attach(GTK_TABLE(table2), check_button, 0, 1, 0, 1,
-                         GTK_FILL, GTK_FILL, 5, 3);
+        gui_grid_attach(GTK_GRID(table2), check_button, 0, 0, 1, 1,
+                        FALSE, FALSE, 5, 3);
 
 	adj_manual_rva = G_OBJECT(gtk_adjustment_new(data->rva, -70.0f, 20.0f, 0.1f, 1.0f, 0.0f));
 	spin_button = gtk_spin_button_new(GTK_ADJUSTMENT(adj_manual_rva), 0.3, 1);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin_button), TRUE);
 	gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(spin_button), FALSE);
-        gtk_table_attach(GTK_TABLE(table2), spin_button, 1, 2, 0, 1,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 3);
+        gui_grid_attach(GTK_GRID(table2), spin_button, 1, 0, 1, 1,
+                        TRUE, FALSE, 0, 3);
 
 	g_signal_connect(G_OBJECT(check_button), "toggled", G_CALLBACK(use_rva_check_button_cb),
 			 (gpointer)spin_button);
@@ -2966,8 +2965,8 @@ create_tag_dialog() {
         dialog = gtk_dialog_new_with_buttons(_("Update file metadata"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
         vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -3077,26 +3076,26 @@ create_tag_prog_window(void) {
         vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(tag_prog_window), vbox);
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("File:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1,
+			FALSE, FALSE, 5, 5);
 
         tag_prog_file_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(tag_prog_file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), tag_prog_file_entry, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), tag_prog_file_entry, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 
 	hbox_result = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label_result = gtk_label_new(_("Failed to set metadata for the following files:"));
 	gtk_box_pack_start(GTK_BOX(hbox_result), label_result, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox_result, 0, 2, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox_result, 0, 1, 2, 1,
+			FALSE, FALSE, 5, 5);
 
 	tag_error_list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
         tag_error_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(tag_error_list));
@@ -3117,8 +3116,8 @@ create_tag_prog_window(void) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         viewport = gtk_viewport_new(NULL, NULL);
-	gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
+	gui_grid_attach(GTK_GRID(table), viewport, 0, 2, 2, 1,
+			TRUE, TRUE, 5, 5);
 	gtk_container_add(GTK_CONTAINER(viewport), scrollwin);
 	gtk_container_add(GTK_CONTAINER(scrollwin), tag_error_view);
 
@@ -3129,7 +3128,7 @@ create_tag_prog_window(void) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        tag_prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
+        tag_prog_cancel_button = gui_stock_label_button (_("Abort"), "process-stop");
         g_signal_connect(tag_prog_cancel_button, "clicked", G_CALLBACK(cancel_batch_tag), NULL);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), tag_prog_cancel_button);
 
@@ -3157,8 +3156,8 @@ batch_tag_finish(gpointer data) {
 
 	if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(tag_error_list), NULL) > 0) {
 		gtk_entry_set_text(GTK_ENTRY(tag_prog_file_entry), "");
-		gtk_button_set_label(GTK_BUTTON(tag_prog_cancel_button), GTK_STOCK_CLOSE);
-		gtk_button_set_use_stock(GTK_BUTTON(tag_prog_cancel_button), TRUE);
+		gtk_button_set_label(GTK_BUTTON(tag_prog_cancel_button), _("_Close"));
+		gtk_button_set_use_underline(GTK_BUTTON(tag_prog_cancel_button), TRUE);
 	} else {
 		tag_prog_window_close(NULL, NULL);
 	}
@@ -4341,20 +4340,16 @@ store_file_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
 
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
-				gtk_menu_popup(GTK_MENU(store_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(store_menu), (GdkEvent *)bevent);
 				break;
 			case 2:
-				gtk_menu_popup(GTK_MENU(artist_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(artist_menu), (GdkEvent *)bevent);
 				break;
 			case 3:
-				gtk_menu_popup(GTK_MENU(record_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(record_menu), (GdkEvent *)bevent);
 				break;
 			case 4:
-				gtk_menu_popup(GTK_MENU(track_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(track_menu), (GdkEvent *)bevent);
 				break;
 			}
 		}

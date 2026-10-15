@@ -25,6 +25,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#include "utils_gui.h"
 #include "loop_bar.h"
 
 
@@ -97,12 +98,13 @@ void
 aqualung_loop_bar_draw_marker(GtkWidget * widget, cairo_t * cr, int x, int height, gboolean hover) {
 
 	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(widget);
+	GdkRGBA fg;
+	double fg_r, fg_g, fg_b;
 
-	GdkColor fg = gtk_widget_get_style(widget)->fg[hover ? GTK_STATE_PRELIGHT : GTK_STATE_NORMAL];
-
-	double fg_r = fg.red / 65535.0;
-	double fg_g = fg.green / 65535.0;
-	double fg_b = fg.blue / 65535.0;
+	gui_style_get_color(widget, hover ? GTK_STATE_FLAG_PRELIGHT : GTK_STATE_FLAG_NORMAL, FALSE, &fg);
+	fg_r = fg.red;
+	fg_g = fg.green;
+	fg_b = fg.blue;
 
 	cairo_new_path(cr);
 	cairo_move_to(cr, x - priv->width, 0);
@@ -128,16 +130,22 @@ aqualung_loop_bar_draw(GtkWidget * widget, cairo_t * cr) {
 	int x_end;
 	int height;
 
-	GdkColor bg = gtk_widget_get_style(widget)->bg[GTK_STATE_SELECTED];
-	GdkColor bg2 = gtk_widget_get_style(widget)->bg[GTK_STATE_ACTIVE];
+	GdkRGBA bg;
+	GdkRGBA bg2;
 
-	double bg_r = bg.red / 65535.0;
-	double bg_g = bg.green / 65535.0;
-	double bg_b = bg.blue / 65535.0;
+	double bg_r, bg_g, bg_b;
+	double bg2_r, bg2_g, bg2_b;
 
-	double bg2_r = bg2.red / 65535.0;
-	double bg2_g = bg2.green / 65535.0;
-	double bg2_b = bg2.blue / 65535.0;
+	gui_style_get_color(widget, GTK_STATE_FLAG_SELECTED, TRUE, &bg);
+	gui_style_get_color(widget, GTK_STATE_FLAG_ACTIVE, TRUE, &bg2);
+
+	bg_r = bg.red;
+	bg_g = bg.green;
+	bg_b = bg.blue;
+
+	bg2_r = bg2.red;
+	bg2_g = bg2.green;
+	bg2_b = bg2.blue;
 
 	AqualungLoopBarPrivate * priv = AQUALUNG_LOOP_BAR_GET_PRIVATE(widget);
 
@@ -191,7 +199,6 @@ aqualung_loop_bar_redraw_canvas(GtkWidget * widget) {
 
 	region = gdk_window_get_clip_region(window);
 	gdk_window_invalidate_region(window, region, TRUE);
-	gdk_window_process_updates(window, TRUE);
         cairo_region_destroy(region);
 }
 

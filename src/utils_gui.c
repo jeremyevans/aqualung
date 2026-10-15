@@ -235,16 +235,15 @@ aqualung_widget_set_tooltip_text(GtkWidget * widget, const gchar * text) {
 
 }
 
-/* create button with stock item
+/* create button with icon
  *
  * in: label - label for button        (label=NULL  to disable label, label=-1 to disable button relief)
- *     stock - stock icon identifier
+ *     icon_name - themed icon name
  */
 GtkWidget*
-gui_stock_label_button(gchar *label, const gchar *stock) {
+gui_stock_label_button(gchar *label, const gchar *icon_name) {
 
 	GtkWidget *button;
-	GtkWidget *alignment;
 	GtkWidget *hbox;
 	GtkWidget *image;
 
@@ -254,11 +253,11 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
                 gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
         }
 
-	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-	gtk_container_add (GTK_CONTAINER (alignment), hbox);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(hbox, GTK_ALIGN_CENTER);
 
-	image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
+	image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON);
 
         if (image) {
 		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
@@ -270,10 +269,87 @@ gui_stock_label_button(gchar *label, const gchar *stock) {
 		FALSE, TRUE, 0);
         }
 
-	gtk_widget_show_all (alignment);
-	gtk_container_add (GTK_CONTAINER (button), alignment);
+	gtk_widget_show_all (hbox);
+	gtk_container_add (GTK_CONTAINER (button), hbox);
 
 	return button;
+}
+
+/* get foreground (background=FALSE) or background (background=TRUE)
+ * color of widget's style in the given state
+ */
+void
+gui_style_get_color(GtkWidget * widget, GtkStateFlags state, gboolean background, GdkRGBA * color) {
+
+	GtkStyleContext * context = gtk_widget_get_style_context(widget);
+	const gchar * property =
+	   background ? GTK_STYLE_PROPERTY_BACKGROUND_COLOR : GTK_STYLE_PROPERTY_COLOR;
+	GdkRGBA * rgba = NULL;
+
+	gtk_style_context_save(context);
+	gtk_style_context_set_state(context, state);
+	gtk_style_context_get(context, state, property, &rgba, NULL);
+	if (rgba->alpha < 0.01) {
+		/* Like GtkStyle, fall back to the colors themes provide
+		* for the "gtkstyle-fallback" class when the widget's own
+		* color is unset (e.g. a drawing area's background).
+		*/
+		gdk_rgba_free(rgba);
+		gtk_style_context_add_class(context, "gtkstyle-fallback");
+		gtk_style_context_get(context, state, property, &rgba, NULL);
+	}
+	gtk_style_context_restore(context);
+
+	*color = *rgba;
+	gdk_rgba_free(rgba);
+}
+
+/* apply CSS to widget, replacing CSS applied by a previous call */
+void
+gui_widget_set_css(GtkWidget * widget, const gchar * css) {
+
+	GtkCssProvider * provider = g_object_get_data(G_OBJECT(widget), "aqualung-css-provider");
+
+	if (provider == NULL) {
+		provider = gtk_css_provider_new();
+		gtk_style_context_add_provider(gtk_widget_get_style_context(widget),
+					       GTK_STYLE_PROVIDER(provider),
+					       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		g_object_set_data_full(G_OBJECT(widget), "aqualung-css-provider",
+				       provider, g_object_unref);
+	}
+	gtk_css_provider_load_from_data(provider, css, -1, NULL);
+}
+
+/* set foreground color of widget, overriding its style */
+void
+gui_widget_set_fg_color(GtkWidget * widget, const GdkRGBA * color) {
+
+	gchar * str = gdk_rgba_to_string(color);
+	gchar * css = g_strdup_printf("* { color: %s; }", str);
+
+	gui_widget_set_css(widget, css);
+	g_free(css);
+	g_free(str);
+}
+
+/* attach child to grid, with GtkTable-like expand and padding settings
+ *
+ * in: left, top, width, height - cell position and span
+ *     hexpand, vexpand - whether the child should expand
+ *     xpad, ypad - padding on the left/right and top/bottom of the child
+ */
+void
+gui_grid_attach(GtkGrid * grid, GtkWidget * child, gint left, gint top, gint width, gint height,
+		gboolean hexpand, gboolean vexpand, guint xpad, guint ypad) {
+
+	gtk_widget_set_hexpand(child, hexpand);
+	gtk_widget_set_vexpand(child, vexpand);
+	gtk_widget_set_margin_start(child, xpad);
+	gtk_widget_set_margin_end(child, xpad);
+	gtk_widget_set_margin_top(child, ypad);
+	gtk_widget_set_margin_bottom(child, ypad);
+	gtk_grid_attach(grid, child, left, top, width, height);
 }
 
 
@@ -539,9 +615,9 @@ file_chooser(char * title, GtkWidget * parent, GtkFileChooserAction action, int 
         dialog = gtk_file_chooser_dialog_new(title,
                                              GTK_WINDOW(parent),
                                              action,
-					     (action == GTK_FILE_CHOOSER_ACTION_SAVE) ? GTK_STOCK_SAVE : GTK_STOCK_OPEN,
+					     (action == GTK_FILE_CHOOSER_ACTION_SAVE) ? _("_Save") : _("_Open"),
 					     GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             _("_Cancel"), GTK_RESPONSE_CANCEL,
                                              NULL);
 
         gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -588,8 +664,8 @@ file_chooser_with_entry(char * title, GtkWidget * parent, GtkFileChooserAction a
         dialog = gtk_file_chooser_dialog_new(title,
                                              GTK_WINDOW(parent),
 					     action,
-                                             GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                             _("_Apply"), GTK_RESPONSE_ACCEPT,
+                                             _("_Cancel"), GTK_RESPONSE_CANCEL,
                                              NULL);
 
 	if (options.show_hidden) {
@@ -687,7 +763,7 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 	label = gtk_label_new(ltext);
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, y1, 1, y2 - y1, FALSE, FALSE, 5, 5);
 
         *entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
@@ -695,8 +771,8 @@ insert_label_entry(GtkWidget * table, char * ltext, GtkWidget ** entry, char * e
 	if (etext != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(*entry), etext);
 	}
-	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, y1, y2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), *entry, 1, y1, 1, y2 - y1,
+			TRUE, FALSE, 0, 5);
 }
 
 void
@@ -709,11 +785,11 @@ insert_label_entry_button(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 	label = gtk_label_new(ltext);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, y1, 1, y2 - y1, FALSE, FALSE, 5, 5);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, y1, 1, y2 - y1,
+			TRUE, FALSE, 0, 5);
 
 	*entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(*entry), MAXLEN-1);
@@ -730,7 +806,7 @@ insert_label_entry_browse(GtkWidget * table, char * ltext, GtkWidget ** entry, c
 			  int y1, int y2,
 			  void (* browse_cb)(GtkButton * button, gpointer data)) {
 
-	GtkWidget * button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
+	GtkWidget * button = gui_stock_label_button(_("_Browse..."), "document-open");
 	insert_label_entry_button(table, ltext, entry, etext, button, y1, y2);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(browse_cb), *entry);
 }
@@ -745,11 +821,11 @@ insert_label_progbar_button(GtkWidget * table, char * ltext, GtkWidget ** progba
 	label = gtk_label_new(ltext);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, y1, 1, y2 - y1, FALSE, FALSE, 5, 5);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, y1, y2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, y1, 1, y2 - y1,
+			TRUE, FALSE, 0, 5);
 
 	*progbar = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(*progbar), 0.0f);
@@ -769,12 +845,12 @@ insert_label_spin(GtkWidget * table, char * ltext, GtkWidget ** spin, int spinva
 	label = gtk_label_new(ltext);
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, y1, y2, GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, y1, 1, y2 - y1, FALSE, FALSE, 5, 5);
 
 	*spin = gtk_spin_button_new_with_range(YEAR_MIN, YEAR_MAX, 1);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(*spin), spinval);
-        gtk_table_attach(GTK_TABLE(table), *spin, 1, 2, y1, y2,
-                         GTK_EXPAND | GTK_FILL, GTK_FILL, 2, 5);
+        gui_grid_attach(GTK_GRID(table), *spin, 1, y1, 1, y2 - y1,
+                        TRUE, FALSE, 2, 5);
 }
 
 void

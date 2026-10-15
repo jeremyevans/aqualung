@@ -132,6 +132,7 @@ set_active(GtkWidget * widget, int sel) {
 	GdkColor color_normal;
 	GdkColor color_active;
 	GdkColor color_prelight;
+	gchar * css;
 
 	if (sel == 0) {
 		color_normal.red = 40000;
@@ -159,9 +160,14 @@ set_active(GtkWidget * widget, int sel) {
 		color_prelight.green = 50000;
 		color_prelight.blue = 65535;
 	}
-	gtk_widget_modify_bg(widget, GTK_STATE_NORMAL, &color_normal);
-	gtk_widget_modify_bg(widget, GTK_STATE_ACTIVE, &color_active);
-	gtk_widget_modify_bg(widget, GTK_STATE_PRELIGHT, &color_prelight);
+	css = g_strdup_printf("* { background-color: rgb(%d,%d,%d); }\n"
+			      "*:active { background-color: rgb(%d,%d,%d); }\n"
+			      "*:hover { background-color: rgb(%d,%d,%d); }\n",
+			      color_normal.red / 257, color_normal.green / 257, color_normal.blue / 257,
+			      color_active.red / 257, color_active.green / 257, color_active.blue / 257,
+			      color_prelight.red / 257, color_prelight.green / 257, color_prelight.blue / 257);
+	gui_widget_set_css(widget, css);
+	g_free(css);
 }
 
 
@@ -330,6 +336,7 @@ setup_tree_out(void) {
 	GtkTreeViewColumn * column;
 	GtkTreeSelection * select;
 	GtkWidget * scrwin;
+	GtkWidget * viewport;
 
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store_out_nb[n_clients]));
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(tree), FALSE);
@@ -346,7 +353,10 @@ setup_tree_out(void) {
 	scrwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), tree);
+	viewport = gtk_viewport_new(NULL, NULL);
+	gtk_widget_show(viewport);
+	gtk_container_add(GTK_CONTAINER(scrwin), viewport);
+	gtk_container_add(GTK_CONTAINER(viewport), tree);
 	gtk_widget_set_size_request(GTK_WIDGET(scrwin), LIST_WIDTH, -1);
 	
 	gtk_widget_show(tree);
@@ -442,7 +452,7 @@ port_setup_dialog(void) {
 	GtkWidget * label_L;
 	GtkWidget * label_R;
 
-	GdkColor color = { 0, 0, 0, 0 };
+	GdkRGBA color = { 0, 0, 0, 1 };
 
 
 	store_out_L = gtk_list_store_new(1, G_TYPE_STRING);
@@ -458,26 +468,26 @@ port_setup_dialog(void) {
         vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(ports_window), vbox);
 
-        table = gtk_table_new(2, 2, FALSE);
+        table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 2);
 
-        button_rescan = gui_stock_label_button(_("Rescan"), GTK_STOCK_REFRESH);
-        gtk_table_attach(GTK_TABLE(table), button_rescan, 0, 1, 1, 2,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+        button_rescan = gui_stock_label_button(_("Rescan"), "view-refresh");
+        gui_grid_attach(GTK_GRID(table), button_rescan, 0, 1, 1, 1,
+                        TRUE, FALSE, 5, 5);
         g_signal_connect(G_OBJECT(button_rescan), "clicked", G_CALLBACK(clicked_rescan), NULL);
 
-        button_close = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
-        gtk_table_attach(GTK_TABLE(table), button_close, 1, 2, 1, 2,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+        button_close = gtk_button_new_with_mnemonic(_("_Close"));
+        gui_grid_attach(GTK_GRID(table), button_close, 1, 1, 1, 1,
+                        TRUE, FALSE, 5, 5);
         g_signal_connect(G_OBJECT(button_close), "clicked", G_CALLBACK(ports_clicked_close), NULL);
 	
 	frame_dl = gtk_frame_new(_("Outputs"));
-        gtk_table_attach(GTK_TABLE(table), frame_dl, 0, 1, 0, 1,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
+        gui_grid_attach(GTK_GRID(table), frame_dl, 0, 0, 1, 1,
+                        TRUE, TRUE, 5, 5);
 
 	frame_dr = gtk_frame_new(_("Available connections"));
-        gtk_table_attach(GTK_TABLE(table), frame_dr, 1, 2, 0, 1,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 5, 5);
+        gui_grid_attach(GTK_GRID(table), frame_dr, 1, 0, 1, 1,
+                        TRUE, TRUE, 5, 5);
 
         vbox_dl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_dl), 8);
@@ -487,7 +497,7 @@ port_setup_dialog(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_dr), 8);
 	gtk_container_add(GTK_CONTAINER(frame_dr), vbox_dr);
 
-        button_clear_outs = gui_stock_label_button(_("Clear connections"), GTK_STOCK_CLEAR);
+        button_clear_outs = gui_stock_label_button(_("Clear connections"), "edit-clear");
         gtk_box_pack_start(GTK_BOX(vbox_dl), button_clear_outs, FALSE, TRUE, 2);
         g_signal_connect(G_OBJECT(button_clear_outs), "clicked", G_CALLBACK(clear_outs), NULL);
 	
@@ -561,13 +571,8 @@ port_setup_dialog(void) {
 	gtk_box_pack_start(GTK_BOX(hbox_L), label_L, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_R), label_R, FALSE, FALSE, 0);
 
-	gtk_widget_modify_fg(label_L, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_fg(label_L, GTK_STATE_PRELIGHT, &color);
-	gtk_widget_modify_fg(label_L, GTK_STATE_ACTIVE, &color);
-
-	gtk_widget_modify_fg(label_R, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_fg(label_R, GTK_STATE_PRELIGHT, &color);
-	gtk_widget_modify_fg(label_R, GTK_STATE_ACTIVE, &color);
+	gui_widget_set_fg_color(label_L, &color);
+	gui_widget_set_fg_color(label_R, &color);
 
 	gtk_widget_show_all(hbox_L);
 	gtk_widget_show_all(hbox_R);

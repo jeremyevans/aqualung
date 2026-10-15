@@ -89,7 +89,6 @@ typedef struct {
 	int tag;
 	GtkWidget * table;
 	int n_rows;
-	int n_cols;
 	GtkWidget * combo;
 	GSList * slist; /* list of insertable frames */
 } pageidx_t;
@@ -617,17 +616,6 @@ fi_set_page(fi_t * fi) {
 	}
 }
 
-int
-fi_tabwidth(fi_t * fi, metadata_t * meta) {
-
-	/* tabwidth is 2, +1 if called from Music Store, +1 if editable */
-	int tabwidth = 2;
-	tabwidth += fi->allow_ms_import? 1 : 0;
-	tabwidth += meta->writable ? 1 : 0;
-	return tabwidth;
-}
-
-
 void
 save_pic_button_pressed(GtkWidget * widget, gpointer data) {
 
@@ -935,7 +923,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
         gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 
-	button = gui_stock_label_button(_("Change"), GTK_STOCK_OPEN);
+	button = gui_stock_label_button(_("Change"), "document-open");
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 3);
 	if (meta->writable) {
 		g_signal_connect(G_OBJECT(button), "clicked",
@@ -945,7 +933,7 @@ fi_procframe_label_apic(fi_t * fi, meta_frame_t * frame) {
 		gtk_widget_set_sensitive(button, FALSE);
 	}
 
-	save_pic->save_button = gui_stock_label_button(_("Save"), GTK_STOCK_SAVE);
+	save_pic->save_button = gui_stock_label_button(_("Save"), "document-save");
 	gtk_box_pack_start(GTK_BOX(hbox), save_pic->save_button, TRUE, TRUE, 3);
 	g_signal_connect(G_OBJECT(save_pic->save_button), "clicked",
 			 G_CALLBACK(save_pic_button_pressed),
@@ -1278,7 +1266,7 @@ fi_procframe_delbtn(fi_t * fi, meta_frame_t * frame,
 	fi_del_t * fi_del;
 	GtkWidget * button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(button),
-			     gtk_image_new_from_stock(GTK_STOCK_DELETE,
+			     gtk_image_new_from_icon_name("edit-delete",
 						      GTK_ICON_SIZE_MENU));
 
 	if (frame->flags & META_FIELD_MANDATORY) {
@@ -1362,7 +1350,7 @@ GtkWidget *
 fi_procframe_addbtn(fi_t * fi, int tag) {
 
 	fi_add_t * fi_add;
-	GtkWidget * button = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
+	GtkWidget * button = gui_stock_label_button(_("Add"), "list-add");
 
 	fi_add = calloc(1, sizeof(fi_add_t));
 	fi_add->fi = fi;
@@ -1408,7 +1396,7 @@ fi_addtag_button_pressed(GtkWidget * widget, gpointer data) {
 GtkWidget *
 fi_procframe_addtagbtn(fi_t * fi) {
 
-	GtkWidget * button = gui_stock_label_button(_("Add"), GTK_STOCK_ADD);
+	GtkWidget * button = gui_stock_label_button(_("Add"), "list-add");
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(fi_addtag_button_pressed),
 			 (gpointer)fi);
@@ -1425,8 +1413,8 @@ fi_procframe_ins_modinfo(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	module_info_fill_page(fi, frame, vbox);
-	gtk_table_attach(GTK_TABLE(table), vbox, 0, 1, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gui_grid_attach(GTK_GRID(table), vbox, 0, 0, 1, 1,
+			TRUE, TRUE, 0, 0);
 	gtk_widget_show_all(fi->nb);
 }
 #endif /* HAVE_MOD */
@@ -1439,7 +1427,6 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	int page = lookup_page(fi, frame->tag);
 	GtkWidget * table = fi->pageidx[page].table;
 	int n_rows = fi->pageidx[page].n_rows;
-	int n_cols = fi->pageidx[page].n_cols;
 	int col = 0;
 
 	GtkWidget * label = NULL;
@@ -1474,18 +1461,17 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 
 	++n_rows;
 	fi->pageidx[page].n_rows = n_rows;
-	gtk_table_resize(GTK_TABLE(table), n_rows, n_cols);
 
 	/* Field label */
 	label = fi_procframe_label(fi, frame);
-	gtk_table_attach(GTK_TABLE(table), label, col, col+1, n_rows-1, n_rows,
-			 GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), label, col, n_rows-1, 1, 1,
+			FALSE, FALSE, 5, 3);
 	++col;
 
 	/* Field entry */
 	entry = fi_procframe_entry(fi, frame);
-	gtk_table_attach(GTK_TABLE(table), entry, col, col+1, n_rows-1, n_rows,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), entry, col, n_rows-1, 1, 1,
+			TRUE, FALSE, 5, 3);
 	if (frame->type != META_FIELD_APIC) {
 		frame->source = entry;
 	}
@@ -1494,8 +1480,8 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	/* Import button */
 	if (fi->allow_ms_import) {
 		importbtn = fi_procframe_importbtn(fi, frame);
-		gtk_table_attach(GTK_TABLE(table), importbtn, col, col+1, n_rows-1, n_rows,
-				 GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), importbtn, col, n_rows-1, 1, 1,
+				FALSE, FALSE, 5, 3);
 		++col;
 	}
 
@@ -1503,8 +1489,8 @@ fi_procframe_ins(fi_t * fi, meta_frame_t * frame) {
 	if (meta->writable) {
 		delbtn = fi_procframe_delbtn(fi, frame,
 					     label, entry, importbtn);
-		gtk_table_attach(GTK_TABLE(table), delbtn, col, col+1, n_rows-1, n_rows,
-				 GTK_FILL, GTK_FILL, 5, 3);
+		gui_grid_attach(GTK_GRID(table), delbtn, col, n_rows-1, 1, 1,
+				FALSE, FALSE, 5, 3);
 		++col;
 	}
 
@@ -1572,8 +1558,8 @@ fi_procframe_deltagbtn(fi_t * fi, int tag) {
 	fi_deltag_t * fi_deltag;
 	GtkWidget * button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(button),
-			     gtk_image_new_from_stock(GTK_STOCK_DELETE,
-						      GTK_ICON_SIZE_MENU));
+			     gtk_image_new_from_icon_name("edit-delete",
+                                                          GTK_ICON_SIZE_MENU));
 
 	fi_deltag = calloc(1, sizeof(fi_deltag_t));
 	fi_deltag->fi = fi;
@@ -1592,7 +1578,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	GtkWidget * vbox_padding = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget * scrwin = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget * table = gtk_table_new(0, fi_tabwidth(fi, meta), FALSE);
+	GtkWidget * table = gtk_grid_new();
 	GtkWidget * label = gtk_label_new(meta_get_tagname(frame->tag));
 	GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget * combo = gtk_combo_box_text_new();
@@ -1605,7 +1591,7 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrwin), GTK_SHADOW_NONE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrwin), vbox_padding);
+	gtk_container_add(GTK_CONTAINER(scrwin), vbox_padding);
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(fi->nb), vbox, label);
 	fi->n_pages++;
@@ -1614,7 +1600,6 @@ fi_procframe_add_tag_page(fi_t * fi, meta_frame_t * frame) {
 	fi->pageidx[fi->n_pages-1].combo = combo;
 	fi->pageidx[fi->n_pages-1].slist = slist;
 	fi->pageidx[fi->n_pages-1].n_rows = 0;
-	fi->pageidx[fi->n_pages-1].n_cols = fi_tabwidth(fi, meta);
 
 	if (meta->writable) {
 		addbtn = fi_procframe_addbtn(fi, frame->tag);
@@ -1705,31 +1690,31 @@ fi_procmeta(metadata_t * meta, void * data) {
 	frame = meta->root;
 
 	if (fi->meta->writable && (fi->save_button == NULL)) {
-		fi->save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+		fi->save_button = gtk_button_new_with_mnemonic(_("_Save"));
 		g_signal_connect(fi->save_button, "clicked",
 				 G_CALLBACK(fi_save), (gpointer)fi);
-		gtk_table_attach(GTK_TABLE(fi->button_table), fi->save_button,
-				 0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+		gui_grid_attach(GTK_GRID(fi->button_table), fi->save_button, 0, 0, 1, 1,
+				FALSE, FALSE, 3, 0);
 		gtk_widget_show_all(fi->info_window);
 	}
 
 	if (fi->meta->writable && (fi->add_tag_table == NULL)) {
 		GtkWidget * addbtn;
 
-		fi->add_tag_table = gtk_table_new(1, 3, FALSE);
+		fi->add_tag_table = gtk_grid_new();
 		gtk_box_pack_start(GTK_BOX(fi->hbox), fi->add_tag_table, FALSE, TRUE, 2);
 
 		addbtn = fi_procframe_addtagbtn(fi);
-		gtk_table_attach(GTK_TABLE(fi->add_tag_table), addbtn,
-				 0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+		gui_grid_attach(GTK_GRID(fi->add_tag_table), addbtn, 0, 0, 1, 1,
+				FALSE, FALSE, 3, 0);
 
-		gtk_table_attach(GTK_TABLE(fi->add_tag_table), gtk_label_new(_("tag:")),
-				 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+		gui_grid_attach(GTK_GRID(fi->add_tag_table), gtk_label_new(_("tag:")), 1, 0, 1, 1,
+				FALSE, FALSE, 3, 0);
 
 		fi->combo = gtk_combo_box_text_new();
 		fi_fill_tagcombo(GTK_COMBO_BOX(fi->combo), fi->addable_tags);
-		gtk_table_attach(GTK_TABLE(fi->add_tag_table), fi->combo,
-				 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+		gui_grid_attach(GTK_GRID(fi->add_tag_table), fi->combo, 2, 0, 1, 1,
+				FALSE, FALSE, 3, 0);
 
 		gtk_widget_show_all(fi->info_window);
 	}
@@ -1765,13 +1750,13 @@ fi_add_file_table_row(char * caption, GtkWidget ** entry, GtkWidget * table, int
 	GtkWidget * hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget * label = gtk_label_new(caption);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, row, 1, 1, FALSE, FALSE, 5, 3);
 	*entry = gtk_entry_new();
 	gtk_widget_set_size_request(*entry, 350, -1);
 	gtk_widget_set_can_focus(*entry, FALSE);
 	gtk_editable_set_editable(GTK_EDITABLE(*entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, row, row+1,
-			 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), GTK_FILL, 5, 3);
+	gui_grid_attach(GTK_GRID(table), *entry, 1, row, 1, 1,
+			TRUE, FALSE, 5, 3);
 }
 
 void
@@ -2033,17 +2018,19 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	hbox_t = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_t, FALSE, FALSE, 5);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(hbox_t), table, TRUE, TRUE, 4);
 
 	fi_add_file_table_row(_("Track:"), &fi->entry_name, table, 0);
 	fi_add_file_table_row(_("File:"), &fi->entry_path, table, 1);
 
-	fi->cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
+	fi->cover_align = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_t), fi->cover_align, FALSE, FALSE, 0);
         fi->cover_image_area = gtk_image_new();
         fi->event_box = gtk_event_box_new ();
-	gtk_container_add(GTK_CONTAINER(fi->cover_align), fi->event_box);
+	gtk_widget_set_halign(fi->event_box, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(fi->event_box, GTK_ALIGN_CENTER);
+	gtk_box_pack_start(GTK_BOX(fi->cover_align), fi->event_box, TRUE, FALSE, 0);
         gtk_container_add (GTK_CONTAINER (fi->event_box), fi->cover_image_area);
         g_signal_connect(G_OBJECT(fi->event_box), "button_press_event",
                          G_CALLBACK(fi_cover_press_button_cb), (gpointer)fi);
@@ -2056,7 +2043,7 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	/* Audio data notebook page */
 
 	vbox_file = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
-	table_file = gtk_table_new(6, 2, FALSE);
+	table_file = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox_file), table_file, TRUE, TRUE, 10);
 	label_file = gtk_label_new(_("Audio data"));
 	fi->pageidx[0].tag = -1;
@@ -2078,23 +2065,23 @@ show_file_info(GtkTreeModel * model, GtkTreeIter iter_track,
 	/* end of notebook stuff */
 	gtk_widget_grab_focus(fi->nb);
 
-	fi->button_table = gtk_table_new(1, 2, FALSE);
+	fi->button_table = gtk_grid_new();
 	gtk_box_pack_end(GTK_BOX(fi->hbox), fi->button_table, FALSE, TRUE, 2);
 
-	fi->prev_button = gui_stock_label_button(NULL, GTK_STOCK_GO_BACK);
+	fi->prev_button = gui_stock_label_button(NULL, "go-previous");
 	g_signal_connect(fi->prev_button, "clicked", G_CALLBACK(fi_prev), (gpointer)fi);
-	gtk_table_attach(GTK_TABLE(fi->button_table), fi->prev_button,
-			 1, 2, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+	gui_grid_attach(GTK_GRID(fi->button_table), fi->prev_button, 1, 0, 1, 1,
+			FALSE, FALSE, 3, 0);
 
-	fi->next_button = gui_stock_label_button(NULL, GTK_STOCK_GO_FORWARD);
+	fi->next_button = gui_stock_label_button(NULL, "go-next");
 	g_signal_connect(fi->next_button, "clicked", G_CALLBACK(fi_next), (gpointer)fi);
-	gtk_table_attach(GTK_TABLE(fi->button_table), fi->next_button,
-			 2, 3, 0, 1, GTK_FILL, GTK_FILL, 3, 0);
+	gui_grid_attach(GTK_GRID(fi->button_table), fi->next_button, 2, 0, 1, 1,
+			FALSE, FALSE, 3, 0);
 
-        dismiss_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+        dismiss_btn = gtk_button_new_with_mnemonic(_("_Close"));
 	g_signal_connect(dismiss_btn, "clicked", G_CALLBACK(dismiss), (gpointer)fi);
-	gtk_table_attach(GTK_TABLE(fi->button_table), dismiss_btn, 3, 4, 0, 1,
-			 GTK_FILL, GTK_FILL, 3, 0);
+	gui_grid_attach(GTK_GRID(fi->button_table), dismiss_btn, 3, 0, 1, 1,
+			FALSE, FALSE, 3, 0);
 
 	gtk_widget_show_all(fi->info_window);
 
@@ -2179,14 +2166,16 @@ static void
 module_info_add_row(char * caption, GtkWidget ** mod_label, GtkWidget * table, int row) {
 	GtkWidget * label = gtk_label_new(caption);
 	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
-			 (GtkAttachOptions)(GTK_FILL), (GtkAttachOptions)(0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gui_grid_attach(GTK_GRID(table), label, 0, row, 1, 1,
+			FALSE, FALSE, 0, 0);
+	gtk_widget_set_valign(label, GTK_ALIGN_CENTER);
+	gtk_label_set_xalign(GTK_LABEL(label), 1);
 	
 	*mod_label = gtk_label_new("");
 	gtk_widget_show(*mod_label);
-	gtk_table_attach(GTK_TABLE(table), *mod_label, 1, 2, row, row+1,
-			 (GtkAttachOptions)(GTK_FILL), (GtkAttachOptions)(0), 0, 0);
+	gui_grid_attach(GTK_GRID(table), *mod_label, 1, row, 1, 1,
+			FALSE, FALSE, 0, 0);
+	gtk_widget_set_valign(*mod_label, GTK_ALIGN_CENTER);
 }
 
 void
@@ -2229,12 +2218,12 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
         gtk_box_pack_start (GTK_BOX (hbox2), vbox2, FALSE, FALSE, 0);
 
         if (mdi->instruments) {
-                table = gtk_table_new (5, 2, FALSE);
+                table = gtk_grid_new();
                 gtk_widget_show (table);
                 gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-                gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-                gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+                gtk_grid_set_row_spacing(GTK_GRID(table), 6);
+                gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 		module_info_add_row(_("Type:"), &mod_type_label, table, 0);
 		module_info_add_row(_("Channels:"), &mod_channels_label, table, 1);
@@ -2245,32 +2234,32 @@ module_info_fill_page(fi_t * fi, meta_frame_t * frame, GtkWidget * vbox) {
                 arr_snprintf(temp, "%d", mdi->instruments);
                 gtk_label_set_text (GTK_LABEL(mod_instruments_label), temp);
 
-                table = gtk_table_new (2, 1, FALSE);
+                table = gtk_grid_new();
                 gtk_widget_show (table);
                 gtk_box_pack_end (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-                gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+                gtk_grid_set_row_spacing(GTK_GRID(table), 4);
 
                 samples_radiobutton = gtk_radio_button_new_with_mnemonic (NULL, _("Samples"));
                 gtk_widget_show (samples_radiobutton);
-                gtk_table_attach (GTK_TABLE (table), samples_radiobutton, 0, 1, 0, 1,
-                                  (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
-                                  (GtkAttachOptions) (0), 0, 0);
+                gui_grid_attach(GTK_GRID (table), samples_radiobutton, 0, 0, 1, 1,
+                                 TRUE, FALSE, 0, 0);
+                gtk_widget_set_valign(samples_radiobutton, GTK_ALIGN_CENTER);
 		g_signal_connect(G_OBJECT(samples_radiobutton), "toggled",
 				 G_CALLBACK(radio_buttons_cb), (gpointer)fi);
 
                 instruments_radiobutton = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON(samples_radiobutton), _("Instruments"));
                 gtk_widget_show (instruments_radiobutton);
-                gtk_table_attach (GTK_TABLE (table), instruments_radiobutton, 0, 1, 1, 2,
-                                  (GtkAttachOptions) (GTK_FILL),
-                                  (GtkAttachOptions) (0), 0, 0);
+                gui_grid_attach(GTK_GRID (table), instruments_radiobutton, 0, 1, 1, 1,
+                                 FALSE, FALSE, 0, 0);
+                gtk_widget_set_valign(instruments_radiobutton, GTK_ALIGN_CENTER);
         } else {
-                table = gtk_table_new (4, 2, FALSE);
+                table = gtk_grid_new();
                 gtk_widget_show (table);
                 gtk_box_pack_start (GTK_BOX (vbox2), table, FALSE, FALSE, 0);
                 gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-                gtk_table_set_row_spacings (GTK_TABLE (table), 4);
-                gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+                gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+                gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 		module_info_add_row(_("Type:"), &mod_type_label, table, 0);
 		module_info_add_row(_("Channels:"), &mod_channels_label, table, 1);

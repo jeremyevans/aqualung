@@ -293,7 +293,7 @@ create_about_window() {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        ok_btn = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+        ok_btn = gtk_button_new_with_mnemonic(_("_Close"));
 	gtk_widget_set_name(ok_btn, "");
         g_signal_connect(ok_btn, "clicked", G_CALLBACK(ok), NULL);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), ok_btn);

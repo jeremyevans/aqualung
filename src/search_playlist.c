@@ -371,28 +371,28 @@ search_playlist_dialog(void) {
         gtk_box_pack_start(GTK_BOX(hbox), searchkey_entry, TRUE, TRUE, 5);
 
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
         gtk_widget_show(table);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, TRUE, 3);
 
 	check_case = gtk_check_button_new_with_label(_("Case sensitive"));
         gtk_widget_show(check_case);
 	gtk_widget_set_name(check_case, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_case, 0, 1, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+	gui_grid_attach(GTK_GRID(table), check_case, 0, 0, 1, 1,
+			TRUE, FALSE, 1, 4);
 
 	check_exact = gtk_check_button_new_with_label(_("Exact matches only"));
         gtk_widget_show(check_exact);     
         gtk_widget_set_name(check_exact, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+	gui_grid_attach(GTK_GRID(table), check_exact, 1, 0, 1, 1,
+			TRUE, FALSE, 1, 4);
 
 	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
         gtk_widget_show(check_sfac);     
 	gtk_widget_set_name(check_sfac, "check_on_window");
         g_signal_connect(G_OBJECT(check_sfac), "clicked", G_CALLBACK(sfac_clicked), NULL);
-	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 4);
+	gui_grid_attach(GTK_GRID(table), check_sfac, 0, 1, 1, 1,
+			TRUE, FALSE, 1, 4);
 
 
 	hbox = sres_list = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -456,14 +456,14 @@ search_playlist_dialog(void) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
-        gtk_widget_show(button);     
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
+        button = gui_stock_label_button(_("Search"), "edit-find");
+        gtk_widget_show(button);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
 
-        button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
-        gtk_widget_show(button);     
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
+        button = gtk_button_new_with_mnemonic(_("_Close"));
+        gtk_widget_show(button);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
 
 

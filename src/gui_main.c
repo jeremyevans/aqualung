@@ -1337,8 +1337,7 @@ main_window_button_pressed(GtkWidget * widget, GdkEventButton * event, gpointer 
 			}
 			return playlist_window_button_pressed(widget, event, playlist_get_current());
                 }
-                gtk_menu_popup(GTK_MENU(conf_menu), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+                gtk_menu_popup_at_pointer(GTK_MENU(conf_menu), (GdkEvent *)event);
 	}
 
 	return TRUE;
@@ -2833,8 +2832,8 @@ create_main_window() {
 	gtk_box_pack_start(GTK_BOX(info_hbox), label_src_type, FALSE, FALSE, 3);
 
 	/* Volume and balance slider */
-	vb_table = gtk_table_new(1, 3, FALSE);
-        gtk_table_set_col_spacings(GTK_TABLE(vb_table), 3);
+	vb_table = gtk_grid_new();
+        gtk_grid_set_column_spacing(GTK_GRID(vb_table), 3);
 	gtk_box_pack_start(GTK_BOX(disp_vbox), vb_table, TRUE, FALSE, 0);
 
 	adj_vol = G_OBJECT(gtk_adjustment_new(0.0f, -41.0f, 6.0f, 1.0f, 3.0f, 0.0f));
@@ -2848,8 +2847,9 @@ create_main_window() {
 	gtk_widget_set_size_request(scale_vol, -1, 8);
 	gtk_scale_set_digits(GTK_SCALE(scale_vol), 0);
 	gtk_scale_set_draw_value(GTK_SCALE(scale_vol), FALSE);
-	gtk_table_attach(GTK_TABLE(vb_table), scale_vol, 0, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gui_grid_attach(GTK_GRID(vb_table), scale_vol, 0, 0, 2, 1,
+			TRUE, FALSE, 0, 0);
+	gtk_widget_set_valign(scale_vol, GTK_ALIGN_CENTER);
 
         adj_bal = G_OBJECT(gtk_adjustment_new(0.0f, -100.0f, 100.0f, 1.0f, 10.0f, 0.0f));
         g_signal_connect(G_OBJECT(adj_bal), "value_changed", G_CALLBACK(changed_bal), NULL);
@@ -2862,8 +2862,9 @@ create_main_window() {
 	g_signal_connect(G_OBJECT(scale_bal), "button_release_event",
 			 G_CALLBACK(scale_bal_button_release_event), NULL);
         gtk_scale_set_draw_value(GTK_SCALE(scale_bal), FALSE);
-	gtk_table_attach(GTK_TABLE(vb_table), scale_bal, 2, 3, 0, 1,
-			 GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gui_grid_attach(GTK_GRID(vb_table), scale_bal, 2, 0, 1, 1,
+			TRUE, FALSE, 0, 0);
+	gtk_widget_set_valign(scale_bal, GTK_ALIGN_CENTER);
 
 	/* Loop bar */
 
@@ -2897,11 +2898,13 @@ create_main_window() {
 
         /* cover display widget */
 
-	cover_align = gtk_alignment_new(0.5f, 0.5f, 0.0f, 0.0f);
+	cover_align = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(disp_hbox), cover_align, FALSE, FALSE, 0);
         cover_image_area = gtk_image_new();
         c_event_box = gtk_event_box_new();
-	gtk_container_add(GTK_CONTAINER(cover_align), c_event_box);
+	gtk_widget_set_halign(c_event_box, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(c_event_box, GTK_ALIGN_CENTER);
+	gtk_box_pack_start(GTK_BOX(cover_align), c_event_box, TRUE, FALSE, 0);
         gtk_container_add(GTK_CONTAINER(c_event_box), cover_image_area);
         g_signal_connect(G_OBJECT(c_event_box), "button_press_event",
                          G_CALLBACK(cover_press_button_cb), cover_image_area);

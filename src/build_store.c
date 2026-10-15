@@ -573,28 +573,28 @@ capitalize_gui_new(capitalize_t * model, GtkWidget * target_vbox) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
 	gui->check = gtk_check_button_new_with_label(_("Capitalize: "));
 	gtk_widget_set_name(gui->check, "check_on_notebook");
-	gtk_table_attach(GTK_TABLE(table), gui->check, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 0);
+	gui_grid_attach(GTK_GRID(table), gui->check, 0, 0, 1, 1,
+			FALSE, FALSE, 0, 0);
 
 	g_signal_connect(G_OBJECT(gui->check), "toggled",
 			 G_CALLBACK(capitalize_check_toggled), gui);
 
 	gui->combo = gtk_combo_box_text_new();
-	gtk_table_attach(GTK_TABLE(table), gui->combo, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
+	gui_grid_attach(GTK_GRID(table), gui->combo, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 0);
 
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gui->combo), _("All words"));
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gui->combo), _("First word only"));
 
 	gui->check_pre = gtk_check_button_new_with_label(_("Force case: "));
 	gtk_widget_set_name(gui->check_pre, "check_on_notebook");
-	gtk_table_attach(GTK_TABLE(table), gui->check_pre, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), gui->check_pre, 0, 1, 1, 1,
+			FALSE, FALSE, 0, 5);
 
 	g_signal_connect(G_OBJECT(gui->check_pre), "toggled",
 			 G_CALLBACK(capitalize_check_pre_toggled), gui);
@@ -602,8 +602,8 @@ capitalize_gui_new(capitalize_t * model, GtkWidget * target_vbox) {
         gui->entry_pre = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(gui->entry_pre), MAXLEN-1);
 	gtk_entry_set_text(GTK_ENTRY(gui->entry_pre), model->pattern);
-	gtk_table_attach(GTK_TABLE(table), gui->entry_pre, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), gui->entry_pre, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 	gui->check_low = gtk_check_button_new_with_label(_("Force other letters to lowercase"));
 	gtk_widget_set_name(gui->check_low, "check_on_notebook");
@@ -724,7 +724,7 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
 	GtkWidget * vbox;
 	GtkWidget * hbox;
 	GtkWidget * table;
-	GdkColor red = { 0, 30000, 0, 0 };
+	GdkRGBA red = { 30000 / 65535.0, 0, 0, 1 };
 
 
 	if ((gui = (file_transform_gui_t *)malloc(sizeof(file_transform_gui_t))) == NULL) {
@@ -742,35 +742,35 @@ file_transform_gui_new(file_transform_t * model, GtkWidget * target_vbox) {
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Regexp:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1,
+			FALSE, FALSE, 0, 5);
 
 	gui->entry_regexp = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), gui->entry_regexp, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), gui->entry_regexp, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Replace:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1,
+			FALSE, FALSE, 0, 5);
 
 	gui->entry_replacement = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), gui->entry_replacement, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), gui->entry_replacement, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 	gtk_entry_set_text(GTK_ENTRY(gui->entry_regexp), model->regexp);
 	gtk_entry_set_text(GTK_ENTRY(gui->entry_replacement), model->replacement);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gui->label_error = gtk_label_new("");
-	gtk_widget_modify_fg(gui->label_error, GTK_STATE_NORMAL, &red);
+	gui_widget_set_fg_color(gui->label_error, &red);
         gtk_box_pack_start(GTK_BOX(hbox), gui->label_error, FALSE, FALSE, 5);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -1557,8 +1557,8 @@ build_type_dialog(build_store_t * build_data) {
         dialog = gtk_dialog_new_with_buttons(_("Select build type"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -1700,8 +1700,8 @@ build_dialog(build_store_t * data) {
         dialog = gtk_dialog_new_with_buttons(_("Build/Update store"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					     _("_OK"), GTK_RESPONSE_ACCEPT,
+					     _("_Cancel"), GTK_RESPONSE_REJECT,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -1725,25 +1725,25 @@ build_dialog(build_store_t * data) {
 
         gtk_box_pack_start(GTK_BOX(gen_vbox), frame, FALSE, FALSE, 5);
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_grid_new();
         gtk_container_set_border_width(GTK_CONTAINER(table), 5);
 	gtk_container_add(GTK_CONTAINER(frame), table);
 
 	label = gtk_label_new(_("Root path:"));
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1,
+			FALSE, FALSE, 0, 5);
 
         gen_root_entry = gtk_entry_new ();
         gtk_entry_set_max_length(GTK_ENTRY(gen_root_entry), MAXLEN-1);
 	gtk_entry_set_text(GTK_ENTRY(gen_root_entry), data->root);
-	gtk_table_attach(GTK_TABLE(table), gen_root_entry, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), gen_root_entry, 1, 0, 1, 1,
+			TRUE, FALSE, 0, 5);
 
-	gen_browse_button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
-	gtk_table_attach(GTK_TABLE(table), gen_browse_button, 2, 3, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gen_browse_button = gui_stock_label_button(_("_Browse..."), "document-open");
+	gui_grid_attach(GTK_GRID(table), gen_browse_button, 2, 0, 1, 1,
+			FALSE, FALSE, 0, 5);
         g_signal_connect(G_OBJECT(gen_browse_button), "clicked", G_CALLBACK(browse_button_clicked),
 			 gen_root_entry);
 
@@ -1752,8 +1752,8 @@ build_dialog(build_store_t * data) {
 		label = gtk_label_new(_("Structure:"));
 		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-		gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
-				 GTK_FILL, GTK_FILL, 0, 0);
+		gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1,
+				FALSE, FALSE, 0, 0);
 
 		gen_depth_combo = gtk_combo_box_text_new();
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
@@ -1765,8 +1765,8 @@ build_dialog(build_store_t * data) {
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(gen_depth_combo),
                                                _("root / artist / artist / artist / record / track"));
 		gtk_combo_box_set_active(GTK_COMBO_BOX(gen_depth_combo), data->artist_dir_depth);
-		gtk_table_attach(GTK_TABLE(table), gen_depth_combo, 1, 3, 1, 2,
-				 GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+		gui_grid_attach(GTK_GRID(table), gen_depth_combo, 1, 1, 2, 1,
+				TRUE, FALSE, 0, 0);
 	}
 
 
@@ -2030,29 +2030,29 @@ build_dialog(build_store_t * data) {
 	frame = gtk_frame_new(_("Sandbox"));
         gtk_box_pack_start(GTK_BOX(snd_vbox), frame, FALSE, FALSE, 5);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
         gtk_container_set_border_width(GTK_CONTAINER(table), 5);
 	gtk_container_add(GTK_CONTAINER(frame), table);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Filename:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 5);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1,
+			FALSE, FALSE, 0, 5);
 
 	data->snd_entry_input = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->snd_entry_input, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), data->snd_entry_input, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 	snd_button_test = gtk_button_new_with_label(_("Test"));
-	gtk_table_attach(GTK_TABLE(table), snd_button_test, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 0, 5);
+	gui_grid_attach(GTK_GRID(table), snd_button_test, 0, 1, 1, 1,
+			FALSE, FALSE, 0, 5);
         g_signal_connect(G_OBJECT(snd_button_test), "clicked", G_CALLBACK(snd_button_test_clicked),
 			 data);
 
 	data->snd_entry_output = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), data->snd_entry_output, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), data->snd_entry_output, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 
 	/* run dialog */
@@ -2250,7 +2250,7 @@ progress_window(build_store_t * data) {
         vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add(GTK_CONTAINER(data->prog_window), vbox);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
 	insert_label_entry(table, _("Processing:"), &data->prog_file_entry, NULL, 0, 1, FALSE);
@@ -2258,14 +2258,14 @@ progress_window(build_store_t * data) {
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Action:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1,
+			FALSE, FALSE, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	data->prog_action_label = gtk_label_new("");
         gtk_box_pack_start(GTK_BOX(hbox), data->prog_action_label, FALSE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, 1, 1, 1,
+			FALSE, FALSE, 5, 5);
 
         gtk_box_pack_start(GTK_BOX(vbox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, TRUE, 5);
 
@@ -2273,7 +2273,7 @@ progress_window(build_store_t * data) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        data->prog_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
+        data->prog_cancel_button = gui_stock_label_button (_("Abort"), "process-stop");
         g_signal_connect(data->prog_cancel_button, "clicked", G_CALLBACK(cancel_build), data);
   	gtk_container_add(GTK_CONTAINER(hbuttonbox), data->prog_cancel_button);
 

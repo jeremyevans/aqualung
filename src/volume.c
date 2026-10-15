@@ -358,47 +358,47 @@ vol_create_gui(volume_t * vol) {
 
 	vbox = gtk_bin_get_child(GTK_BIN(vol_window));
 
-	vol->slot = gtk_table_new(4, 3, FALSE);
+	vol->slot = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), vol->slot, FALSE, FALSE, 0);
 
-	gtk_table_attach(GTK_TABLE(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 3, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 0, 3, 1,
+			FALSE, FALSE, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("File:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), hbox, 0, 1, 1, 1,
+			FALSE, FALSE, 5, 5);
 
         vol->file_entry = gtk_entry_new();
         gtk_editable_set_editable(GTK_EDITABLE(vol->file_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(vol->slot), vol->file_entry, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), vol->file_entry, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 	vol->pause_button = gtk_button_new_with_label(_("Pause"));
 	g_signal_connect(vol->pause_button, "clicked", G_CALLBACK(vol_pause_event), vol);
-	gtk_table_attach(GTK_TABLE(vol->slot), vol->pause_button, 2, 3, 1, 2,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), vol->pause_button, 2, 1, 1, 1,
+			FALSE, FALSE, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Progress:"));
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(vol->slot), hbox, 0, 1, 2, 3,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), hbox, 0, 2, 1, 1,
+			FALSE, FALSE, 5, 5);
 
 	vol->progress = gtk_progress_bar_new();
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(vol->progress), 0.0f);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(vol->progress), "0.0%");
-	gtk_table_attach(GTK_TABLE(vol->slot), vol->progress, 1, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), vol->progress, 1, 2, 1, 1,
+			TRUE, FALSE, 5, 5);
 
-	vol->cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL); 
+	vol->cancel_button = gui_stock_label_button (_("Abort"), "process-stop");
 	g_signal_connect(vol->cancel_button, "clicked", G_CALLBACK(vol_cancel_event), vol);
-	gtk_table_attach(GTK_TABLE(vol->slot), vol->cancel_button, 2, 3, 2, 3,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), vol->cancel_button, 2, 2, 1, 1,
+			FALSE, FALSE, 5, 5);
 
-	gtk_table_attach(GTK_TABLE(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 3, 3, 4,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(vol->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 3, 3, 1,
+			FALSE, FALSE, 5, 5);
 
 	gtk_widget_show_all(vol->slot);
 }

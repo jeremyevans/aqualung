@@ -509,61 +509,61 @@ search_dialog(void) {
         gtk_box_pack_start(GTK_BOX(hbox), searchkey_entry, TRUE, TRUE, 5);
 
 
-	table = gtk_table_new(5, 2, FALSE);
+	table = gtk_grid_new();
         gtk_widget_show(table);
         gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, TRUE, 3);
 
 	check_case = gtk_check_button_new_with_label(_("Case sensitive"));
         gtk_widget_show(check_case);     
 	gtk_widget_set_name(check_case, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_case, 0, 1, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
+	gui_grid_attach(GTK_GRID(table), check_case, 0, 0, 1, 1,
+			TRUE, FALSE, 1, 5);
 
 	check_exact = gtk_check_button_new_with_label(_("Exact matches only"));
         gtk_widget_show(check_exact);     
 	gtk_widget_set_name(check_exact, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_exact, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
+	gui_grid_attach(GTK_GRID(table), check_exact, 1, 0, 1, 1,
+			TRUE, FALSE, 1, 5);
 
 	check_sfac = gtk_check_button_new_with_label(_("Select first and close window"));
         gtk_widget_show(check_sfac);     
 	gtk_widget_set_name(check_sfac, "check_on_window");
         g_signal_connect(G_OBJECT(check_sfac), "clicked", G_CALLBACK(sfac_clicked), NULL);
-	gtk_table_attach(GTK_TABLE(table), check_sfac, 0, 1, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
+	gui_grid_attach(GTK_GRID(table), check_sfac, 0, 1, 1, 1,
+			TRUE, FALSE, 1, 5);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show(hbox);     
 	label = gtk_label_new(_("Search in:"));
         gtk_widget_show(label);     
         gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 5);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 2, 2, 1,
+			TRUE, FALSE, 1, 5);
 
 
 	check_artist = gtk_check_button_new_with_label(_("Artist names"));
         gtk_widget_show(check_artist);     
 	gtk_widget_set_name(check_artist, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_artist, 0, 1, 3, 4,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
+	gui_grid_attach(GTK_GRID(table), check_artist, 0, 3, 1, 1,
+			TRUE, FALSE, 1, 1);
 
 	check_record = gtk_check_button_new_with_label(_("Record titles"));
         gtk_widget_show(check_record);     
 	gtk_widget_set_name(check_record, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_record, 0, 1, 4, 5,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
+	gui_grid_attach(GTK_GRID(table), check_record, 0, 4, 1, 1,
+			TRUE, FALSE, 1, 1);
 
 	check_track = gtk_check_button_new_with_label(_("Track titles"));
         gtk_widget_show(check_track);     
 	gtk_widget_set_name(check_track, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_track, 1, 2, 3, 4,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
+	gui_grid_attach(GTK_GRID(table), check_track, 1, 3, 1, 1,
+			TRUE, FALSE, 1, 1);
 
 	check_comment = gtk_check_button_new_with_label(_("Comments"));
         gtk_widget_show(check_comment);     
 	gtk_widget_set_name(check_comment, "check_on_window");
-	gtk_table_attach(GTK_TABLE(table), check_comment, 1, 2, 4, 5,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 1, 1);
+	gui_grid_attach(GTK_GRID(table), check_comment, 1, 4, 1, 1,
+			TRUE, FALSE, 1, 1);
 
 	hbox = sres_list = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_show(hbox);     
@@ -637,14 +637,14 @@ search_dialog(void) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbuttonbox, FALSE, TRUE, 0);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbuttonbox), GTK_BUTTONBOX_END);
 
-        button = gui_stock_label_button(_("Search"), GTK_STOCK_FIND);
-        gtk_widget_show(button);     
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
+        button = gui_stock_label_button(_("Search"), "edit-find");
+        gtk_widget_show(button);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(search_button_clicked), NULL);
 
-        button = gtk_button_new_from_stock (GTK_STOCK_CLOSE); 
-        gtk_widget_show(button);     
-  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);   
+        button = gtk_button_new_with_mnemonic(_("_Close"));
+        gtk_widget_show(button);
+  	gtk_container_add(GTK_CONTAINER(hbuttonbox), button);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(close_button_clicked), NULL);
 
         if (options.search_ms_flags & SEARCH_F_CS)

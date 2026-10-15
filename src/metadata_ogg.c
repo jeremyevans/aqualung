@@ -288,7 +288,6 @@ meta_ogg_render(GSList * slist, char * filename, int n_pages) {
 	meta_ogg_page_t * page;
 	unsigned char * data;
 	unsigned int length;
-	guint64 total_length = 0L;
 	int page_count = 0;
 	
 	if ((file = fopen(filename, (n_pages == -1) ? "wb" : "r+b")) == NULL) {
@@ -310,7 +309,6 @@ meta_ogg_render(GSList * slist, char * filename, int n_pages) {
 			return -1;
 		}
 		slist = g_slist_next(slist);
-		total_length += length;
 		++page_count;
 	}
 

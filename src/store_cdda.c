@@ -150,12 +150,12 @@ cdda_info_row(char * text, int yes, GtkWidget * table, int * cnt) {
 	GtkWidget * label;
 	GtkWidget * hbox;
 
-	image = gtk_image_new_from_stock(yes ? GTK_STOCK_APPLY : GTK_STOCK_CANCEL, GTK_ICON_SIZE_BUTTON);
+	image = gtk_image_new_from_icon_name(yes ? "object-select" : "process-stop", GTK_ICON_SIZE_BUTTON);
 	label = gtk_label_new(text);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), image, 0, 1, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 2, 1);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, *cnt, *cnt+1, GTK_FILL, GTK_FILL, 5, 1);
+	gui_grid_attach(GTK_GRID(table), image, 0, *cnt, 1, 1, FALSE, FALSE, 2, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, *cnt, 1, 1, FALSE, FALSE, 5, 1);
 	(*cnt)++;
 }
 
@@ -192,7 +192,7 @@ cdda_drive_info(cdda_drive_t * drive) {
         dialog = gtk_dialog_new_with_buttons(str,
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+					     _("_Close"), GTK_RESPONSE_OK,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -203,44 +203,44 @@ cdda_drive_info(cdda_drive_t * drive) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, FALSE, FALSE, 4);
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Device path:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 4, 1);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(cdda_displayed_device_path(drive->device_path));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, 0, 1, 1, FALSE, FALSE, 4, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Vendor:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1, FALSE, FALSE, 4, 1);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_vendor);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, 1, 1, 1, FALSE, FALSE, 4, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Model:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 2, 1, 1, FALSE, FALSE, 4, 1);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_model);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, 2, 1, 1, FALSE, FALSE, 4, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("Revision:"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 0, 3, 1, 1, FALSE, FALSE, 4, 1);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(hwinfo.psz_revision);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 4, 1);
+	gui_grid_attach(GTK_GRID(table), hbox, 1, 3, 1, 1, FALSE, FALSE, 4, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	label = gtk_label_new(_("The information below is reported by the drive, and\n"
@@ -261,7 +261,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	if (misc_cap != CDIO_DRIVE_CAP_ERROR) {
 		int cnt = 0;
 		label = gtk_label_new(_("General"));
-		table = gtk_table_new(8, 2, FALSE);
+		table = gtk_grid_new();
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
 		cdda_info_row(_("Eject"), misc_cap & CDIO_DRIVE_CAP_MISC_EJECT, table, &cnt);
@@ -277,7 +277,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	if (read_cap != CDIO_DRIVE_CAP_ERROR) {
 		int cnt = 0;
 		label = gtk_label_new(_("Reading"));
-		table = gtk_table_new(16, 2, FALSE);
+		table = gtk_grid_new();
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
 		cdda_info_row(_("Play CD Audio"), read_cap & CDIO_DRIVE_CAP_READ_AUDIO, table, &cnt);
@@ -301,7 +301,7 @@ cdda_drive_info(cdda_drive_t * drive) {
 	if (write_cap != CDIO_DRIVE_CAP_ERROR) {
 		int cnt = 0;
 		label = gtk_label_new(_("Writing"));
-		table = gtk_table_new(9, 2, FALSE);
+		table = gtk_grid_new();
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
 		cdda_info_row(_("Write CD-R"), write_cap & CDIO_DRIVE_CAP_WRITE_CD_R, table, &cnt);
@@ -353,7 +353,7 @@ cdda_disc_info(cdda_drive_t * drive) {
         dialog = gtk_dialog_new_with_buttons(_("Disc info"),
 					     GTK_WINDOW(browser_window),
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
-					     GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+					     _("_Close"), GTK_RESPONSE_OK,
 					     NULL);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -367,7 +367,7 @@ cdda_disc_info(cdda_drive_t * drive) {
 
 	cdio = cdio_open(drive->device_path, DRIVER_UNKNOWN);
 
-	table = gtk_table_new(MAX_CDTEXT_FIELDS, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
 	for (i = 0; i < MAX_CDTEXT_FIELDS; i++) {
 		text = cdda_get_cdtext(cdio, i, 0);
@@ -377,12 +377,12 @@ cdda_disc_info(cdda_drive_t * drive) {
 			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			label = gtk_label_new(cdtext_field2str(i));
 			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
+			gui_grid_attach(GTK_GRID(table), hbox, 0, i, 1, 1, FALSE, FALSE, 4, 1);
 
 			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 			label = gtk_label_new(text);
 			gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-			gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, i, i + 1, GTK_FILL, GTK_FILL, 4, 1);
+			gui_grid_attach(GTK_GRID(table), hbox, 1, i, 1, 1, FALSE, FALSE, 4, 1);
 		}
 		g_free(text);
 	}
@@ -1188,16 +1188,13 @@ store_cdda_event_cb(GdkEvent * event, GtkTreeIter * iter, GtkTreePath * path) {
 
 			switch (gtk_tree_path_get_depth(path)) {
 			case 1:
-				gtk_menu_popup(GTK_MENU(cdda_store_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(cdda_store_menu), (GdkEvent *)bevent);
 				break;
 			case 2:
-				gtk_menu_popup(GTK_MENU(cdda_record_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(cdda_record_menu), (GdkEvent *)bevent);
 				break;
 			case 3:
-				gtk_menu_popup(GTK_MENU(cdda_track_menu), NULL, NULL, NULL, NULL,
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(cdda_track_menu), (GdkEvent *)bevent);
 				break;
 			}
 		}

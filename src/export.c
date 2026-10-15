@@ -980,21 +980,21 @@ export_progress_window(export_t * export) {
 
 	vbox = gtk_bin_get_child(GTK_BIN(export_window));
 
-	export->slot = gtk_table_new(5, 2, FALSE);
+	export->slot = gtk_grid_new();
         gtk_box_pack_start(GTK_BOX(vbox), export->slot, FALSE, FALSE, 0);
 
-	gtk_table_attach(GTK_TABLE(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 0, 1,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 0, 2, 1,
+			FALSE, FALSE, 5, 5);
 
 	insert_label_entry(export->slot, _("Source file:"), &export->prog_file_entry1, NULL, 1, 2, FALSE);
 	insert_label_entry(export->slot, _("Target file:"), &export->prog_file_entry2, NULL, 2, 3, FALSE);
 
-        export->prog_cancel_button = gui_stock_label_button(_("Abort"), GTK_STOCK_CANCEL);
+        export->prog_cancel_button = gui_stock_label_button(_("Abort"), "process-stop");
         g_signal_connect(export->prog_cancel_button, "clicked", G_CALLBACK(export_cancel_event), export);
 	insert_label_progbar_button(export->slot, _("Progress:"), &export->progbar, export->prog_cancel_button, 3, 4);
 
-	gtk_table_attach(GTK_TABLE(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 4, 5,
-			 GTK_FILL, GTK_FILL, 5, 5);
+	gui_grid_attach(GTK_GRID(export->slot), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 4, 2, 1,
+			FALSE, FALSE, 5, 5);
 
         gtk_widget_grab_focus(export->prog_cancel_button);
 
@@ -1114,8 +1114,8 @@ export_start(export_t * export) {
         export->dialog = gtk_dialog_new_with_buttons(_("Export files"),
 						     GTK_WINDOW(main_window),
 						     GTK_DIALOG_DESTROY_WITH_PARENT,
-						     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-						     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+						     _("_OK"), GTK_RESPONSE_ACCEPT,
+						     _("_Cancel"), GTK_RESPONSE_REJECT,
 						     NULL);
 
         gtk_window_set_position(GTK_WINDOW(export->dialog), GTK_WIN_POS_CENTER);
@@ -1134,7 +1134,7 @@ export_start(export_t * export) {
 	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
-	table = gtk_table_new(5, 2, FALSE);
+	table = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(frame), table);
 
 	insert_label_entry_browse(table, _("Target directory:"), &export->outdir_entry, options.exportdir, 0, 1, export_browse_cb);
@@ -1142,21 +1142,21 @@ export_start(export_t * export) {
         export->check_dir_artist = gtk_check_button_new_with_label(_("Create subdirectories for artists"));
         gtk_widget_set_name(export->check_dir_artist, "check_on_notebook");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_artist), options.export_subdir_artist);
-        gtk_table_attach(GTK_TABLE(table), export->check_dir_artist, 0, 3, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->check_dir_artist, 0, 1, 3, 1, FALSE, FALSE, 5, 5);
         g_signal_connect(G_OBJECT(export->check_dir_artist), "toggled",
 			 G_CALLBACK(check_dir_limit_toggled), export);
 
         export->check_dir_album = gtk_check_button_new_with_label(_("Create subdirectories for albums"));
         gtk_widget_set_name(export->check_dir_album, "check_on_notebook");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_dir_album), options.export_subdir_album);
-        gtk_table_attach(GTK_TABLE(table), export->check_dir_album, 0, 3, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->check_dir_album, 0, 2, 3, 1, FALSE, FALSE, 5, 5);
         g_signal_connect(G_OBJECT(export->check_dir_album), "toggled",
 			 G_CALLBACK(check_dir_limit_toggled), export);
 
 	insert_label_spin_with_limits(table, _("Subdirectory name\nlength limit:"), &export->dirlen_spin, options.export_subdir_limit, 4, 64, 3, 4);
 	gtk_widget_set_sensitive(export->dirlen_spin, options.export_subdir_artist || options.export_subdir_album);
 
-        help_button = gtk_button_new_from_stock(GTK_STOCK_HELP); 
+        help_button = gtk_button_new_with_mnemonic(_("_Help"));
 	g_signal_connect(help_button, "clicked", G_CALLBACK(export_format_help_cb), export);
 	insert_label_entry_button(table, _("Filename template:"), &export->templ_entry, options.export_template, help_button, 4, 5);
 
@@ -1165,23 +1165,23 @@ export_start(export_t * export) {
 	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
-        table = gtk_table_new(4, 2, FALSE);
+        table = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(frame), table);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 5, 5);
 
 	export->format_combo = export_create_format_combo();
         g_signal_connect(G_OBJECT(export->format_combo), "changed",
 			 G_CALLBACK(export_format_combo_changed), export);
-        gtk_table_attach(GTK_TABLE(table), export->format_combo, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->format_combo, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 5);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	export->bitrate_label = gtk_label_new(_("Compression level:"));
         gtk_box_pack_start(GTK_BOX(hbox), export->bitrate_label, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1, FALSE, FALSE, 5, 5);
 
 	export->bitrate_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 8, 1);
         g_signal_connect(G_OBJECT(export->bitrate_scale), "value-changed",
@@ -1189,22 +1189,22 @@ export_start(export_t * export) {
 	gtk_scale_set_draw_value(GTK_SCALE(export->bitrate_scale), FALSE);
 	gtk_scale_set_digits(GTK_SCALE(export->bitrate_scale), 0);
         gtk_widget_set_size_request(export->bitrate_scale, 180, -1);
-        gtk_table_attach(GTK_TABLE(table), export->bitrate_scale, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->bitrate_scale, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 5);
 
 	export->bitrate_value_label = gtk_label_new("0 (fast)");
-        gtk_table_attach(GTK_TABLE(table), export->bitrate_value_label, 1, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->bitrate_value_label, 1, 2, 1, 1,
+			TRUE, FALSE, 5, 5);
 
         export->vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
         gtk_widget_set_name(export->vbr_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), export->vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->vbr_check, 0, 2, 1, 1, FALSE, FALSE, 5, 5);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->vbr_check), options.export_vbr);
 
         export->meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
         gtk_widget_set_name(export->meta_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), export->meta_check, 0, 2, 3, 4,
-			 GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->meta_check, 0, 3, 2, 1,
+			FALSE, FALSE, 5, 5);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->meta_check), options.export_metadata);
 
 
@@ -1213,23 +1213,23 @@ export_start(export_t * export) {
 	gtk_box_pack_start(GTK_BOX(content_area), frame, FALSE, FALSE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
 
-	table = gtk_table_new(1, 2, FALSE);
+	table = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(frame), table);
 
         export->check_filter_same = gtk_check_button_new_with_label(_("Do not reencode files already being in the target format"));
         gtk_widget_set_name(export->check_filter_same, "check_on_notebook");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_filter_same), options.export_filter_same);
-        gtk_table_attach(GTK_TABLE(table), export->check_filter_same, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->check_filter_same, 0, 0, 2, 1, FALSE, FALSE, 5, 5);
 
         export->check_excl_enabled = gtk_check_button_new_with_label(_("Do not reencode files\nmatching wildcard:"));
         gtk_widget_set_name(export->check_excl_enabled, "check_on_notebook");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(export->check_excl_enabled), options.export_excl_enabled);
-        gtk_table_attach(GTK_TABLE(table), export->check_excl_enabled, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->check_excl_enabled, 0, 1, 1, 1, FALSE, FALSE, 5, 5);
 
         export->excl_entry = gtk_entry_new();
         gtk_entry_set_max_length(GTK_ENTRY(export->excl_entry), MAXLEN-1);
 	gtk_entry_set_text(GTK_ENTRY(export->excl_entry), options.export_excl_pattern);
-        gtk_table_attach(GTK_TABLE(table), export->excl_entry, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+        gui_grid_attach(GTK_GRID(table), export->excl_entry, 1, 1, 1, 1, TRUE, FALSE, 5, 5);
 	gtk_widget_set_sensitive(export->excl_entry, options.export_excl_enabled);
 
 	g_signal_connect(G_OBJECT(export->check_excl_enabled), "toggled",

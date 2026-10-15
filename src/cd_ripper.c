@@ -653,8 +653,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         ripper_dialog = gtk_dialog_new_with_buttons(_("Rip CD"),
                                              GTK_WINDOW(browser_window),
                                              GTK_DIALOG_DESTROY_WITH_PARENT,
-                                             GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
-                                             GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+                                             _("_OK"), GTK_RESPONSE_ACCEPT,
+                                             _("_Cancel"), GTK_RESPONSE_REJECT,
                                              NULL);
 
         gtk_window_set_position(GTK_WINDOW(ripper_dialog), GTK_WIN_POS_CENTER);
@@ -671,8 +671,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 	vbox_source = create_notebook_page(notebook, _("Source"));
 
-        table = gtk_table_new(6, 2, FALSE);
-        gtk_box_pack_start(GTK_BOX(vbox_source), table, FALSE, FALSE, 0);
+        table = gtk_grid_new();
+        gtk_box_pack_start(GTK_BOX(vbox_source), table, TRUE, TRUE, 0);
 
 	insert_label_entry(table, _("Artist:"), &ripper_artist_entry, drive->disc.artist_name, 0, 1, TRUE);
 	insert_label_entry(table, _("Album:"), &ripper_album_entry, drive->disc.record_name, 1, 2, TRUE);
@@ -690,8 +690,8 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	ripper_source_store_make(iter);
 
         viewport = gtk_viewport_new(NULL, NULL);
-        gtk_table_attach(GTK_TABLE(table), viewport, 0, 2, 4, 5,
-                         GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 5);
+        gui_grid_attach(GTK_GRID(table), viewport, 0, 4, 2, 1,
+                        TRUE, TRUE, 0, 5);
         scrolled_win = gtk_scrolled_window_new(NULL, NULL);
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -702,9 +702,6 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
         gtk_container_add(GTK_CONTAINER(scrolled_win), source_tree);
 
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(source_tree), FALSE);
-        if (options.enable_ms_rules_hint) {
-                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(source_tree), TRUE);
-        }
 
         cell = gtk_cell_renderer_toggle_new();
         g_object_set(cell, "activatable", TRUE, NULL);
@@ -725,7 +722,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 5, 6, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 5, 2, 1, TRUE, FALSE, 0, 0);
 
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("Select")), FALSE, FALSE, 5);
 
@@ -755,7 +752,7 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	gtk_entry_set_text(GTK_ENTRY(ripper_destdir_entry), options.ripdir);
 	gtk_box_pack_start(GTK_BOX(hbox), ripper_destdir_entry, TRUE, TRUE, 5);
 
-        button = gui_stock_label_button(_("_Browse..."), GTK_STOCK_OPEN);
+        button = gui_stock_label_button(_("_Browse..."), "document-open");
         g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(ripper_destdir_browse_cb),
 			 (gpointer)ripper_destdir_entry);
         gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
@@ -770,21 +767,23 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 
 	vbox_format = create_frame_on_page(vbox_dest, _("Format"));
 
-        table = gtk_table_new(4, 2, TRUE);
+        table = gtk_grid_new();
+        gtk_grid_set_row_homogeneous(GTK_GRID(table), TRUE);
+        gtk_grid_set_column_homogeneous(GTK_GRID(table), TRUE);
         gtk_box_pack_start(GTK_BOX(vbox_format), table, TRUE, TRUE, 0);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(_("File format:")), FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 5, 4);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 0, 1, 1, FALSE, FALSE, 5, 4);
 
 	ripper_format_combo = create_ripper_format_combo();
-        gtk_table_attach(GTK_TABLE(table), ripper_format_combo, 1, 2, 0, 1,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 2);
+        gui_grid_attach(GTK_GRID(table), ripper_format_combo, 1, 0, 1, 1,
+			TRUE, FALSE, 5, 2);
 
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	ripper_bitrate_label = gtk_label_new(_("Compression level:"));
         gtk_box_pack_start(GTK_BOX(hbox), ripper_bitrate_label, FALSE, FALSE, 0);
-        gtk_table_attach(GTK_TABLE(table), hbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 5, 0);
+        gui_grid_attach(GTK_GRID(table), hbox, 0, 1, 1, 1, FALSE, FALSE, 5, 0);
 
 	ripper_bitrate_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 8, 1);
         g_signal_connect(G_OBJECT(ripper_bitrate_scale), "value-changed",
@@ -792,22 +791,22 @@ cd_ripper_dialog(cdda_drive_t * drive, GtkTreeIter * iter) {
 	gtk_scale_set_draw_value(GTK_SCALE(ripper_bitrate_scale), FALSE);
 	gtk_scale_set_digits(GTK_SCALE(ripper_bitrate_scale), 0);
         gtk_widget_set_size_request(ripper_bitrate_scale, 180, -1);
-        gtk_table_attach(GTK_TABLE(table), ripper_bitrate_scale, 1, 2, 1, 2,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
+        gui_grid_attach(GTK_GRID(table), ripper_bitrate_scale, 1, 1, 1, 1,
+			TRUE, FALSE, 5, 0);
 
 	ripper_bitrate_value_label = gtk_label_new("0 (fast)");
-        gtk_table_attach(GTK_TABLE(table), ripper_bitrate_value_label, 1, 2, 2, 3,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 0);
+        gui_grid_attach(GTK_GRID(table), ripper_bitrate_value_label, 1, 2, 1, 1,
+			TRUE, FALSE, 5, 0);
 
         ripper_vbr_check = gtk_check_button_new_with_label(_("VBR encoding"));
         gtk_widget_set_name(ripper_vbr_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), ripper_vbr_check, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 5, 0);
+        gui_grid_attach(GTK_GRID(table), ripper_vbr_check, 0, 2, 1, 1, FALSE, FALSE, 5, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_vbr_check), options.cdrip_vbr);
 
         ripper_meta_check = gtk_check_button_new_with_label(_("Tag files with metadata"));
         gtk_widget_set_name(ripper_meta_check, "check_on_notebook");
-        gtk_table_attach(GTK_TABLE(table), ripper_meta_check, 0, 2, 3, 4,
-			 GTK_EXPAND | GTK_FILL, GTK_FILL, 5, 4);
+        gui_grid_attach(GTK_GRID(table), ripper_meta_check, 0, 3, 2, 1,
+			TRUE, FALSE, 5, 4);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ripper_meta_check), options.cdrip_metadata);
 
         g_signal_connect(G_OBJECT(ripper_format_combo), "changed",
@@ -1049,9 +1048,6 @@ ripper_window(void) {
 
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(prog_tree), FALSE);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(prog_tree)), GTK_SELECTION_NONE);
-        if (options.enable_ms_rules_hint) {
-                gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(prog_tree), TRUE);
-        }
 
         cell = gtk_cell_renderer_text_new();
 	g_object_set((gpointer)cell, "xalign", 1.0, NULL);
@@ -1079,7 +1075,7 @@ ripper_window(void) {
 	gtk_widget_set_name(ripper_close_when_ready_check, "check_on_window");
         gtk_box_pack_start(GTK_BOX(ripper_hbox), ripper_close_when_ready_check, FALSE, TRUE, 0);
 
-        ripper_cancel_button = gui_stock_label_button (_("Abort"), GTK_STOCK_CANCEL);
+        ripper_cancel_button = gui_stock_label_button (_("Abort"), "process-stop");
         g_signal_connect(ripper_cancel_button, "clicked", G_CALLBACK(ripper_cancel), NULL);
         gtk_box_pack_end(GTK_BOX(ripper_hbox), ripper_cancel_button, FALSE, TRUE, 0);
 
@@ -1127,7 +1123,7 @@ ripper_update_status(gpointer pdata) {
 		} else {
 			gtk_widget_destroy(ripper_cancel_button);
 			gtk_widget_destroy(ripper_close_when_ready_check);
-			ripper_cancel_button = gui_stock_label_button (_("Close"), GTK_STOCK_CLOSE);
+			ripper_cancel_button = gui_stock_label_button (_("Close"), "window-close");
 			g_signal_connect(ripper_cancel_button, "clicked", G_CALLBACK(ripper_cancel), NULL);
 			gtk_box_pack_end(GTK_BOX(ripper_hbox), ripper_cancel_button, FALSE, TRUE, 0);
 			gtk_widget_grab_focus(ripper_cancel_button);

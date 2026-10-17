@@ -679,6 +679,14 @@ file_transform_new() {
 }
 
 void
+file_transform_free_regexp(file_transform_t * model) {
+
+	if (model->regexp[0] != '\0') {
+		regfree(&model->compiled);
+	}
+}
+
+void
 file_transform_save(xmlNodePtr root, char * nodeID, file_transform_t * model) {
 
 	xmlNodePtr node = xmlNewTextChild(root, NULL, (const xmlChar *) nodeID, NULL);
@@ -821,6 +829,11 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 
 	gtk_widget_hide(gui->label_error);
 
+	/* an empty ERE is undefined by POSIX and rejected by some libcs (OpenBSD) */
+	if (gui->model->regexp[0] == '\0') {
+		return 0;
+	}
+
 	if ((err = regcomp(&gui->model->compiled, gui->model->regexp, REG_EXTENDED | REG_ICASE))) {
 
 		char msg[MAXLEN];
@@ -838,7 +851,7 @@ file_transform_gui_sync(file_transform_gui_t * gui) {
 		return err;
 	}
 
-	if (gui->model->regexp[0] != '\0' && !regexec(&gui->model->compiled, "", 0, NULL, 0)) {
+	if (!regexec(&gui->model->compiled, "", 0, NULL, 0)) {
 
 		gtk_label_set_text(GTK_LABEL(gui->label_error), _("Regexp matches empty string"));
 		gtk_widget_show(gui->label_error);
@@ -1104,9 +1117,9 @@ build_store_free(build_store_t * data) {
 	g_strfreev(data->incl_patternv);
 	data->incl_patternv = NULL;
 
-	regfree(&data->file_transform_artist->compiled);
-	regfree(&data->file_transform_record->compiled);
-	regfree(&data->file_transform_track->compiled);
+	file_transform_free_regexp(data->file_transform_artist);
+	file_transform_free_regexp(data->file_transform_record);
+	file_transform_free_regexp(data->file_transform_track);
 
         free(data);
 }
@@ -1534,7 +1547,7 @@ snd_button_test_clicked(GtkWidget * widget, gpointer user_data) {
 	arr_strlcpy(buf, gtk_entry_get_text(GTK_ENTRY(data->snd_entry_input)));
 	file_transform(buf, data->snd_file_trans_gui->model);
 
-	regfree(&data->snd_file_trans_gui->model->compiled);
+	file_transform_free_regexp(data->snd_file_trans_gui->model);
 
 	gtk_entry_set_text(GTK_ENTRY(data->snd_entry_output), buf);
 }

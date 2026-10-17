@@ -2115,6 +2115,13 @@ build_dialog(build_store_t * data) {
 		set_option_from_toggle(gen_check_excl, &data->excl_enabled);
 		set_option_from_toggle(gen_check_incl, &data->incl_enabled);
 
+		/* free the lists split by an earlier OK */
+		g_strfreev(data->excl_patternv);
+		data->excl_patternv = NULL;
+
+		g_strfreev(data->incl_patternv);
+		data->incl_patternv = NULL;
+
 		if (data->excl_enabled) {
 			data->excl_patternv =
 			    g_strsplit(gtk_entry_get_text(GTK_ENTRY(gen_entry_excl)), ",", 0);
@@ -2131,12 +2138,16 @@ build_dialog(build_store_t * data) {
 			goto display;
 		}
 
+		/* free what was compiled, as the next OK compiles it again */
 		if (file_transform_gui_sync(rec_file_trans_gui) != 0) {
+			file_transform_free_regexp(data->file_transform_artist);
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 2);
 			goto display;
 		}
 
 		if (file_transform_gui_sync(trk_file_trans_gui) != 0) {
+			file_transform_free_regexp(data->file_transform_artist);
+			file_transform_free_regexp(data->file_transform_record);
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 3);
 			goto display;
 		}

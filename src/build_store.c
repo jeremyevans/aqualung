@@ -1871,7 +1871,7 @@ build_dialog(build_store_t * data) {
 		data->data_src_artist->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_artist->type[i] == DATA_SRC_CDDB) {
-				data->data_src_artist->enabled[DATA_SRC_CDDB] = 0;
+				data->data_src_artist->enabled[i] = 0;
 				break;
 			}
 		}
@@ -1926,7 +1926,7 @@ build_dialog(build_store_t * data) {
 		data->data_src_record->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_record->type[i] == DATA_SRC_CDDB) {
-				data->data_src_record->enabled[DATA_SRC_CDDB] = 0;
+				data->data_src_record->enabled[i] = 0;
 				break;
 			}
 		}
@@ -1989,7 +1989,7 @@ build_dialog(build_store_t * data) {
 		data->data_src_track->cddb_mask = 0;
 		for (i = 0; i < 3; i++) {
 			if (data->data_src_track->type[i] == DATA_SRC_CDDB) {
-				data->data_src_track->enabled[DATA_SRC_CDDB] = 0;
+				data->data_src_track->enabled[i] = 0;
 				break;
 			}
 		}

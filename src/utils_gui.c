@@ -147,13 +147,9 @@ threads_dispatch(gpointer data) {
 	threads_dispatch_t * dispatch = data;
 	gboolean ret = FALSE;
 
-	GDK_THREADS_ENTER();
-
 	if (!g_source_is_destroyed(g_main_current_source())) {
 		ret = dispatch->func(dispatch->data);
 	}
-
-	GDK_THREADS_LEAVE();
 
 	return ret;
 }
@@ -208,6 +204,63 @@ aqualung_timeout_add(guint interval, GSourceFunc function, gpointer data) {
 				  threads_dispatch,
 				  dispatch,
 				  threads_dispatch_free);
+}
+
+typedef struct {
+	GSourceFunc func;
+	gpointer data;
+	gboolean done;
+	GMutex mutex;
+	GCond cond;
+} sync_dispatch_t;
+
+static gboolean
+sync_dispatch(gpointer data) {
+
+	sync_dispatch_t * dispatch = data;
+
+	dispatch->func(dispatch->data);
+
+	g_mutex_lock(&dispatch->mutex);
+	dispatch->done = TRUE;
+	g_cond_signal(&dispatch->cond);
+	g_mutex_unlock(&dispatch->mutex);
+
+	return FALSE;
+}
+
+/* Run function in the GUI (main) thread and wait until it has returned.
+ * Worker threads must use this (or aqualung_idle_add) for anything that
+ * touches GTK. The return value of function is ignored.
+ */
+void
+aqualung_run_in_main_thread(GSourceFunc function, gpointer data) {
+
+	sync_dispatch_t dispatch;
+
+	if (g_main_context_is_owner(NULL)) {
+		function(data);
+		return;
+	}
+
+	dispatch.func = function;
+	dispatch.data = data;
+	dispatch.done = FALSE;
+	g_mutex_init(&dispatch.mutex);
+	g_cond_init(&dispatch.cond);
+
+	/* not g_main_context_invoke(), which may call function directly
+	 * in this thread when the main loop is not running */
+	g_idle_add_full(G_PRIORITY_DEFAULT, sync_dispatch, &dispatch, NULL);
+
+	g_mutex_lock(&dispatch.mutex);
+	while (!dispatch.done) {
+		g_cond_wait(&dispatch.cond, &dispatch.mutex);
+	}
+	g_mutex_unlock(&dispatch.mutex);
+
+	g_mutex_clear(&dispatch.mutex);
+	g_cond_clear(&dispatch.cond);
 }
 
 void

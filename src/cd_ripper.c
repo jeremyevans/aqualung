@@ -1152,26 +1152,82 @@ ripper_meta_add(metadata_t * meta, int tags, int type, char * str, int val) {
 }
 
 
-void *
-ripper_thread(void * arg) {
+/* a track selected for ripping */
+typedef struct {
+	int no;
+	char * name;
+} ripper_track_t;
 
-	cdda_drive_t * drive = (cdda_drive_t *)arg;
+/* one ripping run, owned by its thread */
+typedef struct {
+	cdda_drive_t * drive;
+	GSList * tracks; /* ripper_track_t, in disc order */
+} ripper_job_t;
+
+/* a ripped track to add to the music store */
+typedef struct {
+	char * name;
+	int no;
+	char * filename;
+	float duration;
+} ripper_store_track_t;
+
+/* runs in the GUI thread */
+static gboolean
+ripper_add_track_to_store(gpointer user_data) {
+
+	ripper_store_track_t * track = (ripper_store_track_t *)user_data;
+	GtkTreeIter iter;
+	char sort_name[3];
+	track_data_t * track_data;
+
+	if (!ripper_write_to_store || !ripper_thread_busy ||
+	    !gtk_tree_store_iter_is_valid(music_store, &ripper_dest_record)) {
+		return FALSE;
+	}
+
+	if ((track_data = (track_data_t *)calloc(1, sizeof(track_data_t))) == NULL) {
+		fprintf(stderr, "ripper_add_track_to_store: calloc error\n");
+		return FALSE;
+	}
+
+	track_data->file = strdup(track->filename);
+	track_data->duration = track->duration;
+	track_data->volume = 1.0f;
+
+	arr_snprintf(sort_name, "%02d", track->no);
+
+	gtk_tree_store_append(music_store, &iter, &ripper_dest_record);
+	gtk_tree_store_set(music_store, &iter,
+			   MS_COL_NAME, track->name,
+			   MS_COL_SORT, sort_name,
+			   MS_COL_DATA, track_data, -1);
+
+	if (options.enable_ms_tree_icons) {
+		gtk_tree_store_set(music_store, &iter, MS_COL_ICON, icon_track, -1);
+	}
+
+	music_store_mark_changed(&iter);
+
+	return FALSE;
+}
+
+static void
+ripper_rip_tracks(cdda_drive_t * drive, GSList * tracks) {
+
 	long hash;
-	int n = 0;
+	GSList * node;
 	int track_cnt = 0;
 	int total_sectors_read = 0;
-	GtkTreeIter source_iter;
 
-
-        AQUALUNG_THREAD_DETACH()
 
 	hash = calc_cdda_hash(&drive->disc);
 
-	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &source_iter, NULL, n++)) {
+	for (node = tracks; node; node = node->next) {
 
-		gboolean b;
-		int no;
-		char * name;
+		ripper_track_t * track = (ripper_track_t *)node->data;
+		int no = track->no;
+		char * name = track->name;
 		char * ext = "raw";
 		int tags = 0;
 		char decoder_filename[256];
@@ -1190,16 +1246,8 @@ ripper_thread(void * arg) {
 
 		memset(&mode, 0, sizeof(encoder_mode_t));
 
-                gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &source_iter, 0, &b, -1);
-
-		if (!b)
-			continue;
-
-                gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &source_iter,
-				   1, &no, 2, &name, -1);
-
 		if (ripper_thread_busy == 0) {
-			return NULL;
+			return;
 		}
 
 		track_sectors = drive->disc.toc[no] - drive->disc.toc[no-1];
@@ -1254,11 +1302,11 @@ ripper_thread(void * arg) {
 		fenc = file_encoder_new();
 
 		if (file_decoder_open(fdec, decoder_filename)) {
-			return NULL;
+			return;
 		}
 
 		if (file_encoder_open(fenc, &mode)) {
-			return NULL;
+			return;
 		}
 
 		cdda_decoder_set_mode(((decoder_t *)fdec->pdec),
@@ -1287,35 +1335,16 @@ ripper_thread(void * arg) {
 				break;
 		}
 
-		if (ripper_write_to_store && ripper_thread_busy &&
-		    gtk_tree_store_iter_is_valid(music_store, &ripper_dest_record)) {
+		if (ripper_write_to_store) {
 
-			GtkTreeIter iter;
-			char sort_name[3];
-			track_data_t * track_data;
+			ripper_store_track_t store_track;
 
-			if ((track_data = (track_data_t *)calloc(1, sizeof(track_data_t))) == NULL) {
-				fprintf(stderr, "ripper_thread: calloc error\n");
-				return 0;
-			}
+			store_track.name = name;
+			store_track.no = no;
+			store_track.filename = mode.filename;
+			store_track.duration = track_sectors_read / 75.0;
 
-			track_data->file = strdup(mode.filename);
-			track_data->duration = track_sectors_read / 75.0;
-			track_data->volume = 1.0f;
-
-			arr_snprintf(sort_name, "%02d", no);
-
-			gtk_tree_store_append(music_store, &iter, &ripper_dest_record);
-			gtk_tree_store_set(music_store, &iter,
-					   MS_COL_NAME, name,
-					   MS_COL_SORT, sort_name,
-					   MS_COL_DATA, track_data, -1);
-
-			if (options.enable_ms_tree_icons) {
-				gtk_tree_store_set(music_store, &iter, MS_COL_ICON, icon_track, -1);
-			}
-
-			music_store_mark_changed(&iter);
+			aqualung_run_in_main_thread(ripper_add_track_to_store, &store_track);
 		}
 
 		file_decoder_close(fdec);
@@ -1328,8 +1357,57 @@ ripper_thread(void * arg) {
 
 		++track_cnt;
 	}
+}
+
+static void
+ripper_track_free(gpointer data) {
+
+	ripper_track_t * track = (ripper_track_t *)data;
+
+	g_free(track->name);
+	g_free(track);
+}
+
+void *
+ripper_thread(void * arg) {
+
+	ripper_job_t * job = (ripper_job_t *)arg;
+
+        AQUALUNG_THREAD_DETACH()
+
+	ripper_rip_tracks(job->drive, job->tracks);
+
+	g_slist_free_full(job->tracks, ripper_track_free);
+	g_free(job);
 
 	return NULL;
+}
+
+/* collect the tracks selected in the ripper dialog (GUI thread) */
+static GSList *
+ripper_selected_tracks(void) {
+
+	GSList * tracks = NULL;
+	GtkTreeIter iter;
+	int n = 0;
+
+	while (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(ripper_source_store), &iter, NULL, n++)) {
+
+		gboolean b;
+		ripper_track_t * track;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &iter, 0, &b, -1);
+		if (!b) {
+			continue;
+		}
+
+		track = g_new(ripper_track_t, 1);
+		gtk_tree_model_get(GTK_TREE_MODEL(ripper_source_store), &iter,
+				   1, &track->no, 2, &track->name, -1);
+		tracks = g_slist_prepend(tracks, track);
+	}
+
+	return g_slist_reverse(tracks);
 }
 
 
@@ -1351,8 +1429,13 @@ cd_ripper(cdda_drive_t * drive, GtkTreeIter * iter) {
 		ripper_prog_store_make(drive);
 		ripper_window();
 
+		ripper_job_t * job = g_new(ripper_job_t, 1);
+
+		job->drive = drive;
+		job->tracks = ripper_selected_tracks();
+
 		ripper_thread_busy = 1;
-                AQUALUNG_THREAD_CREATE(ripper_thread_id, NULL, ripper_thread, drive);
+                AQUALUNG_THREAD_CREATE(ripper_thread_id, NULL, ripper_thread, job);
 	}
 }
 

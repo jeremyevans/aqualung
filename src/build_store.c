@@ -3173,6 +3173,53 @@ cddb_init_query_data(build_disc_t * disc, int * ntracks, int ** frames, int * le
 #endif /* HAVE_CDDB */
 
 
+/* music store lookups from the build thread, run in the GUI thread */
+typedef struct {
+	build_store_t * data;
+	build_disc_t * disc;
+	char * filename;
+	GtkTreeIter track_iter;
+	int result;
+} store_lookup_t;
+
+static gboolean
+store_contains_disc_cb(gpointer user_data) {
+
+	store_lookup_t * lookup = (store_lookup_t *)user_data;
+
+	lookup->result = store_contains_disc(&lookup->data->store_iter, NULL, NULL, lookup->disc);
+	return FALSE;
+}
+
+static int
+build_store_contains_disc(build_store_t * data, build_disc_t * disc) {
+
+	store_lookup_t lookup = { data, disc, NULL };
+
+	aqualung_run_in_main_thread(store_contains_disc_cb, &lookup);
+	return lookup.result;
+}
+
+static gboolean
+store_contains_track_cb(gpointer user_data) {
+
+	store_lookup_t * lookup = (store_lookup_t *)user_data;
+
+	lookup->result = store_contains_track(&lookup->data->store_iter, &lookup->track_iter,
+					      lookup->filename);
+	return FALSE;
+}
+
+static int
+build_store_contains_track(build_store_t * data, GtkTreeIter * track_iter, char * filename) {
+
+	store_lookup_t lookup = { data, NULL, filename };
+
+	aqualung_run_in_main_thread(store_contains_track_cb, &lookup);
+	*track_iter = lookup.track_iter;
+	return lookup.result;
+}
+
 void
 process_record(build_store_t * data, char * dir_record, char * artist_d_name, char * record_d_name) {
 
@@ -3205,7 +3252,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 			goto finish;
 		}
 
-		if (store_contains_disc(&data->store_iter, NULL, NULL, disc)) {
+		if (build_store_contains_disc(data, disc)) {
 			goto finish;
 		}
 	}
@@ -3217,7 +3264,7 @@ process_record(build_store_t * data, char * dir_record, char * artist_d_name, ch
 	}
 
 	if (!data->reset_existing_data) {
-		if (store_contains_disc(&data->store_iter, NULL, NULL, disc)) {
+		if (build_store_contains_disc(data, disc)) {
 			goto finish;
 		}
 	}
@@ -3358,7 +3405,7 @@ process_track(build_store_t * data, char * filename, char * d_name, float durati
 	}
 
 
-	disc->flag = store_contains_track(&data->store_iter, &iter_track, filename);
+	disc->flag = build_store_contains_track(data, &iter_track, filename);
 	disc->iter = iter_track;
 
 	if (!data->reset_existing_data && disc->flag) {
@@ -3513,17 +3560,133 @@ scan_recursively(build_store_t * data, char * dir) {
 }
 
 
-void
-remove_dead_files(build_store_t * data) {
+/* tracks of one artist, checked for existence by remove_dead_files() */
+typedef struct {
+	build_store_t * data;
+	int artist_idx;
+	GtkTreeRowReference * artist_ref;
+	GPtrArray * files;      /* file names of tracks */
+	GPtrArray * track_refs; /* GtkTreeRowReference of tracks */
+	gboolean * exists;
+	gboolean artist_removed;
+} dead_files_t;
 
+/* runs in the GUI thread: collect the tracks of one artist */
+static gboolean
+dead_files_collect(gpointer user_data) {
+
+	dead_files_t * df = (dead_files_t *)user_data;
+	build_store_t * data = df->data;
+	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
 	GtkTreeIter artist_iter;
 	GtkTreeIter record_iter;
 	GtkTreeIter track_iter;
-	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
-	int i, j, k;
+	GtkTreePath * path;
+	int j, k;
 	track_data_t * track_data = NULL;
 	char * artist = NULL;
-	gboolean exists;
+
+	if (!gtk_tree_model_iter_nth_child(model, &artist_iter, &data->store_iter, df->artist_idx)) {
+		return FALSE;
+	}
+
+	path = gtk_tree_model_get_path(model, &artist_iter);
+	df->artist_ref = gtk_tree_row_reference_new(model, path);
+	gtk_tree_path_free(path);
+
+	if (data->prog_window) {
+		gtk_tree_model_get(model, &artist_iter, MS_COL_NAME, &artist, -1);
+		gtk_entry_set_text(GTK_ENTRY(data->prog_file_entry), artist);
+		gtk_widget_grab_focus(data->prog_cancel_button);
+		g_free(artist);
+	}
+
+	j = 0;
+	while (gtk_tree_model_iter_nth_child(model, &record_iter, &artist_iter, j++)) {
+
+		k = 0;
+		while (gtk_tree_model_iter_nth_child(model, &track_iter, &record_iter, k++)) {
+
+			gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
+			g_ptr_array_add(df->files, g_strdup(track_data->file));
+
+			path = gtk_tree_model_get_path(model, &track_iter);
+			g_ptr_array_add(df->track_refs, gtk_tree_row_reference_new(model, path));
+			gtk_tree_path_free(path);
+		}
+	}
+
+	return FALSE;
+}
+
+/* runs in the GUI thread: remove the non-existing tracks of one artist,
+ * then the records and the artist if they became empty
+ */
+static gboolean
+dead_files_remove(gpointer user_data) {
+
+	dead_files_t * df = (dead_files_t *)user_data;
+	build_store_t * data = df->data;
+	GtkTreeModel * model = GTK_TREE_MODEL(music_store);
+	GtkTreeIter artist_iter;
+	GtkTreeIter record_iter;
+	GtkTreeIter iter;
+	GtkTreePath * path;
+	guint n;
+	int j;
+
+	if (!data->cancelled) {
+
+		for (n = 0; n < df->track_refs->len; n++) {
+
+			if (df->exists[n]) {
+				continue;
+			}
+
+			path = gtk_tree_row_reference_get_path(g_ptr_array_index(df->track_refs, n));
+			if (path != NULL) {
+				if (gtk_tree_model_get_iter(model, &iter, path)) {
+					store_file_remove_track(&iter);
+					music_store_mark_changed(&data->store_iter);
+				}
+				gtk_tree_path_free(path);
+			}
+		}
+
+		path = gtk_tree_row_reference_get_path(df->artist_ref);
+		if (path != NULL && gtk_tree_model_get_iter(model, &artist_iter, path)) {
+
+			j = 0;
+			while (gtk_tree_model_iter_nth_child(model, &record_iter, &artist_iter, j++)) {
+
+				if (!gtk_tree_model_iter_has_child(model, &record_iter)) {
+					store_file_remove_record(&record_iter);
+					music_store_mark_changed(&data->store_iter);
+					--j;
+				}
+			}
+
+			if (!gtk_tree_model_iter_has_child(model, &artist_iter)) {
+				store_file_remove_artist(&artist_iter);
+				music_store_mark_changed(&data->store_iter);
+				df->artist_removed = TRUE;
+			}
+		}
+		gtk_tree_path_free(path);
+	}
+
+	/* row references must be freed in the GUI thread too */
+	g_ptr_array_free(df->track_refs, TRUE);
+	gtk_tree_row_reference_free(df->artist_ref);
+
+	return FALSE;
+}
+
+void
+remove_dead_files(build_store_t * data) {
+
+	dead_files_t df;
+	guint n;
 
 	if (!data->remove_dead_files) {
 		return;
@@ -3531,60 +3694,42 @@ remove_dead_files(build_store_t * data) {
 
 	set_prog_action_label(data, _("Removing non-existing files"));
 
-	gdk_threads_enter();
+	df.data = data;
+	df.artist_idx = 0;
 
-	i = 0;
-	while (gtk_tree_model_iter_nth_child(model, &artist_iter, &data->store_iter, i++)) {
+	while (!data->cancelled) {
 
-		if (data->cancelled) {
-			goto finish;
+		df.artist_ref = NULL;
+		df.files = g_ptr_array_new_with_free_func(g_free);
+		df.track_refs = g_ptr_array_new_with_free_func((GDestroyNotify)gtk_tree_row_reference_free);
+		df.exists = NULL;
+		df.artist_removed = FALSE;
+
+		aqualung_run_in_main_thread(dead_files_collect, &df);
+
+		if (df.artist_ref == NULL) {
+			/* no more artists */
+			g_ptr_array_free(df.files, TRUE);
+			g_ptr_array_free(df.track_refs, TRUE);
+			break;
 		}
 
-		gtk_tree_model_get(model, &artist_iter, MS_COL_NAME, &artist, -1);
-		gtk_entry_set_text(GTK_ENTRY(data->prog_file_entry), artist);
-		gtk_widget_grab_focus(data->prog_cancel_button);
-
-		j = 0;
-		while (gtk_tree_model_iter_nth_child(model, &record_iter, &artist_iter, j++)) {
-
-			if (data->cancelled) {
-				goto finish;
-			}
-
-			k = 0;
-			while (gtk_tree_model_iter_nth_child(model, &track_iter, &record_iter, k++)) {
-
-				gtk_tree_model_get(model, &track_iter, MS_COL_DATA, &track_data, -1);
-
-				gdk_threads_leave();
-				exists = g_file_test(track_data->file, G_FILE_TEST_EXISTS);
-				gdk_threads_enter();
-
-				if (!exists) {
-					store_file_remove_track(&track_iter);
-					music_store_mark_changed(&data->store_iter);
-					--k;
-				}
-			}
-
-			if (!gtk_tree_model_iter_has_child(model, &record_iter)) {
-				store_file_remove_record(&record_iter);
-				music_store_mark_changed(&data->store_iter);
-				--j;
-			}
+		/* checking may be slow (e.g. network mounts), so do it here */
+		df.exists = g_new(gboolean, df.files->len);
+		for (n = 0; n < df.files->len; n++) {
+			df.exists[n] = data->cancelled ||
+				g_file_test(g_ptr_array_index(df.files, n), G_FILE_TEST_EXISTS);
 		}
 
-		g_free(artist);
+		aqualung_run_in_main_thread(dead_files_remove, &df);
 
-		if (!gtk_tree_model_iter_has_child(model, &artist_iter)) {
-			store_file_remove_artist(&artist_iter);
-			music_store_mark_changed(&data->store_iter);
-			--i;
+		if (!df.artist_removed) {
+			++df.artist_idx;
 		}
+
+		g_free(df.exists);
+		g_ptr_array_free(df.files, TRUE);
 	}
-
- finish:
-	gdk_threads_leave();
 }
 
 void *

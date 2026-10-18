@@ -2480,8 +2480,6 @@ main(int argc, char ** argv) {
 		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
 	}
 
-	gdk_threads_init();
-
 #ifndef HAVE_LIBPTHREAD
 	disk_thread_lock = g_mutex_new();
 	disk_thread_wake = g_cond_new();

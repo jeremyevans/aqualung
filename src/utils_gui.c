@@ -277,7 +277,9 @@ aqualung_tooltips_set_enabled(gboolean enabled) {
 #ifdef HAVE_SYSTRAY
 void
 aqualung_status_icon_set_tooltip_text(GtkStatusIcon * icon, const gchar * text) {
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	gtk_status_icon_set_tooltip_text(icon, text);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 }
 #endif /* HAVE_SYSTRAY */
 

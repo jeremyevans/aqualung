@@ -722,7 +722,9 @@ main_window_close(GtkWidget * widget, GdkEvent * event, gpointer data) {
 
 #ifdef HAVE_SYSTRAY
 	if (systray_used) {
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		gtk_status_icon_set_visible(GTK_STATUS_ICON(systray_icon), FALSE);
+		G_GNUC_END_IGNORE_DEPRECATIONS
 	}
 #endif /* HAVE_SYSTRAY */
 
@@ -2508,7 +2510,9 @@ hide_all_windows(gpointer data) {
 		return;
 	}
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	if (gtk_status_icon_is_embedded(systray_icon) == FALSE) {
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 		if (!wm_not_systray_capable && options.wm_systray_warn) {
 
@@ -3071,9 +3075,11 @@ void
 systray_popup_menu_cb(GtkStatusIcon * systray_icon, guint button, guint time, gpointer data) {
 
 	if (get_systray_semaphore() == 0) {
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		gtk_menu_popup(GTK_MENU(systray_menu), NULL, NULL,
 			       gtk_status_icon_position_menu, data,
 			       button, time);
+		G_GNUC_END_IGNORE_DEPRECATIONS
 	}
 }
 
@@ -3286,14 +3292,14 @@ systray_button_press_event_cb(GtkStatusIcon * systray_icon,
 
 /* returns a hbox with a stock image and label in it */
 GtkWidget *
-create_systray_menu_item(const gchar * stock_id, char * text) {
+create_systray_menu_item(const gchar * icon_name, char * text) {
 
 	GtkWidget * hbox;
 	GtkWidget * widget;
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show(hbox);
-	widget = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_MENU);
+	widget = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_MENU);
 	gtk_widget_show(widget);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, TRUE, 2);
 	widget = gtk_label_new(text);
@@ -3312,7 +3318,9 @@ setup_systray(void) {
 	GtkWidget * systray__separator2;
 
 	arr_snprintf(path, "%s/icon_64.png", AQUALUNG_DATADIR);
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	systray_icon = gtk_status_icon_new_from_file(path);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
         g_signal_connect_swapped(G_OBJECT(systray_icon), "activate",
 				 G_CALLBACK(systray_activate_cb), NULL);
@@ -3333,32 +3341,32 @@ setup_systray(void) {
 
         systray__play = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__play),
-			create_systray_menu_item(GTK_STOCK_MEDIA_PLAY,
+			create_systray_menu_item("media-playback-start",
 			options.combine_play_pause ? _("Play/Pause") : _("Play")));
 
 	if (!options.combine_play_pause) {
 		systray__pause = gtk_menu_item_new();
 		gtk_container_add(GTK_CONTAINER(systray__pause),
-				  create_systray_menu_item(GTK_STOCK_MEDIA_PAUSE, _("Pause")));
+				  create_systray_menu_item("media-playback-pause", _("Pause")));
 	}
 
         systray__stop = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__stop),
-			  create_systray_menu_item(GTK_STOCK_MEDIA_STOP, _("Stop")));
+			  create_systray_menu_item("media-playback-stop", _("Stop")));
 
         systray__prev = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__prev),
-			  create_systray_menu_item(GTK_STOCK_MEDIA_PREVIOUS, _("Previous")));
+			  create_systray_menu_item("media-skip-backward", _("Previous")));
 
         systray__next = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__next),
-			  create_systray_menu_item(GTK_STOCK_MEDIA_NEXT, _("Next")));
+			  create_systray_menu_item("media-skip-forward", _("Next")));
 
         systray__separator2 = gtk_separator_menu_item_new();
 
         systray__quit = gtk_menu_item_new();
 	gtk_container_add(GTK_CONTAINER(systray__quit),
-			  create_systray_menu_item(GTK_STOCK_STOP, _("Quit")));
+			  create_systray_menu_item("process-stop", _("Quit")));
 
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__show);
         gtk_menu_shell_append(GTK_MENU_SHELL(systray_menu), systray__hide);

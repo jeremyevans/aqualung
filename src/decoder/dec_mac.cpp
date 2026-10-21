@@ -32,6 +32,11 @@
 #include "../undef_ac_pkg.h"
 #include <config.h>	/* re-establish undefined autoconf macros */
 
+/* error macros were renamed in MAC 1340 */
+#ifndef APE_ERROR_SUCCESS
+#define APE_ERROR_SUCCESS ERROR_SUCCESS
+#endif
+
 #include "../i18n.h"
 #include "../metadata.h"
 #include "../metadata_ape.h"
@@ -180,7 +185,7 @@ mac_decoder_open(decoder_t * dec, char * filename) {
         pdecompress = CreateIAPEDecompress(filename_utf16, &ret, FALSE, FALSE, FALSE);
         delete [] filename_utf16;
 
-        if (!pdecompress || ret != ERROR_SUCCESS) {
+        if (!pdecompress || ret != APE_ERROR_SUCCESS) {
                 return DECODER_OPEN_BADLIB;
         }
 

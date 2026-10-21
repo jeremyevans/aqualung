@@ -749,7 +749,6 @@ build_plugin_window(plugin_instance * instance) {
 	int n_untoggled = 0;
 	int n_outctl = 0;
 	int n_outlat = 0;
-	int n_rows = 0;
 	int i = 0;
 
 	char str_inout[32];
@@ -881,16 +880,7 @@ build_plugin_window(plugin_instance * instance) {
 				++n_outctl;
 			}
 		}
-		++n_rows;
 	}
-
-	if ((n_toggled) && (n_untoggled))
-		++n_rows;
-	if (((n_toggled) || (n_untoggled)) && (n_outctl))
-		++n_rows;
-	if (((n_toggled) || (n_untoggled) || (n_outctl)) && (n_outlat))
-		++n_rows;
-
 
 	scrwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_name(scrwin, "plugin_scrwin");
@@ -1694,7 +1684,6 @@ set_all_plugins_status(gint status) {
         GtkTreeIter iter;
         gpointer gp_instance;
 	plugin_instance * instance;
-        int i = 0;
 
         if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(running_store), &iter)) {
 		do {
@@ -1709,7 +1698,7 @@ set_all_plugins_status(gint status) {
                                                                      !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(instance->bypass_button)));
                         }
 
-                } while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
+                } while (gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
         }
 }
 
@@ -1737,7 +1726,6 @@ rp__clear_list_cb(gpointer data) {
         GtkTreeIter iter;
 	gpointer gp_instance;
 	plugin_instance * instance;
-        int i = 0;
 
         if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(running_store), &iter)) {
 		do {
@@ -1768,7 +1756,7 @@ rp__clear_list_cb(gpointer data) {
                         trashlist_free(instance->trashlist);
                         free(instance);
                         
-                } while (i++, gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
+                } while (gtk_tree_model_iter_next(GTK_TREE_MODEL(running_store), &iter));
 
                 gtk_list_store_clear(running_store);           
         }                                                            

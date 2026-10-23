@@ -138,6 +138,8 @@ gint playlist_state, browser_state;
 
 #ifdef HAVE_ALSA
 snd_pcm_uframes_t alsa_buffer_size = 0;
+/* default limit of the ALSA buffer if --buffer-size is not given, in microseconds */
+#define ALSA_DEFAULT_BUFFER_TIME 200000
 #endif /* HAVE_ALSA */
 
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */
@@ -1034,6 +1036,25 @@ oss_thread(void * arg) {
 
 /* ALSA output thread */
 #ifdef HAVE_ALSA
+/* Drop the audio queued in the ALSA device buffer, so that stop, pause
+ * and seek take effect immediately. Returns the number of frames that
+ * were dropped.
+ */
+static guint32
+alsa_flush(snd_pcm_t * pcm_handle) {
+
+	snd_pcm_sframes_t delay = 0;
+
+	if (snd_pcm_delay(pcm_handle, &delay) < 0 || delay < 0) {
+		delay = 0;
+	}
+
+	snd_pcm_drop(pcm_handle);
+	snd_pcm_prepare(pcm_handle);
+
+	return delay;
+}
+
 void *
 alsa_thread(void * arg) {
 
@@ -1099,6 +1120,7 @@ alsa_thread(void * arg) {
 						rb_read(rb, (char *)alsa_short_buf, n_avail);
 					}
 				}
+				driver_offset = alsa_flush(pcm_handle);
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto alsa_wake;
 				break;
@@ -1493,6 +1515,15 @@ alsa_init(thread_info_t * info, int verbose) {
 	if (alsa_buffer_size != 0) {
 		if (snd_pcm_hw_params_set_buffer_size_max(info->pcm_handle, info->hwparams, &alsa_buffer_size) < 0) {
 		fprintf(stderr, "alsa_init warning: cannot restrict buffer size to %lu frames.\n", alsa_buffer_size_orig);
+		}
+	} else {
+		/* Without a limit, ALSA may pick a buffer of several seconds
+		 * (about 12 s through PipeWire), which delays volume and
+		 * effect changes by as much. */
+		unsigned int buffer_time = ALSA_DEFAULT_BUFFER_TIME;
+		if (snd_pcm_hw_params_set_buffer_time_max(info->pcm_handle, info->hwparams, &buffer_time, NULL) < 0) {
+			fprintf(stderr, "alsa_init warning: cannot restrict buffer time to %u ms.\n",
+				ALSA_DEFAULT_BUFFER_TIME / 1000);
 		}
 	}
 	if (snd_pcm_hw_params_set_access(info->pcm_handle, info->hwparams,
@@ -2288,7 +2319,7 @@ print_usage(void) {
 		"\nOptions relevant to ALSA output:\n"
 		"-d, --device <name>: Set the output device (defaults to 'default').\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
-		"-b, --buffer-size <int>: Set the output buffer size (in frames).\n"
+		"-b, --buffer-size <int>: Set the output buffer size (in frames, defaults to at most 0.2 s).\n"
 		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for ALSA output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		

@@ -341,7 +341,8 @@
               <cmd>-b, --buffer-size &lt;int&gt;</cmd>
             </dt>
 
-            <dd>Set the ALSA output buffer size (in frames).</dd>
+            <dd>Set the ALSA output buffer size (in frames). By default, the
+            buffer holds at most 0.2 seconds of audio.</dd>
 
             <dt>
               <cmd>-R, --realtime</cmd>

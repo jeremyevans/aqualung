@@ -824,6 +824,31 @@ sndio_thread(void * arg) {
 
 /* PulseAudio output thread */
 #ifdef HAVE_PULSE
+/* Drop the audio queued in the PulseAudio server, so that stop, pause
+ * and seek take effect immediately. Returns the number of frames that
+ * were dropped (audio already passed on to the sound card still plays).
+ */
+static guint32
+pulse_flush(pa_simple * pa, unsigned long rate) {
+
+	pa_usec_t before, after;
+	int err;
+
+	before = pa_simple_get_latency(pa, &err);
+
+	if (pa_simple_flush(pa, &err) < 0) {
+		fprintf(stderr, "pulse_thread: Error flushing audio device\n%s\n", pa_strerror(err));
+		return 0;
+	}
+
+	after = pa_simple_get_latency(pa, &err);
+
+	if (before == (pa_usec_t)-1 || after == (pa_usec_t)-1 || after >= before) {
+		return 0;
+	}
+	return (before - after) * rate / 1000000;
+}
+
 void *
 pulse_thread(void * arg) {
 	
@@ -836,13 +861,13 @@ pulse_thread(void * arg) {
 	char recv_cmd;
 	
 	pa_simple* pa = info->pa;
-	short * pa_short_buf = NULL;
+	float * pa_buf = NULL;
 
-	if ((info->pa_short_buf = malloc(2*bufsize * sizeof(short))) == NULL) {
+	if ((info->pa_buf = malloc(2*bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "pulse_thread: malloc error\n");
 		exit(1);
 	}
-	pa_short_buf = info->pa_short_buf;
+	pa_buf = info->pa_buf;
 
 	if ((l_buf = malloc(bufsize * sizeof(float))) == NULL) {
 		fprintf(stderr, "pulse_thread: malloc error\n");
@@ -863,10 +888,11 @@ pulse_thread(void * arg) {
 			switch (recv_cmd) {
 			case CMD_FLUSH:
 				while ((n_avail = rb_read_space(rb)) > 0) {
-					if (n_avail > 2*bufsize * sizeof(short))
-						n_avail = 2*bufsize * sizeof(short);
-					rb_read(rb, (char *)pa_short_buf, n_avail);
+					if (n_avail > 2*bufsize * sizeof(float))
+						n_avail = 2*bufsize * sizeof(float);
+					rb_read(rb, (char *)pa_buf, n_avail);
 				}
+				driver_offset = pulse_flush(pa, info->out_SR);
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto pulse_wake;
 				break;
@@ -897,12 +923,12 @@ pulse_thread(void * arg) {
 			else if (r_buf[i] < -1.0)
 				r_buf[i] = -1.0;
 
-			pa_short_buf[2*i] = floorf(32767.0 * l_buf[i]);
-			pa_short_buf[2*i+1] = floorf(32767.0 * r_buf[i]);
+			pa_buf[2*i] = l_buf[i];
+			pa_buf[2*i+1] = r_buf[i];
 		}
 
 		/* write data to audio device */
-		ret = pa_simple_write(pa, pa_short_buf, 2*n_avail * sizeof(short), &err);
+		ret = pa_simple_write(pa, pa_buf, 2*n_avail * sizeof(float), &err);
 		if (ret != 0)
 			fprintf(stderr, "pulse_thread: Error writing to audio device\n%s", pa_strerror(err));
 		
@@ -1668,7 +1694,7 @@ pulse_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 		return -1;
 	}
 	
-	info->pa_spec.format = PA_SAMPLE_S16NE;
+	info->pa_spec.format = PA_SAMPLE_FLOAT32NE;
 	info->pa_spec.channels = 2;
 	info->pa_spec.rate = info->out_SR;
 	
@@ -3198,7 +3224,7 @@ main(int argc, char ** argv) {
 #ifdef HAVE_PULSE
 	if (output == PULSE_DRIVER) {
 		AQUALUNG_THREAD_JOIN(thread_info.pulse_thread_id)
-		free(thread_info.pa_short_buf);
+		free(thread_info.pa_buf);
 		pa_simple_free(thread_info.pa);
 	}
 #endif /* HAVE_PULSE */

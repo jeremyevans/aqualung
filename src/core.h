@@ -110,7 +110,7 @@ typedef struct _thread_info {
 	AQUALUNG_THREAD_DECLARE(pulse_thread_id)
 	pa_simple *pa;
 	pa_sample_spec pa_spec;
-	short * pa_short_buf;
+	float * pa_buf;
 #endif /* HAVE_PULSE */
 
 	guint32 rb_size;

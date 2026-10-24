@@ -2604,7 +2604,7 @@ playlist_filemeta_get(char * filename) {
 		return NULL;
 	}
 
-	if (g_stat(data->file, &statbuf) != -1) {
+	if (g_stat(filename, &statbuf) != -1) {
 		data->size = statbuf.st_size;
 	}
 

@@ -943,6 +943,27 @@ pulse_thread(void * arg) {
 
 /* OSS output thread */
 #ifdef HAVE_OSS
+/* Drop the audio queued in the OSS device, so that stop, pause and seek
+ * take effect immediately. Returns the number of frames that were
+ * dropped (0 if the system cannot tell).
+ */
+static guint32
+oss_flush(int fd_oss) {
+
+	int delay = 0; /* in bytes */
+
+#ifdef SNDCTL_DSP_GETODELAY
+	if (ioctl(fd_oss, SNDCTL_DSP_GETODELAY, &delay) == -1 || delay < 0) {
+		delay = 0;
+	}
+#endif /* SNDCTL_DSP_GETODELAY */
+
+	ioctl(fd_oss, SNDCTL_DSP_RESET, 0);
+
+	/* output is 16 bit stereo */
+	return delay / (2 * sizeof(short));
+}
+
 void *
 oss_thread(void * arg) {
 
@@ -987,6 +1008,7 @@ oss_thread(void * arg) {
 						n_avail = 2*bufsize * sizeof(short);
 					rb_read(rb, (char *)oss_short_buf, n_avail);
 				}
+				driver_offset = oss_flush(fd_oss);
 				rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
 				goto oss_wake;
 				break;

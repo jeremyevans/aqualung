@@ -425,7 +425,42 @@
 
         </subsubsection>
 
-        <subsubsection title="Options relevant to PulseAudio and sndio output" man="OPTIONS">
+        <subsubsection title="Options relevant to PulseAudio output" man="OPTIONS">
+
+          <dl>
+
+            <dt>
+              <cmd>-r, --rate &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>Set the output sample rate.</dd>
+
+            <dt>
+              <cmd>-b, --buffer-size &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>Set the PulseAudio output buffer size (in frames). By default, the
+            buffer holds at most 0.2 seconds of audio.</dd>
+
+            <dt>
+              <cmd>-R, --realtime</cmd>
+            </dt>
+
+            <dd>Try to use realtime (<cmd>SCHED_FIFO</cmd>) scheduling
+            for PulseAudio output thread.</dd>
+
+            <dt>
+              <cmd>-P, --priority &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>When running <cmd>--realtime</cmd>, set scheduler
+            priority to &lt;int&gt; (default is 1 when -R is used).</dd>
+
+          </dl>
+
+        </subsubsection>
+
+        <subsubsection title="Options relevant to sndio output" man="OPTIONS">
 
           <dl>
 

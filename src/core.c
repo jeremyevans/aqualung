@@ -136,11 +136,12 @@ gint playlist_state, browser_state;
 #endif /* __OpenBSD__ */
 #endif /* OSS_DEVICE */
 
-#ifdef HAVE_ALSA
-snd_pcm_uframes_t alsa_buffer_size = 0;
-/* default limit of the ALSA buffer if --buffer-size is not given, in microseconds */
-#define ALSA_DEFAULT_BUFFER_TIME 200000
-#endif /* HAVE_ALSA */
+#if defined(HAVE_ALSA) || defined(HAVE_PULSE)
+/* output buffer size in frames set by --buffer-size, 0 if not given */
+unsigned long output_buffer_size = 0;
+/* default limit of the output buffer if --buffer-size is not given, in microseconds */
+#define OUTPUT_DEFAULT_BUFFER_TIME 200000
+#endif /* HAVE_ALSA || HAVE_PULSE */
 
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */
 char * device_name = NULL;
@@ -1499,7 +1500,7 @@ alsa_init(thread_info_t * info, int verbose) {
 	unsigned rate;
 	int dir = 0;
 	int ret;
-	unsigned long alsa_buffer_size_orig = alsa_buffer_size;
+	snd_pcm_uframes_t buffer_size = output_buffer_size;
 
 	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (ret < 0) {
@@ -1534,18 +1535,18 @@ alsa_init(thread_info_t * info, int verbose) {
 		fprintf(stderr, "alsa_init warning: cannot restrict period size to integer value.\n");
 	}
 
-	if (alsa_buffer_size != 0) {
-		if (snd_pcm_hw_params_set_buffer_size_max(info->pcm_handle, info->hwparams, &alsa_buffer_size) < 0) {
-		fprintf(stderr, "alsa_init warning: cannot restrict buffer size to %lu frames.\n", alsa_buffer_size_orig);
+	if (output_buffer_size != 0) {
+		if (snd_pcm_hw_params_set_buffer_size_max(info->pcm_handle, info->hwparams, &buffer_size) < 0) {
+		fprintf(stderr, "alsa_init warning: cannot restrict buffer size to %lu frames.\n", output_buffer_size);
 		}
 	} else {
 		/* Without a limit, ALSA may pick a buffer of several seconds
 		 * (about 12 s through PipeWire), which delays volume and
 		 * effect changes by as much. */
-		unsigned int buffer_time = ALSA_DEFAULT_BUFFER_TIME;
+		unsigned int buffer_time = OUTPUT_DEFAULT_BUFFER_TIME;
 		if (snd_pcm_hw_params_set_buffer_time_max(info->pcm_handle, info->hwparams, &buffer_time, NULL) < 0) {
 			fprintf(stderr, "alsa_init warning: cannot restrict buffer time to %u ms.\n",
-				ALSA_DEFAULT_BUFFER_TIME / 1000);
+				OUTPUT_DEFAULT_BUFFER_TIME / 1000);
 		}
 	}
 	if (snd_pcm_hw_params_set_access(info->pcm_handle, info->hwparams,
@@ -1736,6 +1737,8 @@ int
 pulse_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 	
 	int err = 0;
+	pa_buffer_attr attr;
+
 	if (info->out_SR > MAX_SAMPLERATE) {
 		if (verbose) {
 			fprintf(stderr, "\nThe sample rate you set (%ld Hz) is higher than MAX_SAMPLERATE.\n",
@@ -1750,9 +1753,23 @@ pulse_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 	info->pa_spec.format = PA_SAMPLE_FLOAT32NE;
 	info->pa_spec.channels = 2;
 	info->pa_spec.rate = info->out_SR;
-	
-	info->pa = pa_simple_new(NULL, "Aqualung", PA_STREAM_PLAYBACK, NULL,
-				 "Music", &info->pa_spec, NULL, NULL, &err);
+
+	/* The target length is the total latency, server buffer included.
+	 * Without a limit, the server picks a buffer of up to 2 s, which
+	 * delays volume and effect changes by as much. */
+	attr.maxlength = (uint32_t)-1;
+	if (output_buffer_size != 0) {
+		attr.tlength = MIN(output_buffer_size, (uint32_t)-1 / pa_frame_size(&info->pa_spec))
+			* pa_frame_size(&info->pa_spec);
+	} else {
+		attr.tlength = pa_usec_to_bytes(OUTPUT_DEFAULT_BUFFER_TIME, &info->pa_spec);
+	}
+	attr.prebuf = (uint32_t)-1;
+	attr.minreq = (uint32_t)-1;
+	attr.fragsize = (uint32_t)-1;
+
+	info->pa = pa_simple_new(NULL, "Aqualung", PA_STREAM_PLAYBACK, NULL, "Music", &info->pa_spec,
+				 NULL, &attr, &err);
 	if (!info->pa) {
 		if (verbose) {
 			fprintf(stderr, "Unable to initilize PulseAudio: %s\n", pa_strerror(err));
@@ -2356,9 +2373,15 @@ print_usage(void) {
 		"given JACK ports (defaults to first two hardware playback ports).\n"
 		"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 		
-		"\nOptions relevant to PulseAudio and sndio outputs:\n"
+		"\nOptions relevant to PulseAudio output:\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
-		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for audio output thread.\n"
+		"-b, --buffer-size <int>: Set the output buffer size (in frames, defaults to at most 0.2 s).\n"
+		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for PulseAudio output thread.\n"
+		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
+
+		"\nOptions relevant to sndio output:\n"
+		"-r, --rate <int>: Set the output sample rate.\n"
+		"-R, --realtime: Try to use realtime (SCHED_FIFO) scheduling for sndio output thread.\n"
 		"-P, --priority <int>: Set scheduler priority to <int> (default is 1 when -R is used).\n"
 		
 		"\nOptions relevant to WIN32 output:\n"
@@ -2679,11 +2702,11 @@ main(int argc, char ** argv) {
 			case 'r':
 				rate = atoi(optarg);
 				break;
-#ifdef HAVE_ALSA
+#if defined(HAVE_ALSA) || defined(HAVE_PULSE)
 			case 'b':
-				alsa_buffer_size = atoi(optarg);
+				output_buffer_size = atoi(optarg);
 				break;
-#endif /* HAVE_ALSA */
+#endif /* HAVE_ALSA || HAVE_PULSE */
 			case 'a':
 #ifdef HAVE_JACK
 				auto_connect = 1;

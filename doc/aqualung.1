@@ -192,7 +192,29 @@ as part of the automatic output device detection, the
 -a option is implicitly applied.
 
 .TP
-.B Options relevant to PulseAudio and sndio output
+.B Options relevant to PulseAudio output
+.TP
+-r, --rate <int>
+.br
+Set the output sample rate.
+.TP
+-b, --buffer-size <int>
+.br
+Set the PulseAudio output buffer size (in frames). By default, the
+buffer holds at most 0.2 seconds of audio.
+.TP
+-R, --realtime
+.br
+Try to use realtime (SCHED_FIFO) scheduling
+for PulseAudio output thread.
+.TP
+-P, --priority <int>
+.br
+When running --realtime, set scheduler
+priority to <int> (default is 1 when -R is used).
+
+.TP
+.B Options relevant to sndio output
 .TP
 -r, --rate <int>
 .br

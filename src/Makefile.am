@@ -20,7 +20,7 @@ aqualung_CPPFLAGS = $(AM_CPPFLAGS) \
                   -DAQUALUNG_DATADIR=\"$(pkgdatadir)\"
 
 aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
-                  $(alsa_CFLAGS) $(pulse_CFLAGS) \
+                  $(alsa_CFLAGS) $(pipewire_CFLAGS) $(pulse_CFLAGS) \
                   $(lavc_CFLAGS) $(mad_CFLAGS) $(sndfile_CFLAGS) \
                   $(speex_CFLAGS) $(vorbis_CFLAGS) $(vorbisenc_CFLAGS) \
                   $(wavpack_CFLAGS) \
@@ -31,7 +31,7 @@ aqualung_CFLAGS = $(xml_CFLAGS) $(gtk_CFLAGS) $(glib_CFLAGS) \
 aqualung_CFLAGS += -Wno-format-truncation
 
 aqualung_LDADD = $(LDADD) $(xml_LIBS) $(gtk_LIBS) $(glib_LIBS) \
-                 $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pulse_LIBS) \
+                 $(alsa_LIBS) $(jack_LIBS) $(oss_LIBS) $(pipewire_LIBS) $(pulse_LIBS) \
                  $(sndio_LIBS) $(winmm_LIBS) \
                  $(flac_LIBS) $(lame_LIBS) $(lavc_LIBS) $(MAC_LIBS) \
                  $(mad_LIBS) $(mod_LIBS) $(mpc_LIBS) $(sndfile_LIBS) \

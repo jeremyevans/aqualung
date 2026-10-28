@@ -55,6 +55,11 @@
 #include <pulse/simple.h>
 #endif /* HAVE_PULSE */
 
+#ifdef HAVE_PIPEWIRE
+#define PIPEWIRE_DRIVER 7
+#include <pipewire/pipewire.h>
+#endif /* HAVE_PIPEWIRE */
+
 #include "athread.h"
 
 
@@ -112,6 +117,13 @@ typedef struct _thread_info {
 	pa_sample_spec pa_spec;
 	float * pa_buf;
 #endif /* HAVE_PULSE */
+
+#ifdef HAVE_PIPEWIRE
+	struct pw_thread_loop * pw_loop;
+	struct pw_stream * pw_stream;
+	enum pw_stream_state pw_state;
+	int pw_finished;
+#endif /* HAVE_PIPEWIRE */
 
 	guint32 rb_size;
 	unsigned long in_SR;

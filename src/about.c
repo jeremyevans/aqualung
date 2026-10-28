@@ -171,6 +171,11 @@
 #else /* HAVE_JACK */
 #define BUILT_W_JACK BUILT_IN
 #endif /* HAVE_JACK */
+#ifndef HAVE_PIPEWIRE
+#define BUILT_W_PIPEWIRE LEFT_OUT
+#else /* HAVE_PIPEWIRE */
+#define BUILT_W_PIPEWIRE BUILT_IN
+#endif /* HAVE_PIPEWIRE */
 #ifndef HAVE_PULSE
 #define BUILT_W_PULSE LEFT_OUT
 #else /* HAVE_PULSE */
@@ -244,6 +249,7 @@ about_build(void) {
 		BUILT_W_OSS, _("OSS Audio\n"),
 		BUILT_W_ALSA, _("ALSA Audio\n"),
 		BUILT_W_JACK, _("JACK Audio Server\n"),
+		BUILT_W_PIPEWIRE, _("PipeWire\n"),
 		BUILT_W_PULSE, _("PulseAudio\n"),
 		BUILT_W_WINMM, _("Win32 Sound API\n"),
 		NULL);

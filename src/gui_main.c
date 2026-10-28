@@ -431,6 +431,11 @@ set_output_label(int output, int out_SR) {
 	char str[MAXLEN];
 
 	switch (output) {
+#ifdef HAVE_PIPEWIRE
+	case PIPEWIRE_DRIVER:
+		arr_snprintf(str, "PipeWire @ %d Hz", out_SR);
+		break;
+#endif /* HAVE_PIPEWIRE */
 #ifdef HAVE_PULSE
 	case PULSE_DRIVER:
 		arr_snprintf(str, "PulseAudio @ %d Hz", out_SR);

@@ -77,6 +77,11 @@
 #include <pulse/error.h>
 #endif /* HAVE_PULSE */
 
+#ifdef HAVE_PIPEWIRE
+#include <pipewire/pipewire.h>
+#include <spa/param/audio/format-utils.h>
+#endif /* HAVE_PIPEWIRE */
+
 #ifdef HAVE_LADSPA
 #include <ladspa.h>
 #include "plugin.h"
@@ -172,6 +177,11 @@ double right_gain = 1.0;
 /* LADSPA stuff */
 float * l_buf = NULL;
 float * r_buf = NULL;
+
+#ifdef HAVE_PIPEWIRE
+/* set when the connection to the PipeWire server is lost */
+int pipewire_is_shutdown = 0;
+#endif /* HAVE_PIPEWIRE */
 #ifdef HAVE_LADSPA
 volatile int plugin_lock = 0;
 unsigned long ladspa_buflen = 0;
@@ -263,6 +273,11 @@ flush_output(double src_ratio) {
 		return 0;
 	}
 #endif /* HAVE_JACK */
+#ifdef HAVE_PIPEWIRE
+	if (pipewire_is_shutdown) {
+		return 0;
+	}
+#endif /* HAVE_PIPEWIRE */
 
 	sample_offset = rb_read_space(rb) / (2 * sample_size) * src_ratio;
 
@@ -1786,6 +1801,242 @@ pulse_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 #endif /* HAVE_PULSE */
 
 
+#ifdef HAVE_PIPEWIRE
+/* PipeWire output. Like JACK, PipeWire pulls the audio: the stream's
+ * process callback runs in PipeWire's realtime data thread whenever it
+ * needs the next block.
+ */
+
+/* largest block the process callback handles (size of l_buf and r_buf) */
+#define PIPEWIRE_MAX_FRAMES 8192
+
+static char pipewire_error[256];
+static int pipewire_closing = 0;
+
+static void
+pipewire_process(void * arg) {
+
+	thread_info_t * info = (thread_info_t *)arg;
+	struct pw_buffer * pwbuf;
+	struct spa_data * data;
+	float * dst;
+	guint32 i;
+	guint32 nframes;
+	guint32 driver_offset = 0;
+	int n_avail;
+	char recv_cmd;
+
+	if ((pwbuf = pw_stream_dequeue_buffer(info->pw_stream)) == NULL) {
+		return;
+	}
+
+	data = &pwbuf->buffer->datas[0];
+	if ((dst = data->data) == NULL) {
+		pw_stream_queue_buffer(info->pw_stream, pwbuf);
+		return;
+	}
+
+	nframes = data->maxsize / (2 * sizeof(float));
+	if (pwbuf->requested > 0 && pwbuf->requested < nframes) {
+		nframes = pwbuf->requested;
+	}
+	if (nframes > PIPEWIRE_MAX_FRAMES) {
+		nframes = PIPEWIRE_MAX_FRAMES;
+	}
+#ifdef HAVE_LADSPA
+	ladspa_buflen = nframes;
+#endif /* HAVE_LADSPA */
+
+	while (!info->pw_finished && rb_read_space(rb_disk2out)) {
+		rb_read(rb_disk2out, &recv_cmd, 1);
+		switch (recv_cmd) {
+		case CMD_FLUSH:
+			/* The disk thread waits for our reply, so this drops
+			 * exactly the audio it has sent. What PipeWire already
+			 * has (about one cycle) still plays: driver_offset is 0. */
+			rb_read_advance(rb, rb_read_space(rb));
+			rb_write(rb_out2disk, (char *)&driver_offset, sizeof(guint32));
+			break;
+		case CMD_FINISH:
+			info->pw_finished = 1;
+			break;
+		default:
+			fprintf(stderr, "pipewire_process(): recv'd unknown command %d\n", recv_cmd);
+			break;
+		}
+	}
+
+	if (info->pw_finished) {
+		memset(dst, 0, nframes * 2 * sizeof(float));
+	} else {
+		n_avail = rb_read_space(rb) / (2*sample_size);
+		read_and_process_output(nframes, &n_avail, 0);
+
+		for (i = 0; i < nframes; i++) {
+			dst[2*i] = l_buf[i];
+			dst[2*i+1] = r_buf[i];
+		}
+	}
+
+	data->chunk->offset = 0;
+	data->chunk->stride = 2 * sizeof(float);
+	data->chunk->size = nframes * 2 * sizeof(float);
+	pw_stream_queue_buffer(info->pw_stream, pwbuf);
+}
+
+static void
+pipewire_state_changed(void * arg, enum pw_stream_state old,
+		       enum pw_stream_state state, const char * error) {
+
+	thread_info_t * info = (thread_info_t *)arg;
+
+	if (state == PW_STREAM_STATE_ERROR && error != NULL) {
+		arr_strlcpy(pipewire_error, error);
+	}
+	if (!pipewire_closing &&
+	    (state == PW_STREAM_STATE_ERROR || state == PW_STREAM_STATE_UNCONNECTED) &&
+	    (old == PW_STREAM_STATE_PAUSED || old == PW_STREAM_STATE_STREAMING)) {
+		fprintf(stderr, "Lost connection to PipeWire%s%s\n",
+			error ? ": " : "", error ? error : "");
+		pipewire_is_shutdown = 1;
+	}
+
+	info->pw_state = state;
+	pw_thread_loop_signal(info->pw_loop, false);
+}
+
+static const struct pw_stream_events pipewire_stream_events = {
+	PW_VERSION_STREAM_EVENTS,
+	.state_changed = pipewire_state_changed,
+	.process = pipewire_process,
+};
+
+void
+pipewire_close(thread_info_t * info) {
+
+	pipewire_closing = 1;
+	if (info->pw_loop != NULL) {
+		pw_thread_loop_stop(info->pw_loop);
+	}
+	if (info->pw_stream != NULL) {
+		pw_stream_destroy(info->pw_stream);
+		info->pw_stream = NULL;
+	}
+	if (info->pw_loop != NULL) {
+		pw_thread_loop_destroy(info->pw_loop);
+		info->pw_loop = NULL;
+	}
+	pw_deinit();
+}
+
+/* return values:
+ *  0 : success
+ *  -1: sample rate out of range
+ *  -2: unable to connect to PipeWire
+ */
+int
+pipewire_init(thread_info_t * info, int verbose) {
+
+	uint8_t pod_buffer[1024];
+	struct spa_pod_builder builder = SPA_POD_BUILDER_INIT(pod_buffer, sizeof(pod_buffer));
+	struct spa_audio_info_raw format;
+	const struct spa_pod * params[1];
+	struct pw_properties * props;
+	struct timespec timeout;
+	enum pw_stream_state state;
+
+	if (info->out_SR > MAX_SAMPLERATE) {
+		if (verbose) {
+			fprintf(stderr, "\nThe sample rate you set (%ld Hz) is higher than MAX_SAMPLERATE.\n",
+				info->out_SR);
+			fprintf(stderr, "This is an arbitrary limit, which you may safely enlarge "
+				"if you really need to.\n");
+			fprintf(stderr, "Currently MAX_SAMPLERATE = %d Hz.\n", MAX_SAMPLERATE);
+		}
+		return -1;
+	}
+
+	if ((l_buf = calloc(PIPEWIRE_MAX_FRAMES, sizeof(float))) == NULL ||
+	    (r_buf = calloc(PIPEWIRE_MAX_FRAMES, sizeof(float))) == NULL) {
+		fprintf(stderr, "pipewire_init: malloc error\n");
+		exit(1);
+	}
+
+	pw_init(NULL, NULL);
+	pipewire_error[0] = '\0';
+	pipewire_is_shutdown = 0;
+	pipewire_closing = 0;
+	info->pw_state = PW_STREAM_STATE_UNCONNECTED;
+	info->pw_finished = 0;
+	info->pw_stream = NULL;
+
+	info->pw_loop = pw_thread_loop_new("aqualung-pipewire", NULL);
+	if (info->pw_loop == NULL) {
+		goto fail;
+	}
+
+	props = pw_properties_new(PW_KEY_MEDIA_TYPE, "Audio",
+				  PW_KEY_MEDIA_CATEGORY, "Playback",
+				  PW_KEY_MEDIA_ROLE, "Music",
+				  PW_KEY_APP_NAME, "Aqualung",
+				  NULL);
+	info->pw_stream = pw_stream_new_simple(pw_thread_loop_get_loop(info->pw_loop),
+					       "Aqualung", props, &pipewire_stream_events, info);
+	if (info->pw_stream == NULL) {
+		goto fail;
+	}
+
+	memset(&format, 0, sizeof(format));
+	format.format = SPA_AUDIO_FORMAT_F32;
+	format.channels = 2;
+	format.rate = info->out_SR;
+	format.position[0] = SPA_AUDIO_CHANNEL_FL;
+	format.position[1] = SPA_AUDIO_CHANNEL_FR;
+	params[0] = spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &format);
+
+	if (pw_stream_connect(info->pw_stream, PW_DIRECTION_OUTPUT, PW_ID_ANY,
+			      PW_STREAM_FLAG_AUTOCONNECT |
+			      PW_STREAM_FLAG_MAP_BUFFERS |
+			      PW_STREAM_FLAG_RT_PROCESS,
+			      params, 1) < 0) {
+		goto fail;
+	}
+
+	if (pw_thread_loop_start(info->pw_loop) < 0) {
+		goto fail;
+	}
+
+	/* wait until the server has accepted (or rejected) the stream */
+	pw_thread_loop_lock(info->pw_loop);
+	pw_thread_loop_get_time(info->pw_loop, &timeout, 2 * SPA_NSEC_PER_SEC);
+	while (info->pw_state != PW_STREAM_STATE_PAUSED &&
+	       info->pw_state != PW_STREAM_STATE_STREAMING &&
+	       info->pw_state != PW_STREAM_STATE_ERROR) {
+		if (pw_thread_loop_timed_wait_full(info->pw_loop, &timeout) < 0) {
+			break;
+		}
+	}
+	state = info->pw_state;
+	pw_thread_loop_unlock(info->pw_loop);
+
+	if (state == PW_STREAM_STATE_PAUSED || state == PW_STREAM_STATE_STREAMING) {
+		return 0;
+	}
+
+ fail:
+	if (verbose) {
+		fprintf(stderr, "Unable to connect to PipeWire%s%s\n",
+			pipewire_error[0] ? ": " : "", pipewire_error);
+	}
+	pipewire_close(info);
+	free(l_buf);
+	free(r_buf);
+	l_buf = r_buf = NULL;
+	return -2;
+}
+#endif /* HAVE_PIPEWIRE */
+
+
 #ifdef HAVE_WINMM
 
 #define WIN32_BUFFER_LEN (1<<16)
@@ -2322,6 +2573,13 @@ print_version(void) {
 #endif /* HAVE_JACK */
 	fprintf(stderr, "JACK Audio Server\n");
 	
+#ifdef HAVE_PIPEWIRE
+	fprintf(stderr, V_YES);
+#else
+	fprintf(stderr, V_NO);
+#endif /* HAVE_PIPEWIRE */
+	fprintf(stderr, "PipeWire\n");
+
 #ifdef HAVE_PULSE
 	fprintf(stderr, V_YES);
 #else
@@ -2349,7 +2607,7 @@ print_usage(void) {
 		"\nInvocation:\n"
 		"aqualung --help\n"
 		"aqualung --version\n"
-		"aqualung [--output (oss|alsa|jack|sndio|pulse|win32)] [options] [file1 [file2 ...]]\n"
+		"aqualung [--output (oss|alsa|jack|sndio|pipewire|pulse|win32)] [options] [file1 [file2 ...]]\n"
 		
 		"\nGeneral options:\n"
 		"-D, --disk-realtime: Try to use realtime (SCHED_FIFO) scheduling for disk thread.\n"
@@ -2373,6 +2631,9 @@ print_usage(void) {
 		"given JACK ports (defaults to first two hardware playback ports).\n"
 		"-c, --client <name>: Set client name (needed if you want to run multiple instances of the program).\n"
 		
+		"\nOptions relevant to PipeWire output:\n"
+		"-r, --rate <int>: Set the output sample rate.\n"
+
 		"\nOptions relevant to PulseAudio output:\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
 		"-b, --buffer-size <int>: Set the output buffer size (in frames, defaults to at most 0.2 s).\n"
@@ -2574,9 +2835,9 @@ main(int argc, char ** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
-#if defined(HAVE_JACK) || defined(HAVE_ALSA) || defined(HAVE_OSS) || defined(HAVE_SNDIO) || defined(HAVE_PULSE)
+#if defined(HAVE_JACK) || defined(HAVE_ALSA) || defined(HAVE_OSS) || defined(HAVE_SNDIO) || defined(HAVE_PULSE) || defined(HAVE_PIPEWIRE)
 	int auto_driver_found = 0;
-#endif /* jack || alsa || oss || sndio || pulseaudio */
+#endif /* jack || alsa || oss || sndio || pulseaudio || pipewire */
 
 	if (setenv("LC_NUMERIC", "POSIX", 1) != 0) {
 		fprintf(stderr, "aqualung main(): setenv(\"LC_NUMERIC\", \"POSIX\") failed\n");
@@ -2657,6 +2918,15 @@ main(int argc, char ** argv) {
 #else
 					die_no_such_output_driver(output_str);
 #endif /* HAVE_PULSE*/
+					free(output_str);
+					break;
+				}
+				if (strcmp(output_str, "pipewire") == 0) {
+#ifdef HAVE_PIPEWIRE
+					output = PIPEWIRE_DRIVER;
+#else
+					die_no_such_output_driver(output_str);
+#endif /* HAVE_PIPEWIRE */
 					free(output_str);
 					break;
 				}
@@ -3047,6 +3317,26 @@ main(int argc, char ** argv) {
 		}
 	}
 #endif /* HAVE_JACK */
+#ifdef HAVE_PIPEWIRE
+	if (output == 0) {
+		int ret;
+
+		/* probe PipeWire */
+		printf("Probing PipeWire driver... ");
+		thread_info.out_SR = rate;
+
+		ret = pipewire_init(&thread_info, 0);
+		if (ret == -1) {
+			printf("sample rate out of range!\n");
+		} else if (ret < 0) {
+			printf("unable to connect to PipeWire\n");
+		} else {
+			output = PIPEWIRE_DRIVER;
+			auto_driver_found = 1;
+			printf("OK\n");
+		}
+	}
+#endif /* HAVE_PIPEWIRE */
 #ifdef HAVE_PULSE
 	if (output == 0) {
 		int ret;
@@ -3214,6 +3504,12 @@ main(int argc, char ** argv) {
 	}
 #endif /* HAVE_PULSE */
 
+#ifdef HAVE_PIPEWIRE
+	if (output == PIPEWIRE_DRIVER) {
+		thread_info.out_SR = rate;
+	}
+#endif /* HAVE_PIPEWIRE */
+
 #ifdef HAVE_WINMM
 	if (output == WIN32_DRIVER) {
 		thread_info.out_SR = rate;
@@ -3257,6 +3553,17 @@ main(int argc, char ** argv) {
 		}
 	}
 #endif /* HAVE_PULSE */
+
+#ifdef HAVE_PIPEWIRE
+	if (output == PIPEWIRE_DRIVER) {
+		if (!auto_driver_found) {
+			int ret = pipewire_init(&thread_info, 1);
+			if (ret != 0) {
+				exit(1);
+			}
+		}
+	}
+#endif /* HAVE_PIPEWIRE */
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {
@@ -3304,6 +3611,12 @@ main(int argc, char ** argv) {
 		pa_simple_free(thread_info.pa);
 	}
 #endif /* HAVE_PULSE */
+
+#ifdef HAVE_PIPEWIRE
+	if (output == PIPEWIRE_DRIVER) {
+		pipewire_close(&thread_info);
+	}
+#endif /* HAVE_PIPEWIRE */
 
 #ifdef HAVE_ALSA
 	if (output == ALSA_DRIVER) {

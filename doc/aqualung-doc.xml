@@ -48,7 +48,7 @@
       the FFmpeg project, including AC3, AAC, WMA, WavPack and the
       soundtrack of many video formats. There is also a native
       (non-FFmpeg) WavPack decoder. The program can play the music
-      through OSS, ALSA, sndio, PulseAudio, the JACK Audio Connection
+      through OSS, ALSA, sndio, PipeWire, PulseAudio, the JACK Audio Connection
       Kit, or even using the Win32 Sound API (available only under
       Cygwin or native Win32). Depending on the compile-time options,
       not all file formats and output drivers may be usable in a
@@ -271,7 +271,7 @@
           compiled-in features.</dd>
 
           <dt>
-            <cmd>aqualung [--output (jack|pulse|alsa|oss|sndio|win32)] [options] [file1 [file2 ...]]</cmd>
+            <cmd>aqualung [--output (jack|pipewire|pulse|alsa|oss|sndio|win32)] [options] [file1 [file2 ...]]</cmd>
           </dt>
 
         </dl>
@@ -279,7 +279,7 @@
         <p man="OPTIONS">Normally you should be able to start Aqualung
         without any options. This case the output device will be
         selected by probing for a usable driver (in order of JACK,
-        PulseAudio, ALSA, OSS) with default parameters.</p>
+        PipeWire, PulseAudio, ALSA, OSS) with default parameters.</p>
 
         <p man="OPTIONS">If no driver could be started with default
         parameters, or you want to explicitly choose a suitable output
@@ -422,6 +422,20 @@
           <p>Note that in the case when JACK output has been selected
           as part of the automatic output device detection, the
           <cmd>-a</cmd> option is implicitly applied.</p>
+
+        </subsubsection>
+
+        <subsubsection title="Options relevant to PipeWire output" man="OPTIONS">
+
+          <dl>
+
+            <dt>
+              <cmd>-r, --rate &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>Set the output sample rate.</dd>
+
+          </dl>
 
         </subsubsection>
 

@@ -223,6 +223,11 @@ AQUALUNG_DETECT([pulse], [PulseAudio],
         [AQUALUNG_FOUND([pulse])],
         [AQUALUNG_MISSING([pulse], [$pulse_PKG_ERRORS])])])
 
+AQUALUNG_DETECT([pipewire], [PipeWire],
+    [PKG_CHECK_MODULES([pipewire], [libpipewire-0.3 >= 0.3.49],
+        [AQUALUNG_FOUND([pipewire])],
+        [AQUALUNG_MISSING([pipewire], [$pipewire_PKG_ERRORS])])])
+
 AQUALUNG_DETECT([sndio], [sndio],
     [AC_CHECK_LIB([sndio], [sio_open],
         [AQUALUNG_FOUND([sndio], [-lsndio])],
@@ -452,6 +457,7 @@ AC_MSG_NOTICE([summary
       OSS Audio                           :  $with_oss
       ALSA Audio                          :  $with_alsa
       JACK Audio Server                   :  $with_jack
+      PipeWire                            :  $with_pipewire
       PulseAudio                          :  $with_pulse
       Win32 Sound API                     :  $with_winmm
 

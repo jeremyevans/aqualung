@@ -1418,7 +1418,7 @@ sndio_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 #ifdef HAVE_OSS
 /* return values:
  *  0 : success
- * -1 : device busy
+ * -1 : unable to open device (errno is set)
  * -N : unable to start with given params
  */
 int
@@ -1506,9 +1506,12 @@ oss_init(thread_info_t * info, int verbose, gboolean realtime, int priority) {
 #ifdef HAVE_ALSA
 /* return values:
  *  0 : success
- * -1 : device busy
+ * -1 : unable to open device (error code in alsa_open_error)
  * -N : unable to start with given params
  */
+/* error code of the last failed snd_pcm_open() in alsa_init() */
+static int alsa_open_error = 0;
+
 int
 alsa_init(thread_info_t * info, int verbose) {
 
@@ -1519,6 +1522,7 @@ alsa_init(thread_info_t * info, int verbose) {
 
 	ret = snd_pcm_open(&info->pcm_handle, info->pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (ret < 0) {
+		alsa_open_error = ret;
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error opening PCM device %s: %s\n",
 				info->pcm_name, snd_strerror(ret));
@@ -1972,6 +1976,7 @@ pipewire_init(thread_info_t * info, int verbose) {
 
 	info->pw_loop = pw_thread_loop_new("aqualung-pipewire", NULL);
 	if (info->pw_loop == NULL) {
+		arr_snprintf(pipewire_error, "cannot create thread loop: %s", strerror(errno));
 		goto fail;
 	}
 
@@ -1983,6 +1988,7 @@ pipewire_init(thread_info_t * info, int verbose) {
 	info->pw_stream = pw_stream_new_simple(pw_thread_loop_get_loop(info->pw_loop),
 					       "Aqualung", props, &pipewire_stream_events, info);
 	if (info->pw_stream == NULL) {
+		arr_snprintf(pipewire_error, "cannot create stream: %s", strerror(errno));
 		goto fail;
 	}
 
@@ -1999,10 +2005,12 @@ pipewire_init(thread_info_t * info, int verbose) {
 			      PW_STREAM_FLAG_MAP_BUFFERS |
 			      PW_STREAM_FLAG_RT_PROCESS,
 			      params, 1) < 0) {
+		arr_snprintf(pipewire_error, "cannot connect stream: %s", strerror(errno));
 		goto fail;
 	}
 
 	if (pw_thread_loop_start(info->pw_loop) < 0) {
+		arr_snprintf(pipewire_error, "cannot start thread loop: %s", strerror(errno));
 		goto fail;
 	}
 
@@ -2022,6 +2030,10 @@ pipewire_init(thread_info_t * info, int verbose) {
 	if (state == PW_STREAM_STATE_PAUSED || state == PW_STREAM_STATE_STREAMING) {
 		return 0;
 	}
+	if (state != PW_STREAM_STATE_ERROR || !pipewire_error[0]) {
+		arr_snprintf(pipewire_error, "no answer within 2 s (stream state: %s)",
+			     pw_stream_state_as_string(state));
+	}
 
  fail:
 	if (verbose) {
@@ -2033,6 +2045,13 @@ pipewire_init(thread_info_t * info, int verbose) {
 	free(r_buf);
 	l_buf = r_buf = NULL;
 	return -2;
+}
+
+/* reason for the last pipewire_init() failure */
+static const char *
+pipewire_strerror(void) {
+
+	return pipewire_error[0] ? pipewire_error : "unknown error";
 }
 #endif /* HAVE_PIPEWIRE */
 
@@ -3329,7 +3348,7 @@ main(int argc, char ** argv) {
 		if (ret == -1) {
 			printf("sample rate out of range!\n");
 		} else if (ret < 0) {
-			printf("unable to connect to PipeWire\n");
+			printf("unable to connect to PipeWire: %s\n", pipewire_strerror());
 		} else {
 			output = PIPEWIRE_DRIVER;
 			auto_driver_found = 1;
@@ -3368,7 +3387,7 @@ main(int argc, char ** argv) {
 
 		ret = alsa_init(&thread_info, 0);
 		if (ret == -1) {
-			printf("device busy\n");			
+			printf("cannot open device %s: %s\n", thread_info.pcm_name, snd_strerror(alsa_open_error));
 		} else if (ret < 0) {
 			printf("unable to start with default params\n");
 		} else {
@@ -3408,7 +3427,7 @@ main(int argc, char ** argv) {
 
 		ret = oss_init(&thread_info, 0, try_realtime, priority);
 		if (ret == -1) {
-			printf("device busy\n");			
+			printf("cannot open device %s: %s\n", device_name, strerror(errno));
 		} else if (ret < 0) {
 			printf("unable to start with default params\n");
 		} else {

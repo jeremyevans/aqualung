@@ -141,12 +141,12 @@ gint playlist_state, browser_state;
 #endif /* __OpenBSD__ */
 #endif /* OSS_DEVICE */
 
-#if defined(HAVE_ALSA) || defined(HAVE_PULSE)
+#if defined(HAVE_ALSA) || defined(HAVE_PULSE) || defined(HAVE_PIPEWIRE)
 /* output buffer size in frames set by --buffer-size, 0 if not given */
 unsigned long output_buffer_size = 0;
 /* default limit of the output buffer if --buffer-size is not given, in microseconds */
 #define OUTPUT_DEFAULT_BUFFER_TIME 200000
-#endif /* HAVE_ALSA || HAVE_PULSE */
+#endif /* HAVE_ALSA || HAVE_PULSE || HAVE_PIPEWIRE */
 
 /* The name of the output device e.g. "/dev/dsp" or "plughw:0,0" */
 char * device_name = NULL;
@@ -1948,6 +1948,7 @@ pipewire_init(thread_info_t * info, int verbose) {
 	struct pw_properties * props;
 	struct timespec timeout;
 	enum pw_stream_state state;
+	unsigned long latency = output_buffer_size;
 
 	if (info->out_SR > MAX_SAMPLERATE) {
 		if (verbose) {
@@ -1985,6 +1986,17 @@ pipewire_init(thread_info_t * info, int verbose) {
 				  PW_KEY_MEDIA_ROLE, "Music",
 				  PW_KEY_APP_NAME, "Aqualung",
 				  NULL);
+	/* The quantum is the block size of the process callback, so it
+	 * cannot exceed PIPEWIRE_MAX_FRAMES. Without --buffer-size, the
+	 * server's default quantum is used. */
+	if (latency > PIPEWIRE_MAX_FRAMES) {
+		fprintf(stderr, "pipewire_init warning: cannot set buffer size to %lu frames, "
+			"using %d.\n", latency, PIPEWIRE_MAX_FRAMES);
+		latency = PIPEWIRE_MAX_FRAMES;
+	}
+	if (latency != 0) {
+		pw_properties_setf(props, PW_KEY_NODE_LATENCY, "%lu/%ld", latency, info->out_SR);
+	}
 	info->pw_stream = pw_stream_new_simple(pw_thread_loop_get_loop(info->pw_loop),
 					       "Aqualung", props, &pipewire_stream_events, info);
 	if (info->pw_stream == NULL) {
@@ -2652,6 +2664,7 @@ print_usage(void) {
 		
 		"\nOptions relevant to PipeWire output:\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
+		"-b, --buffer-size <int>: Set the output buffer size (in frames, defaults to the server's quantum).\n"
 
 		"\nOptions relevant to PulseAudio output:\n"
 		"-r, --rate <int>: Set the output sample rate.\n"
@@ -2991,11 +3004,11 @@ main(int argc, char ** argv) {
 			case 'r':
 				rate = atoi(optarg);
 				break;
-#if defined(HAVE_ALSA) || defined(HAVE_PULSE)
+#if defined(HAVE_ALSA) || defined(HAVE_PULSE) || defined(HAVE_PIPEWIRE)
 			case 'b':
 				output_buffer_size = atoi(optarg);
 				break;
-#endif /* HAVE_ALSA || HAVE_PULSE */
+#endif /* HAVE_ALSA || HAVE_PULSE || HAVE_PIPEWIRE */
 			case 'a':
 #ifdef HAVE_JACK
 				auto_connect = 1;

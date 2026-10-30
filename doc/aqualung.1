@@ -197,6 +197,13 @@ as part of the automatic output device detection, the
 -r, --rate <int>
 .br
 Set the output sample rate.
+.TP
+-b, --buffer-size <int>
+.br
+Set the PipeWire output buffer size (in frames). This is requested
+from the server as the quantum (processing block size) of the stream,
+which the server limits to its clock.max-quantum setting. By default,
+the server's default quantum is used.
 
 .TP
 .B Options relevant to PulseAudio output

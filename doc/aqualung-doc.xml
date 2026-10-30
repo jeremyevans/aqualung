@@ -435,6 +435,16 @@
 
             <dd>Set the output sample rate.</dd>
 
+            <dt>
+              <cmd>-b, --buffer-size &lt;int&gt;</cmd>
+            </dt>
+
+            <dd>Set the PipeWire output buffer size (in frames). This is
+            requested from the server as the quantum (processing block size)
+            of the stream, which the server limits to its
+            <cmd>clock.max-quantum</cmd> setting. By default, the server's
+            default quantum is used.</dd>
+
           </dl>
 
         </subsubsection>

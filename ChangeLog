@@ -1,3 +1,40 @@
+2026-11-11	Jeremy Evans <code at jeremyevans dot net>
+
+    * Aqualung 2.1
+        http://aqualung.jeremyevans.net
+
+        * Add native PipeWire output (--output pipewire)
+
+        * Flush queued audio in the ALSA, PulseAudio and OSS outputs on stop,
+          pause and seek, so these take effect immediately. Also, keep buffer
+	  sizes at most 0.2 s by default, so changes to volume, balance and
+	  LADSPA effects are heard at once
+
+        * PulseAudio: send 32-bit float samples instead of 16 bits
+
+        * Report why an output driver could not be opened
+
+        * Support building with FFmpeg 8.0
+
+        * Recognise .opus files in the file chooser filter for the LAVC decoder
+
+        * Replace deprecated GTK 3 API usage
+
+        * Remove iRiver iFP device support (>20 years old hardware)
+
+        * Check for corrupt ID3v2 frame header lengths
+
+	* Several bugfixes:
+	- OSS output probing in builds with ALSA support
+	- a buffer overflow in the store builder's file name transformation
+	- the store builder refusing to close on OpenBSD when a file name
+          transformation regexp is left empty
+	- the wrong data source being disabled for independent store builds
+	- memory leaks when the store build dialog is retried
+	- a crash on startup under certain conditions
+
+        * New translation: Georgian
+
 2025-02-15	Jeremy Evans <code at jeremyevans dot net>
 
     * Aqualung 2.0

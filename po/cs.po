@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2017-09-21 21:15+0200\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -31,9 +31,6 @@ msgstr "Podpora pro CDDB\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Podpora pro převodník vzorkovacího kmitočtu\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "Podpora pro iFP iRiver\n"
 
 msgid "JACK port management support\n"
 msgstr "Podpora pro správu přípojky JACK\n"
@@ -107,6 +104,9 @@ msgstr "Zvuk ALSA\n"
 msgid "JACK Audio Server\n"
 msgstr "Zvukový server JACK\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -115,6 +115,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "O programu"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Zavřít"
 
 msgid "Build version: "
 msgstr "Verze sestavení: "
@@ -287,6 +291,12 @@ msgstr "Vyberte, prosím, kořenový adresář."
 
 msgid "Select build type"
 msgstr "Vyberte typ sestavení"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "Uspořádáno adresářově"
@@ -713,6 +723,10 @@ msgstr ""
 "Omezení délky\n"
 "názvu podadresáře"
 
+#, fuzzy
+msgid "_Help"
+msgstr "Nápověda"
+
 msgid "Filename template:"
 msgstr "Předloha pro název souboru:"
 
@@ -831,6 +845,10 @@ msgstr "Přidat"
 
 msgid "field:"
 msgstr "Pole:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Uložit"
 
 msgid "tag:"
 msgstr "Značka:"
@@ -1037,205 +1055,6 @@ msgstr "Předchozí"
 
 msgid "Next"
 msgstr "Další"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MB / %.1f MB"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d souborů"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d adresářů"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr "Nelze zapisovat do vybraného adresáře. Vyberte, prosím, jiný adresář."
-
-msgid "Done"
-msgstr "Hotovo"
-
-msgid "Aborted..."
-msgstr "Zrušeno..."
-
-msgid "Please enter directory name."
-msgstr "Zadejte, prosím, název adresáře."
-
-msgid "Create directory"
-msgstr "Vytvořit adresář"
-
-msgid "Please enter a new name."
-msgstr "Zadejte, prosím, nový název."
-
-msgid "Rename"
-msgstr "Přejmenovat"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Adresář '%s' bude odstraněn s celým svým obsahem.\n"
-"\n"
-"Chcete pokračovat?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Soubor '%s' bude odstraněn.\n"
-"\n"
-"Chcete pokračovat?"
-
-msgid "Remove"
-msgstr "Odstranit"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MB)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (kapacita = %.1f MB)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " Volné místo (%.1f MB)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Nebylo nalezeno žádné vhodné zařízení iFP iRiver.\n"
-"Snad není zastrčeno, nebo je vypnuto."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Zařízení je zaneprázdněno.\n"
-"\n"
-"Aqualung nebyl schopen domoci se jeho používání.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"Zařízení neodpovídá.\n"
-"Přezkoušejte, prosím, připojení zařízení."
-
-msgid "Please select a local path."
-msgstr "Vyberte, prosím, místní cestu."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "Vyberte, prosím, ze seznamu skladeb alespoň jednu platnou píseň."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Jedna z písní je ve formátu nepodporovaném vaším přehrávačem.\n"
-"\n"
-"Chcete pokračovat?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d z %d písní je ve formátu nepodporovaném vaším přehrávačem.\n"
-"\n"
-"Chcete pokračovat?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Vybraná píseň je ve formátu nepodporovaném vaším přehrávačem.\n"
-"\n"
-"Chcete pokračovat?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Žádná z vybraných písní není ve formátu podporovaném vaším přehrávačem.\n"
-"\n"
-"Chcete pokračovat?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "Správce zařízení iFP (režim nahrávání)"
-
-msgid "iFP device manager (download mode)"
-msgstr "Správce zařízení iFP (režim stahování)"
-
-msgid "Selected files:"
-msgstr "Vybrané soubory:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Informace o písni</b>"
-
-msgid "Model:"
-msgstr "Model:"
-
-msgid "Battery"
-msgstr "Baterie"
-
-msgid "Free space"
-msgstr "Volné místo"
-
-msgid "<b>Device status</b>"
-msgstr "<b>Stav zařízení</b>"
-
-msgid "Size"
-msgstr "Velikost"
-
-msgid "Create a new directory"
-msgstr "Vytvořit nový adresář"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Vzdálený adresář</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Místní adresář</b>"
-
-msgid "Browse"
-msgstr "Procházet"
-
-msgid "File name: "
-msgstr "Název souboru: "
-
-msgid "Current file: "
-msgstr "Nynější soubor: "
-
-msgid "Overall: "
-msgstr "Celkem: "
-
-msgid "Idle"
-msgstr "Nečinný"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Postup přenosu</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Zavřít okno po dokončení přenosu"
-
-msgid "_Upload"
-msgstr "_Nahrát"
-
-msgid "_Download"
-msgstr "_Stáhnout"
-
-msgid "_Abort"
-msgstr "_Přerušit"
 
 msgid "Album"
 msgstr "Album"
@@ -1917,6 +1736,9 @@ msgstr "Formát názvu"
 msgid "Lua extension file"
 msgstr "Soubor s příponou Lua"
 
+msgid "Browse"
+msgstr "Procházet"
+
 msgid "Systray"
 msgstr "Oznamovací oblast panelu"
 
@@ -1940,6 +1762,9 @@ msgstr "Vodorovné kolečko myši:"
 
 msgid "Mouse buttons"
 msgstr "Tlačítka myši"
+
+msgid "Remove"
+msgstr "Odstranit"
 
 msgid "Miscellaneous"
 msgstr "Různé"
@@ -2039,9 +1864,6 @@ msgstr "Ukázat název činné skladby tučně"
 
 msgid "Automatically roll to active track"
 msgstr "Automaticky posunout na činnou skladbu"
-
-msgid "Enable rules hint"
-msgstr "Použít v seznamech náhradní barvy"
 
 msgid "Playlist column order"
 msgstr "Pořadí sloupců v seznamu skladeb"
@@ -2346,6 +2168,9 @@ msgstr "Název:"
 msgid "New tab"
 msgstr "Nová karta"
 
+msgid "Rename"
+msgstr "Přejmenovat"
+
 msgid "Close tab"
 msgstr "Zavřít kartu"
 
@@ -2424,9 +2249,6 @@ msgstr "Nahrát seznam skladeb"
 msgid "Enqueue playlist"
 msgstr "Zařadit seznam skladeb"
 
-msgid "Send to iFP device"
-msgstr "Odeslat do zařízení iFP"
-
 msgid "Calculate RVA"
 msgstr "Změřit RVA"
 
@@ -2479,6 +2301,9 @@ msgstr "Nastavení LADSPA"
 msgid "Available plugins"
 msgstr "Dostupné přídavné moduly"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2493,6 +2318,10 @@ msgstr "Výstupy"
 
 msgid "Running plugins"
 msgstr "Běžící přídavné moduly"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Odstranit"
 
 msgid "_Configure"
 msgstr "_Nastavit"
@@ -2571,6 +2400,9 @@ msgstr "Cesta k zařízení:"
 
 msgid "Vendor:"
 msgstr "Prodejce:"
+
+msgid "Model:"
+msgstr "Model:"
 
 msgid "Revision:"
 msgstr "Změna:"
@@ -3148,6 +2980,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "Zvukové/Obrazové soubory LAVC"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Pokračovat"
 
@@ -3237,6 +3075,203 @@ msgstr "Bit dvojitý"
 
 msgid "encoding"
 msgstr "Kódování"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "Podpora pro iFP iRiver\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d souborů"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d adresářů"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "Nelze zapisovat do vybraného adresáře. Vyberte, prosím, jiný adresář."
+
+#~ msgid "Done"
+#~ msgstr "Hotovo"
+
+#~ msgid "Aborted..."
+#~ msgstr "Zrušeno..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Zadejte, prosím, název adresáře."
+
+#~ msgid "Create directory"
+#~ msgstr "Vytvořit adresář"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Zadejte, prosím, nový název."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Adresář '%s' bude odstraněn s celým svým obsahem.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Soubor '%s' bude odstraněn.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MB)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (kapacita = %.1f MB)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " Volné místo (%.1f MB)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Nebylo nalezeno žádné vhodné zařízení iFP iRiver.\n"
+#~ "Snad není zastrčeno, nebo je vypnuto."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Zařízení je zaneprázdněno.\n"
+#~ "\n"
+#~ "Aqualung nebyl schopen domoci se jeho používání.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "Zařízení neodpovídá.\n"
+#~ "Přezkoušejte, prosím, připojení zařízení."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Vyberte, prosím, místní cestu."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "Vyberte, prosím, ze seznamu skladeb alespoň jednu platnou píseň."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Jedna z písní je ve formátu nepodporovaném vaším přehrávačem.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d z %d písní je ve formátu nepodporovaném vaším přehrávačem.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Vybraná píseň je ve formátu nepodporovaném vaším přehrávačem.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Žádná z vybraných písní není ve formátu podporovaném vaším přehrávačem.\n"
+#~ "\n"
+#~ "Chcete pokračovat?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "Správce zařízení iFP (režim nahrávání)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "Správce zařízení iFP (režim stahování)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Vybrané soubory:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Informace o písni</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Baterie"
+
+#~ msgid "Free space"
+#~ msgstr "Volné místo"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>Stav zařízení</b>"
+
+#~ msgid "Size"
+#~ msgstr "Velikost"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Vytvořit nový adresář"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Vzdálený adresář</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Místní adresář</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Název souboru: "
+
+#~ msgid "Current file: "
+#~ msgstr "Nynější soubor: "
+
+#~ msgid "Overall: "
+#~ msgstr "Celkem: "
+
+#~ msgid "Idle"
+#~ msgstr "Nečinný"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Postup přenosu</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Zavřít okno po dokončení přenosu"
+
+#~ msgid "_Upload"
+#~ msgstr "_Nahrát"
+
+#~ msgid "_Download"
+#~ msgstr "_Stáhnout"
+
+#~ msgid "_Abort"
+#~ msgstr "_Přerušit"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "Použít v seznamech náhradní barvy"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Odeslat do zařízení iFP"
 
 #~ msgid "Output:"
 #~ msgstr "Výstup:"

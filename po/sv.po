@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aqualung svn version 1055\n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2009-01-21 15:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,9 +28,6 @@ msgstr "CDDB-stöd\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Stöd för samplingsfrekvenskonverterare\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "Stöd för iRiver iFP-drivrutin\n"
 
 #, fuzzy
 msgid "JACK port management support\n"
@@ -106,6 +103,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Server\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 #, fuzzy
 msgid "PulseAudio\n"
 msgstr "sndio Audio\n"
@@ -115,6 +115,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "Om"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Stäng"
 
 msgid "Build version: "
 msgstr "Byggversion:"
@@ -292,6 +296,12 @@ msgid "Please select the root directory."
 msgstr "Var god välj rootkatalogen."
 
 msgid "Select build type"
+msgstr ""
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
 msgstr ""
 
 msgid "Directory driven"
@@ -711,6 +721,10 @@ msgid ""
 "length limit:"
 msgstr ""
 
+#, fuzzy
+msgid "_Help"
+msgstr "Hjälp"
+
 msgid "Filename template:"
 msgstr "Filnamnsmall:"
 
@@ -823,6 +837,10 @@ msgstr "Lägg till"
 
 msgid "field:"
 msgstr "fält:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Spara"
 
 msgid "tag:"
 msgstr "tagg:"
@@ -1033,204 +1051,6 @@ msgstr "Föregående"
 
 msgid "Next"
 msgstr "Nästa"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MB / %.1f MB"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d filer"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d kataloger"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr "Kan inte skriva till markerad katalog. Var god välj en annan katalog."
-
-msgid "Done"
-msgstr "Klar"
-
-msgid "Aborted..."
-msgstr "Avbruten..."
-
-msgid "Please enter directory name."
-msgstr "Var god skriv in ett katalognamn."
-
-msgid "Create directory"
-msgstr "Skapa katalog"
-
-msgid "Please enter a new name."
-msgstr "Var god skriv in ett namn."
-
-msgid "Rename"
-msgstr "Byt namn"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Katalog '%s' kommer att tas bort med hela dess innehåll.\n"
-"\n"
-"Vill du fortsätta?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Fil '%s' kommer att tas bort.\n"
-"\n"
-"Vill du fortsätta?"
-
-msgid "Remove"
-msgstr "Ta bort"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MB)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr "(kapacitet = %.1f MB)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " Fritt utrymme (%.1f MB)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Ingen lämplig iRiver iFP-enhet hittades.\n"
-"Kanske är den uttagen eller avstängd."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Enheten är upptagen.\n"
-"(Aqualung kunde inte nå dess gränssnitt.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"Enheten svarar inte.\n"
-"Try jiggling the handle."
-
-msgid "Please select a local path."
-msgstr "Var god välj en lokal sökväg."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "Var god välj minst en giltig låt från spellista."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"En låt är i ett format som inte stöds av din spelare.\n"
-"\n"
-"Vill du fortsätta?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d av %d låtar är i ett format som inte stöds av din spelare.\n"
-"\n"
-"Vill du fortsätta?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"De markerade låtarna är i ett format som inte stöds av din spelare.\n"
-"\n"
-"Vill du fortsätta?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Ingen av de markerade låtarna är i ett format som stöds av din spelare.\n"
-"\n"
-"Vill du fortsätta?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "iFP-enhetshanterare (uppladdningsläge)"
-
-msgid "iFP device manager (download mode)"
-msgstr "iFP-enhetshanterare (hämtningsläge)"
-
-msgid "Selected files:"
-msgstr "Markerade filer:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Information om låtar</b>"
-
-msgid "Model:"
-msgstr "Modell:"
-
-msgid "Battery"
-msgstr "Batteri"
-
-msgid "Free space"
-msgstr "Fritt utrymme"
-
-msgid "<b>Device status</b>"
-msgstr "<b>Enhetsstatus</b>"
-
-msgid "Size"
-msgstr "Storlek"
-
-msgid "Create a new directory"
-msgstr "Skapa en ny katalog"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Fjärrkatalog</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Lokal katalog</b>"
-
-msgid "Browse"
-msgstr "Bläddra"
-
-msgid "File name: "
-msgstr "Filnamn:"
-
-msgid "Current file: "
-msgstr "Aktuell fil:"
-
-msgid "Overall: "
-msgstr ""
-
-msgid "Idle"
-msgstr "Inaktiv"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Överföringsförlopp</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Stäng fönster då överföring är klar"
-
-msgid "_Upload"
-msgstr "_Skicka"
-
-msgid "_Download"
-msgstr "_Hämta"
-
-msgid "_Abort"
-msgstr "_Avbryt"
 
 msgid "Album"
 msgstr "Album"
@@ -1869,6 +1689,9 @@ msgstr "Titelformat"
 msgid "Lua extension file"
 msgstr ""
 
+msgid "Browse"
+msgstr "Bläddra"
+
 #, fuzzy
 msgid "Systray"
 msgstr "Stöd för systembricka\n"
@@ -1894,6 +1717,9 @@ msgstr ""
 
 msgid "Mouse buttons"
 msgstr ""
+
+msgid "Remove"
+msgstr "Ta bort"
 
 msgid "Miscellaneous"
 msgstr "Diverse"
@@ -1995,9 +1821,6 @@ msgstr "Visa aktivt spårnamn i fetstil"
 #, fuzzy
 msgid "Automatically roll to active track"
 msgstr "Lägg automatiskt till cd-skivor till spellista"
-
-msgid "Enable rules hint"
-msgstr ""
 
 msgid "Playlist column order"
 msgstr "Kolumnordning för spellista"
@@ -2291,6 +2114,9 @@ msgstr "Namn:"
 msgid "New tab"
 msgstr "Ny flik"
 
+msgid "Rename"
+msgstr "Byt namn"
+
 msgid "Close tab"
 msgstr "Stäng flik"
 
@@ -2369,9 +2195,6 @@ msgstr "Läs in spellista"
 msgid "Enqueue playlist"
 msgstr "Lägg spellista i kö"
 
-msgid "Send to iFP device"
-msgstr "Skicka till iFP-enhet"
-
 msgid "Calculate RVA"
 msgstr "Beräkna RVA"
 
@@ -2424,6 +2247,9 @@ msgstr ""
 msgid "Available plugins"
 msgstr "Tillgängliga insticksmoduler"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr ""
 
@@ -2438,6 +2264,10 @@ msgstr "Utdata"
 
 msgid "Running plugins"
 msgstr "Kör insticksmoduler"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Ta bort"
 
 msgid "_Configure"
 msgstr "_Konfigurera"
@@ -2516,6 +2346,9 @@ msgstr "Enhetssökväg:"
 
 msgid "Vendor:"
 msgstr "Tillverkare:"
+
+msgid "Model:"
+msgstr "Modell:"
 
 msgid "Revision:"
 msgstr "Version:"
@@ -3092,6 +2925,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr ""
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Återuppta"
 
@@ -3181,6 +3020,196 @@ msgstr ""
 
 msgid "encoding"
 msgstr "kodning"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "Stöd för iRiver iFP-drivrutin\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d filer"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d kataloger"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "Kan inte skriva till markerad katalog. Var god välj en annan katalog."
+
+#~ msgid "Done"
+#~ msgstr "Klar"
+
+#~ msgid "Aborted..."
+#~ msgstr "Avbruten..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Var god skriv in ett katalognamn."
+
+#~ msgid "Create directory"
+#~ msgstr "Skapa katalog"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Var god skriv in ett namn."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Katalog '%s' kommer att tas bort med hela dess innehåll.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Fil '%s' kommer att tas bort.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MB)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr "(kapacitet = %.1f MB)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " Fritt utrymme (%.1f MB)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Ingen lämplig iRiver iFP-enhet hittades.\n"
+#~ "Kanske är den uttagen eller avstängd."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Enheten är upptagen.\n"
+#~ "(Aqualung kunde inte nå dess gränssnitt.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "Enheten svarar inte.\n"
+#~ "Try jiggling the handle."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Var god välj en lokal sökväg."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "Var god välj minst en giltig låt från spellista."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "En låt är i ett format som inte stöds av din spelare.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d av %d låtar är i ett format som inte stöds av din spelare.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "De markerade låtarna är i ett format som inte stöds av din spelare.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Ingen av de markerade låtarna är i ett format som stöds av din spelare.\n"
+#~ "\n"
+#~ "Vill du fortsätta?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "iFP-enhetshanterare (uppladdningsläge)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "iFP-enhetshanterare (hämtningsläge)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Markerade filer:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Information om låtar</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Batteri"
+
+#~ msgid "Free space"
+#~ msgstr "Fritt utrymme"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>Enhetsstatus</b>"
+
+#~ msgid "Size"
+#~ msgstr "Storlek"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Skapa en ny katalog"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Fjärrkatalog</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Lokal katalog</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Filnamn:"
+
+#~ msgid "Current file: "
+#~ msgstr "Aktuell fil:"
+
+#~ msgid "Idle"
+#~ msgstr "Inaktiv"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Överföringsförlopp</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Stäng fönster då överföring är klar"
+
+#~ msgid "_Upload"
+#~ msgstr "_Skicka"
+
+#~ msgid "_Download"
+#~ msgstr "_Hämta"
+
+#~ msgid "_Abort"
+#~ msgstr "_Avbryt"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Skicka till iFP-enhet"
 
 #~ msgid "Output:"
 #~ msgstr "Utdata:"

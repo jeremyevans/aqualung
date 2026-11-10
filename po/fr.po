@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2010-02-11 19:23+0100\n"
 "Last-Translator: Louis Opter <kalessin@kalessin.fr>\n"
 "Language-Team: \n"
@@ -38,9 +38,6 @@ msgstr "Support CDDB\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Conversion du taux d'échantillonage\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "Support du pilote iRiver iFP\n"
 
 #, fuzzy
 msgid "JACK port management support\n"
@@ -116,6 +113,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Server\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -124,6 +124,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "A propos"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Fermer"
 
 msgid "Build version: "
 msgstr "Version générée :"
@@ -301,6 +305,12 @@ msgstr "Merci de sélectionner le dossier racine."
 
 msgid "Select build type"
 msgstr "Sélectionnez le type de génération"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "Gérer par les dossiers"
@@ -726,6 +736,10 @@ msgstr ""
 "Longueur maximale\n"
 "du nom du sous-dossier:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "Aide"
+
 msgid "Filename template:"
 msgstr "Patron du nom du fichier :"
 
@@ -845,6 +859,10 @@ msgstr "Ajouter"
 
 msgid "field:"
 msgstr "champ :"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Enregistrer"
 
 msgid "tag:"
 msgstr "étiquette :"
@@ -1056,208 +1074,6 @@ msgstr "Précédent"
 
 msgid "Next"
 msgstr "Suivant"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MO / %.1f MO"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d fichiers"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d dossiers"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr ""
-"Impossible d'écrire vers le dossier sélectionné. Veuillez en choisir un "
-"autre."
-
-msgid "Done"
-msgstr "Fin"
-
-msgid "Aborted..."
-msgstr "Abandon..."
-
-msgid "Please enter directory name."
-msgstr "Veuillez entrer le nom d'un dossier."
-
-msgid "Create directory"
-msgstr "Créer un dossier"
-
-msgid "Please enter a new name."
-msgstr "Veuillez entrer le nouveau nom."
-
-msgid "Rename"
-msgstr "Renommer"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Le dossier '%s' sera effacé avec tout ce qu'il contient.\n"
-"\n"
-"Voulez vous continuer ?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Le fichier '%s' sera effacé.\n"
-"\n"
-"Voulez vous continuer ?"
-
-msgid "Remove"
-msgstr "Effacer"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MO)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (capacité = %.1f MO)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " Espace libre (%.1f MO)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Aucun périphérique iRiver iFP utilisable n'a été trouvé.\n"
-"Peut-être qu'il n'est pas branché ou qu'il est éteint."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Le périphérique est déjà utilisé.\n"
-"(Aqualung n'a pas pu réclamer son utilisation.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr "Le périphérique ne répond pas."
-
-msgid "Please select a local path."
-msgstr "Veuillez sélectionner un chemin local."
-
-msgid "Please select at least one valid song from playlist."
-msgstr ""
-"Veuillez sélectionner au moins une piste valide depuis la liste de lecture."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Une des pistes est dans un format qui n'est pas supporté par votre lecteur.\n"
-"\n"
-"Voulez vous continuer ?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d sur %d pistes sont dans un format qui n'est pas supporté par votre "
-"lecteur.\n"
-"\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"La piste sélectionnée est dans un format qui n'est pas supporté par votre "
-"lecteur.\n"
-"\n"
-"Voulez vous continuer ?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Aucune des pistes que vous avez sélectionnées ne sont supportées par votre "
-"lecteur.\n"
-"\n"
-"Voulez vous continuer ?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "Gestionnaire de périphérique iFP (mode d'envoi)"
-
-msgid "iFP device manager (download mode)"
-msgstr "Gestionnaire de périphérique iFP (mode téléchargement)"
-
-msgid "Selected files:"
-msgstr "Fichiers sélectionnés :"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Informations sur les pistes</b>"
-
-msgid "Model:"
-msgstr "Modèle :"
-
-msgid "Battery"
-msgstr "Batterie :"
-
-msgid "Free space"
-msgstr "Espace libre"
-
-msgid "<b>Device status</b>"
-msgstr "<b>État du périphérique</b>"
-
-msgid "Size"
-msgstr "Taille"
-
-msgid "Create a new directory"
-msgstr "Créer un nouveau dossier"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Dossier distant</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Dossier local</b>"
-
-msgid "Browse"
-msgstr "Explorer"
-
-msgid "File name: "
-msgstr "Nom du fichier : "
-
-msgid "Current file: "
-msgstr "Fichier courant : "
-
-msgid "Overall: "
-msgstr "Total : "
-
-msgid "Idle"
-msgstr "En attente"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Status du transfert</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Fermer la fenêtre quand le transfert est terminé"
-
-msgid "_Upload"
-msgstr "_Envoi"
-
-msgid "_Download"
-msgstr "_Téléchargement"
-
-msgid "_Abort"
-msgstr "_Annuler"
 
 msgid "Album"
 msgstr "Album"
@@ -1923,6 +1739,9 @@ msgstr "Format du Titre"
 msgid "Lua extension file"
 msgstr "Fichier d'extension Lua"
 
+msgid "Browse"
+msgstr "Explorer"
+
 msgid "Systray"
 msgstr "Zone de notification"
 
@@ -1946,6 +1765,9 @@ msgstr "Roue horizontale de la souris :"
 
 msgid "Mouse buttons"
 msgstr "Boutons de la souris"
+
+msgid "Remove"
+msgstr "Effacer"
 
 msgid "Miscellaneous"
 msgstr "Divers"
@@ -2053,9 +1875,6 @@ msgstr "Afficher la piste active en gras"
 
 msgid "Automatically roll to active track"
 msgstr "Bouger le curseur automatiquement vers la piste active"
-
-msgid "Enable rules hint"
-msgstr "Utiliser des couleurs alternatives dans les listes"
 
 msgid "Playlist column order"
 msgstr "Ordre des colonnes de la liste de lecture"
@@ -2359,6 +2178,9 @@ msgstr "Nom :"
 msgid "New tab"
 msgstr "Nouvel onglet"
 
+msgid "Rename"
+msgstr "Renommer"
+
 msgid "Close tab"
 msgstr "Fermet l'onglet"
 
@@ -2437,9 +2259,6 @@ msgstr "Charger une liste de lecture"
 msgid "Enqueue playlist"
 msgstr "Rajouter une liste de lecture"
 
-msgid "Send to iFP device"
-msgstr "Envoyer vers le périphérique iFP"
-
 msgid "Calculate RVA"
 msgstr "Calculer le RVA"
 
@@ -2492,6 +2311,9 @@ msgstr "Configuration LADSPA"
 msgid "Available plugins"
 msgstr "Modules disponibles"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2506,6 +2328,10 @@ msgstr "Sorties"
 
 msgid "Running plugins"
 msgstr "Modules activés"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Effacer"
 
 msgid "_Configure"
 msgstr "_Configurer"
@@ -2584,6 +2410,9 @@ msgstr "Chemin du périphérique :"
 
 msgid "Vendor:"
 msgstr "Vendeur :"
+
+msgid "Model:"
+msgstr "Modèle :"
 
 msgid "Revision:"
 msgstr "Révision :"
@@ -3164,6 +2993,12 @@ msgstr ""
 msgid "LAVC audio/video files"
 msgstr ""
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Reprendre"
 
@@ -3253,6 +3088,207 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "encodage"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "Support du pilote iRiver iFP\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MO / %.1f MO"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d fichiers"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d dossiers"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "Impossible d'écrire vers le dossier sélectionné. Veuillez en choisir un "
+#~ "autre."
+
+#~ msgid "Done"
+#~ msgstr "Fin"
+
+#~ msgid "Aborted..."
+#~ msgstr "Abandon..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Veuillez entrer le nom d'un dossier."
+
+#~ msgid "Create directory"
+#~ msgstr "Créer un dossier"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Veuillez entrer le nouveau nom."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Le dossier '%s' sera effacé avec tout ce qu'il contient.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Le fichier '%s' sera effacé.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MO)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (capacité = %.1f MO)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " Espace libre (%.1f MO)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Aucun périphérique iRiver iFP utilisable n'a été trouvé.\n"
+#~ "Peut-être qu'il n'est pas branché ou qu'il est éteint."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Le périphérique est déjà utilisé.\n"
+#~ "(Aqualung n'a pas pu réclamer son utilisation.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr "Le périphérique ne répond pas."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Veuillez sélectionner un chemin local."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr ""
+#~ "Veuillez sélectionner au moins une piste valide depuis la liste de "
+#~ "lecture."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Une des pistes est dans un format qui n'est pas supporté par votre "
+#~ "lecteur.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d sur %d pistes sont dans un format qui n'est pas supporté par votre "
+#~ "lecteur.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "La piste sélectionnée est dans un format qui n'est pas supporté par votre "
+#~ "lecteur.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Aucune des pistes que vous avez sélectionnées ne sont supportées par "
+#~ "votre lecteur.\n"
+#~ "\n"
+#~ "Voulez vous continuer ?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "Gestionnaire de périphérique iFP (mode d'envoi)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "Gestionnaire de périphérique iFP (mode téléchargement)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Fichiers sélectionnés :"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Informations sur les pistes</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Batterie :"
+
+#~ msgid "Free space"
+#~ msgstr "Espace libre"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>État du périphérique</b>"
+
+#~ msgid "Size"
+#~ msgstr "Taille"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Créer un nouveau dossier"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Dossier distant</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Dossier local</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Nom du fichier : "
+
+#~ msgid "Current file: "
+#~ msgstr "Fichier courant : "
+
+#~ msgid "Overall: "
+#~ msgstr "Total : "
+
+#~ msgid "Idle"
+#~ msgstr "En attente"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Status du transfert</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Fermer la fenêtre quand le transfert est terminé"
+
+#~ msgid "_Upload"
+#~ msgstr "_Envoi"
+
+#~ msgid "_Download"
+#~ msgstr "_Téléchargement"
+
+#~ msgid "_Abort"
+#~ msgstr "_Annuler"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "Utiliser des couleurs alternatives dans les listes"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Envoyer vers le périphérique iFP"
 
 #~ msgid "Output:"
 #~ msgstr "Sortie :"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung SVN\n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2012-02-28 12:28+0100\n"
 "Last-Translator: Ivo van Poorten <ivop@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,9 +30,6 @@ msgstr "Ondersteuning voor CDDB\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Ondersteuning voor samplerate omzetting\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "Ondersteuning voor iRiver iFP\n"
 
 msgid "JACK port management support\n"
 msgstr "Ondersteuning voor JACK poortbeheer\n"
@@ -106,6 +103,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Server\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -114,6 +114,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "Info"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Sluiten"
 
 msgid "Build version: "
 msgstr "Versie:"
@@ -288,6 +292,12 @@ msgstr "Selecteer de basismap."
 
 msgid "Select build type"
 msgstr "Selecteer opbouwmethode"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "Mapgestuurd"
@@ -715,6 +725,10 @@ msgstr ""
 "Submapnaam\n"
 "maximale lengte:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "Hulp"
+
 msgid "Filename template:"
 msgstr "Bestandsnaamsjabloon"
 
@@ -834,6 +848,10 @@ msgstr "Voeg toe"
 
 msgid "field:"
 msgstr "veld:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Opslaan"
 
 msgid "tag:"
 msgstr "tag:"
@@ -1041,207 +1059,6 @@ msgstr "Vorige"
 
 msgid "Next"
 msgstr "Volgende"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MB / %.1f MB"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d bestanden"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d mappen"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr "Kan niet schrijven in de geselecteerde map. Selecteer een andere map."
-
-msgid "Done"
-msgstr "Klaar"
-
-msgid "Aborted..."
-msgstr "Afgebroken..."
-
-msgid "Please enter directory name."
-msgstr "Vul een mapnaam in."
-
-msgid "Create directory"
-msgstr "Maak een nieuwe map"
-
-msgid "Please enter a new name."
-msgstr "Vul een naam in."
-
-msgid "Rename"
-msgstr "Hernoemen"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Map '%s', inclusief de inhoud, zal worden verwijderd.\n"
-"\n"
-"Wilt u doorgaan?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Bestand '%s' zal worden verwijderd.\n"
-"\n"
-"Wilt u doorgaan?"
-
-msgid "Remove"
-msgstr "Verwijderen"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MB)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (capaciteit = %.1f MB)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " Vrije ruimte (%.1f MB)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Geen geschikt iRiver iFP apparaat gevonden.\n"
-"Misschien is het niet aangesloten of staat het uit."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Apparaat is bezig.\n"
-"(Aqualung was niet in staat een verbinding te maken.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"Apparaat reageert niet.\n"
-"Probeer de hendel op en neer te bewegen."
-
-msgid "Please select a local path."
-msgstr "Selecteer een lokaal pad."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "Selecteer op zijn minst één nummer uit de afspeellijst."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Eén nummer is in een formaat dat niet ondersteund wordt door uw speler.\n"
-"\n"
-"Wilt u doorgaan?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d van de %d nummers is in een formaat dat niet ondersteund wordt door uw "
-"speler.\n"
-"\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Het geselecteerde nummer is in een formaat dat niet ondersteund wordt door "
-"uw speler.\n"
-"\n"
-"Wilt u doorgaan?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Geen van de geselecteerde nummers is in een formaat dat ondersteund wordt "
-"door uw speler.\n"
-"\n"
-"Wilt u doorgaan?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "iFP apparaatbeheer (upload mode)"
-
-msgid "iFP device manager (download mode)"
-msgstr "iFP apparaatbeheer (download mode)"
-
-msgid "Selected files:"
-msgstr "Geselecteerde nummers:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Nummerinformatie</b>"
-
-msgid "Model:"
-msgstr "Model:"
-
-msgid "Battery"
-msgstr "Batterij"
-
-msgid "Free space"
-msgstr "Vrije ruimte"
-
-msgid "<b>Device status</b>"
-msgstr "<b>Apparaatstatus</b>"
-
-msgid "Size"
-msgstr "Omvang"
-
-msgid "Create a new directory"
-msgstr "Maak een nieuwe map"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Map op apparaat</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Lokale map</b>"
-
-msgid "Browse"
-msgstr "Bladeren"
-
-msgid "File name: "
-msgstr "Bestandsnaam:"
-
-msgid "Current file: "
-msgstr "Huidig bestand:"
-
-msgid "Overall: "
-msgstr "Compleet:"
-
-msgid "Idle"
-msgstr "Doet niets"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Voortgang</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Sluit venster als we klaar zijn"
-
-msgid "_Upload"
-msgstr "_Upload"
-
-msgid "_Download"
-msgstr "_Download"
-
-msgid "_Abort"
-msgstr "_Afbreken"
 
 msgid "Album"
 msgstr "Album"
@@ -1924,6 +1741,9 @@ msgstr "Titelformaat"
 msgid "Lua extension file"
 msgstr "Lua extensie bestand"
 
+msgid "Browse"
+msgstr "Bladeren"
+
 msgid "Systray"
 msgstr "Systeemvak"
 
@@ -1947,6 +1767,9 @@ msgstr "Horizontaal muiswiel:"
 
 msgid "Mouse buttons"
 msgstr "Muisknoppen"
+
+msgid "Remove"
+msgstr "Verwijderen"
 
 msgid "Miscellaneous"
 msgstr "Diversen"
@@ -2049,9 +1872,6 @@ msgstr "Toon de naam van het huidige nummer in vette letters"
 
 msgid "Automatically roll to active track"
 msgstr "Selecteer automatisch het huidige nummer"
-
-msgid "Enable rules hint"
-msgstr "Schakel regelhints in"
 
 msgid "Playlist column order"
 msgstr "Volgorde van kolommen in Afspeellijst"
@@ -2354,6 +2174,9 @@ msgstr "Naam:"
 msgid "New tab"
 msgstr "Nieuw tabblad"
 
+msgid "Rename"
+msgstr "Hernoemen"
+
 msgid "Close tab"
 msgstr "Sluit tabblad"
 
@@ -2432,9 +2255,6 @@ msgstr "Laad afspeellijst"
 msgid "Enqueue playlist"
 msgstr "Zet afspeellijst in wachtrij"
 
-msgid "Send to iFP device"
-msgstr "Stuur naar iFP apparaat"
-
 msgid "Calculate RVA"
 msgstr "Bereken RVA"
 
@@ -2487,6 +2307,9 @@ msgstr "LADSPA plug-in beheer"
 msgid "Available plugins"
 msgstr "Beschikbare plug-ins"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2501,6 +2324,10 @@ msgstr "Uitgangen"
 
 msgid "Running plugins"
 msgstr "Draaiende plug-ins"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Verwijderen"
 
 msgid "_Configure"
 msgstr "_Instellen"
@@ -2579,6 +2406,9 @@ msgstr "Apparaatpad:"
 
 msgid "Vendor:"
 msgstr "Fabrikant:"
+
+msgid "Model:"
+msgstr "Model:"
 
 msgid "Revision:"
 msgstr "Revisie:"
@@ -3157,6 +2987,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "LAVC audio/video bestanden"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Hervatten"
 
@@ -3246,6 +3082,205 @@ msgstr "bit drijvende komma, dubbele precisie"
 
 msgid "encoding"
 msgstr "encodering"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "Ondersteuning voor iRiver iFP\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d bestanden"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d mappen"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "Kan niet schrijven in de geselecteerde map. Selecteer een andere map."
+
+#~ msgid "Done"
+#~ msgstr "Klaar"
+
+#~ msgid "Aborted..."
+#~ msgstr "Afgebroken..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Vul een mapnaam in."
+
+#~ msgid "Create directory"
+#~ msgstr "Maak een nieuwe map"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Vul een naam in."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Map '%s', inclusief de inhoud, zal worden verwijderd.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Bestand '%s' zal worden verwijderd.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MB)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (capaciteit = %.1f MB)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " Vrije ruimte (%.1f MB)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Geen geschikt iRiver iFP apparaat gevonden.\n"
+#~ "Misschien is het niet aangesloten of staat het uit."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Apparaat is bezig.\n"
+#~ "(Aqualung was niet in staat een verbinding te maken.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "Apparaat reageert niet.\n"
+#~ "Probeer de hendel op en neer te bewegen."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Selecteer een lokaal pad."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "Selecteer op zijn minst één nummer uit de afspeellijst."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Eén nummer is in een formaat dat niet ondersteund wordt door uw speler.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d van de %d nummers is in een formaat dat niet ondersteund wordt door uw "
+#~ "speler.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Het geselecteerde nummer is in een formaat dat niet ondersteund wordt "
+#~ "door uw speler.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Geen van de geselecteerde nummers is in een formaat dat ondersteund wordt "
+#~ "door uw speler.\n"
+#~ "\n"
+#~ "Wilt u doorgaan?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "iFP apparaatbeheer (upload mode)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "iFP apparaatbeheer (download mode)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Geselecteerde nummers:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Nummerinformatie</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Batterij"
+
+#~ msgid "Free space"
+#~ msgstr "Vrije ruimte"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>Apparaatstatus</b>"
+
+#~ msgid "Size"
+#~ msgstr "Omvang"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Maak een nieuwe map"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Map op apparaat</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Lokale map</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Bestandsnaam:"
+
+#~ msgid "Current file: "
+#~ msgstr "Huidig bestand:"
+
+#~ msgid "Overall: "
+#~ msgstr "Compleet:"
+
+#~ msgid "Idle"
+#~ msgstr "Doet niets"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Voortgang</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Sluit venster als we klaar zijn"
+
+#~ msgid "_Upload"
+#~ msgstr "_Upload"
+
+#~ msgid "_Download"
+#~ msgstr "_Download"
+
+#~ msgid "_Abort"
+#~ msgstr "_Afbreken"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "Schakel regelhints in"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Stuur naar iFP apparaat"
 
 #~ msgid "Output:"
 #~ msgstr "Uitvoer:"

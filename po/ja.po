@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2010-01-22 15:40+0100\n"
 "Last-Translator: YoN <yon8844@gmail.com>\n"
 "Language-Team: Team Puppy Linux Japan\n"
@@ -34,9 +34,6 @@ msgstr "CDDB サポート\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "サンプルレート変換サポート\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP ドライバサポート\n"
 
 #, fuzzy
 msgid "JACK port management support\n"
@@ -112,6 +109,9 @@ msgstr "ALSA オーディオ\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK オーディオサーバ\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -120,6 +120,10 @@ msgstr "Win32 サウンド API\n"
 
 msgid "About"
 msgstr "このソフトについて"
+
+#, fuzzy
+msgid "_Close"
+msgstr "閉じる"
 
 msgid "Build version: "
 msgstr "ビルドバージョン: "
@@ -296,6 +300,12 @@ msgstr "rootディレクトリを選択して下さい。"
 
 msgid "Select build type"
 msgstr "ビルドタイプを選択"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "ディレクトリ優先"
@@ -721,6 +731,10 @@ msgstr ""
 "サブディレクトリ名の\n"
 "長さ制限:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "ヘルプ"
+
 msgid "Filename template:"
 msgstr "ファイル名テンプレート:"
 
@@ -839,6 +853,10 @@ msgstr "追加"
 
 msgid "field:"
 msgstr "フィールド:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "保存"
 
 msgid "tag:"
 msgstr "タグ:"
@@ -1047,204 +1065,6 @@ msgstr "前"
 
 msgid "Next"
 msgstr "次"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MB / %.1f MB"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d ファイル"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d ディレクトリ"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr ""
-"選択したディレクトリに書き込めません。別のディレクトリを選択して下さい。"
-
-msgid "Done"
-msgstr "完了"
-
-msgid "Aborted..."
-msgstr "中止..."
-
-msgid "Please enter directory name."
-msgstr "ディレクトリ名を入力して下さい。"
-
-msgid "Create directory"
-msgstr "ディレクトリを作成"
-
-msgid "Please enter a new name."
-msgstr "新しい名前を入力して下さい。"
-
-msgid "Rename"
-msgstr "リネーム"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"ディレクトリ '%s' は全てのコンテンツを含めて削除されます。\n"
-"\n"
-"続けますか？"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"ファイル '%s' は削除されます。\n"
-"\n"
-"続けますか？"
-
-msgid "Remove"
-msgstr "削除"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MB)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (容量 = %.1f MB)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr "空きスペース (%.1f MB)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"iRiver-iFP に合うデバイスが見つかりません。\n"
-"たぶん、接続されていないか電源が切れています。"
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"デバイスがビジーです。\n"
-"(Aqualung はそのインターフェースを取得できませんでした。)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"デバイスは応答がありません。\n"
-"ハンドルを軽く動かして見て下さい。"
-
-msgid "Please select a local path."
-msgstr "ローカルパスを選択して下さい。"
-
-msgid "Please select at least one valid song from playlist."
-msgstr "プレイリストから少なくとも1つ有効な曲を選択して下さい。"
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"1曲はお使いのプレーヤではサポートされていない形式です。\n"
-"続けますか？"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d 中 %d 曲はお使いのプレーヤではサポートされていない形式です。\n"
-"\n"
-"続けますか？"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"選択した曲はお使いのプレーヤではサポートされていない形式です。\n"
-"\n"
-"続けますか？"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"お使いのプレーヤでサポートされていない形式の曲は選択されていません。\n"
-"\n"
-"続けますか？"
-
-msgid "iFP device manager (upload mode)"
-msgstr "iFP デバイスマネージャ (アップロード モード)"
-
-msgid "iFP device manager (download mode)"
-msgstr "iFP　デバイスマネージャ (ダウンロード モード)"
-
-msgid "Selected files:"
-msgstr "選択したファイル:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>曲情報</b>"
-
-msgid "Model:"
-msgstr "モデル:"
-
-msgid "Battery"
-msgstr "バッテリー"
-
-msgid "Free space"
-msgstr "空きスペース"
-
-msgid "<b>Device status</b>"
-msgstr "<b>デバイス状況</b>"
-
-msgid "Size"
-msgstr "サイズ"
-
-msgid "Create a new directory"
-msgstr "新しいディレクトリを作成"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>ディレクトリを削除</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>ローカルディレクトリ</b>"
-
-msgid "Browse"
-msgstr "ブラウズ"
-
-msgid "File name: "
-msgstr "ファイル名:"
-
-msgid "Current file: "
-msgstr "現在のファイル:"
-
-msgid "Overall: "
-msgstr "全般:"
-
-msgid "Idle"
-msgstr "待機中"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>転送進行状況</b>"
-
-msgid "Close window when transfer complete"
-msgstr "転送完了後、ウィンドウを閉じる"
-
-msgid "_Upload"
-msgstr "アップロード(_U)"
-
-msgid "_Download"
-msgstr "ダウンロード(_D)"
-
-msgid "_Abort"
-msgstr "中止(_A)"
 
 msgid "Album"
 msgstr "アルバム"
@@ -1903,6 +1723,9 @@ msgstr "タイトル形式"
 msgid "Lua extension file"
 msgstr ""
 
+msgid "Browse"
+msgstr "ブラウズ"
+
 msgid "Systray"
 msgstr "システムトレイ"
 
@@ -1926,6 +1749,9 @@ msgstr "水平マウスホイール:"
 
 msgid "Mouse buttons"
 msgstr "マウスボタン"
+
+msgid "Remove"
+msgstr "削除"
 
 msgid "Miscellaneous"
 msgstr "その他"
@@ -2025,9 +1851,6 @@ msgstr "アクティブなトラック名を太字で表示"
 
 msgid "Automatically roll to active track"
 msgstr "自動的にアクティブなトラックへ移動"
-
-msgid "Enable rules hint"
-msgstr "ルールヒントを有効"
 
 msgid "Playlist column order"
 msgstr "列順プレイリスト"
@@ -2322,6 +2145,9 @@ msgstr "名前:"
 msgid "New tab"
 msgstr "新しいタブ"
 
+msgid "Rename"
+msgstr "リネーム"
+
 msgid "Close tab"
 msgstr "タブを閉じる"
 
@@ -2400,9 +2226,6 @@ msgstr "プレイリストを読み込む"
 msgid "Enqueue playlist"
 msgstr "待ちプレイリスト"
 
-msgid "Send to iFP device"
-msgstr "iFP デバイスに送信"
-
 msgid "Calculate RVA"
 msgstr "RVA を計算"
 
@@ -2455,6 +2278,9 @@ msgstr "LADSPA パッチビルダ"
 msgid "Available plugins"
 msgstr "利用できるプラグイン"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2469,6 +2295,10 @@ msgstr "出力"
 
 msgid "Running plugins"
 msgstr "プラグインを実行"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "削除"
 
 msgid "_Configure"
 msgstr "設定(_C)"
@@ -2547,6 +2377,9 @@ msgstr "デバイスのパス:"
 
 msgid "Vendor:"
 msgstr "ベンダー:"
+
+msgid "Model:"
+msgstr "モデル:"
 
 msgid "Revision:"
 msgstr "リビジョン:"
@@ -3125,6 +2958,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "LAVC オーディオ/ビデオファイル"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "レジューム"
 
@@ -3214,6 +3053,201 @@ msgstr "bit double"
 
 msgid "encoding"
 msgstr "エンコード"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "iRiver iFP ドライバサポート\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d ファイル"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d ディレクトリ"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "選択したディレクトリに書き込めません。別のディレクトリを選択して下さい。"
+
+#~ msgid "Done"
+#~ msgstr "完了"
+
+#~ msgid "Aborted..."
+#~ msgstr "中止..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "ディレクトリ名を入力して下さい。"
+
+#~ msgid "Create directory"
+#~ msgstr "ディレクトリを作成"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "新しい名前を入力して下さい。"
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "ディレクトリ '%s' は全てのコンテンツを含めて削除されます。\n"
+#~ "\n"
+#~ "続けますか？"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "ファイル '%s' は削除されます。\n"
+#~ "\n"
+#~ "続けますか？"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MB)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (容量 = %.1f MB)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr "空きスペース (%.1f MB)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "iRiver-iFP に合うデバイスが見つかりません。\n"
+#~ "たぶん、接続されていないか電源が切れています。"
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "デバイスがビジーです。\n"
+#~ "(Aqualung はそのインターフェースを取得できませんでした。)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "デバイスは応答がありません。\n"
+#~ "ハンドルを軽く動かして見て下さい。"
+
+#~ msgid "Please select a local path."
+#~ msgstr "ローカルパスを選択して下さい。"
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "プレイリストから少なくとも1つ有効な曲を選択して下さい。"
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "1曲はお使いのプレーヤではサポートされていない形式です。\n"
+#~ "続けますか？"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d 中 %d 曲はお使いのプレーヤではサポートされていない形式です。\n"
+#~ "\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "選択した曲はお使いのプレーヤではサポートされていない形式です。\n"
+#~ "\n"
+#~ "続けますか？"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "お使いのプレーヤでサポートされていない形式の曲は選択されていません。\n"
+#~ "\n"
+#~ "続けますか？"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "iFP デバイスマネージャ (アップロード モード)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "iFP　デバイスマネージャ (ダウンロード モード)"
+
+#~ msgid "Selected files:"
+#~ msgstr "選択したファイル:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>曲情報</b>"
+
+#~ msgid "Battery"
+#~ msgstr "バッテリー"
+
+#~ msgid "Free space"
+#~ msgstr "空きスペース"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>デバイス状況</b>"
+
+#~ msgid "Size"
+#~ msgstr "サイズ"
+
+#~ msgid "Create a new directory"
+#~ msgstr "新しいディレクトリを作成"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>ディレクトリを削除</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>ローカルディレクトリ</b>"
+
+#~ msgid "File name: "
+#~ msgstr "ファイル名:"
+
+#~ msgid "Current file: "
+#~ msgstr "現在のファイル:"
+
+#~ msgid "Overall: "
+#~ msgstr "全般:"
+
+#~ msgid "Idle"
+#~ msgstr "待機中"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>転送進行状況</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "転送完了後、ウィンドウを閉じる"
+
+#~ msgid "_Upload"
+#~ msgstr "アップロード(_U)"
+
+#~ msgid "_Download"
+#~ msgstr "ダウンロード(_D)"
+
+#~ msgid "_Abort"
+#~ msgstr "中止(_A)"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "ルールヒントを有効"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "iFP デバイスに送信"
 
 #~ msgid "Output:"
 #~ msgstr "出力:"

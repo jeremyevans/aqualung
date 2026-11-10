@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2010-10-16 21:46+0200\n"
 "Last-Translator: Peter Szilagyi <peterszilagyi@users.sourceforge.net>\n"
 "Language: hu\n"
@@ -30,9 +30,6 @@ msgstr "CDDB támogatás\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Mintavételi frekvencia konverter támogatás\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP meghajtó támogatás\n"
 
 #, fuzzy
 msgid "JACK port management support\n"
@@ -108,6 +105,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "JACK Audio Szerver\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -116,6 +116,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "Névjegy"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Bezárás"
 
 msgid "Build version: "
 msgstr "Fordítási verzió: "
@@ -291,6 +295,12 @@ msgstr "Válaszd ki a gyökérkönyvtárat."
 
 msgid "Select build type"
 msgstr "Felépítés típusának kiválasztása"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "Könyvtár alapú"
@@ -716,6 +726,10 @@ msgstr ""
 "Alkönyvtár név\n"
 "maximális hossza:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "Súgó"
+
 msgid "Filename template:"
 msgstr "Fájlnév sablon:"
 
@@ -834,6 +848,10 @@ msgstr "Hozzáadás"
 
 msgid "field:"
 msgstr "mező:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Mentés"
 
 msgid "tag:"
 msgstr "tag:"
@@ -1042,200 +1060,6 @@ msgstr "Előző"
 
 msgid "Next"
 msgstr "Következő"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f MB / %.1f MB"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d fájl"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d könyvtár"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr "A kiválasztott könyvtárba nem lehet írni, válassz egy másikat."
-
-msgid "Done"
-msgstr "Kész"
-
-msgid "Aborted..."
-msgstr "Megszakítva..."
-
-msgid "Please enter directory name."
-msgstr "Add meg a könyvtár nevét."
-
-msgid "Create directory"
-msgstr "Könyvtár létrehozása"
-
-msgid "Please enter a new name."
-msgstr "Adj meg egy új nevet."
-
-msgid "Rename"
-msgstr "Átnevezés"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Biztosan el akarod távolítani a '%s' könyvtárat\n"
-"és teljes tartalmát?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr "Biztosan el akarod távolítani a '%s' fájl?"
-
-msgid "Remove"
-msgstr "Eltávolítás"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f MB)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (kapacitás = %.1f MB)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " Szabad hely (%.1f MB)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Nem található megfelelő iRiver iFP eszköz.\n"
-"Lehet, hogy nincs csatlakoztatva, vagy ki van kapcsolva."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Az eszköz foglalt.\n"
-"(Nem sikerült hozzáférni az interfészhez.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"Az eszköz nem válaszol.\n"
-"Próbáld mozgatni a fogantyúját."
-
-msgid "Please select a local path."
-msgstr "Válassz egy helyi elérési utat."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "Válassz ki legalább egy érvényes számot a lejátszólistából."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"A lejátszód nem támogatja az egyik szám formátumát.\n"
-"\n"
-"Akarod folytatni?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"A lejátszód %d szám formátumát nem támogatja a megadott %d közül.\n"
-"\n"
-"Akarod folytatni?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"A lejátszód nem támogatja a kiválasztott szám formátumát.\n"
-"\n"
-"Akarod folytatni?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"A lejátszód egyik kiválasztott szám formátumát sem támogatja.\n"
-"\n"
-"Akarod folytatni?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "iFP eszközkezelő (feltöltés mód)"
-
-msgid "iFP device manager (download mode)"
-msgstr "iFP eszközkezelő (letöltés mód)"
-
-msgid "Selected files:"
-msgstr "Kiválasztott fájlok:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Szám info</b>"
-
-msgid "Model:"
-msgstr "Modell:"
-
-msgid "Battery"
-msgstr "Elem"
-
-msgid "Free space"
-msgstr "Szabad hely"
-
-msgid "<b>Device status</b>"
-msgstr "<b>Eszköz állapota</b>"
-
-msgid "Size"
-msgstr "Méret"
-
-msgid "Create a new directory"
-msgstr "Új könyvtár létrehozása"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Távoli könyvtár</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Helyi könyvtár</b>"
-
-msgid "Browse"
-msgstr "Tallózás"
-
-msgid "File name: "
-msgstr "Fájlnév:"
-
-msgid "Current file: "
-msgstr "Aktuális fájl: "
-
-msgid "Overall: "
-msgstr "Összesen: "
-
-msgid "Idle"
-msgstr "Tétlen"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Másolási folyamat</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Ablak bezárása, ha kész"
-
-msgid "_Upload"
-msgstr "_Feltöltés"
-
-msgid "_Download"
-msgstr "_Letöltés"
-
-msgid "_Abort"
-msgstr "_Megszakítás"
 
 msgid "Album"
 msgstr "Lemez"
@@ -1897,6 +1721,9 @@ msgstr "Címformátum"
 msgid "Lua extension file"
 msgstr "Lua kiterjesztés fájl"
 
+msgid "Browse"
+msgstr "Tallózás"
+
 msgid "Systray"
 msgstr "Rendszertálca"
 
@@ -1920,6 +1747,9 @@ msgstr "Vízszintes egér görgő"
 
 msgid "Mouse buttons"
 msgstr "Egérgombok"
+
+msgid "Remove"
+msgstr "Eltávolítás"
 
 msgid "Miscellaneous"
 msgstr "Egyéb"
@@ -2019,9 +1849,6 @@ msgstr "Aktív szám megjelenítése félkövérrel"
 
 msgid "Automatically roll to active track"
 msgstr "Automatikus görgetés az aktív számhoz"
-
-msgid "Enable rules hint"
-msgstr "Sorok vonalazása"
 
 msgid "Playlist column order"
 msgstr "Oszlopok sorrendje a Lejátszólistában"
@@ -2320,6 +2147,9 @@ msgstr "Név:"
 msgid "New tab"
 msgstr "Új lap"
 
+msgid "Rename"
+msgstr "Átnevezés"
+
 msgid "Close tab"
 msgstr "Lap bezárása"
 
@@ -2398,9 +2228,6 @@ msgstr "Lejátszólista betöltése"
 msgid "Enqueue playlist"
 msgstr "Lejátszólista hozzáfűzése"
 
-msgid "Send to iFP device"
-msgstr "Küldés iFP eszközre"
-
 msgid "Calculate RVA"
 msgstr "Hangosság meghatározása"
 
@@ -2453,6 +2280,9 @@ msgstr "LADSPA effekt szerkesztő"
 msgid "Available plugins"
 msgstr "Rendelkezésre álló effektek"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2467,6 +2297,10 @@ msgstr "Kimenetek"
 
 msgid "Running plugins"
 msgstr "Működő effektek"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Eltávolítás"
 
 msgid "_Configure"
 msgstr "_Beállítás"
@@ -2545,6 +2379,9 @@ msgstr "Elérési út:"
 
 msgid "Vendor:"
 msgstr "Vendor:"
+
+msgid "Model:"
+msgstr "Modell:"
 
 msgid "Revision:"
 msgstr "Revision:"
@@ -3123,6 +2960,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "LAVC hang/videó fájlok"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Folytatás"
 
@@ -3212,6 +3055,197 @@ msgstr "bites dupla pontosságú lebegőpontos"
 
 msgid "encoding"
 msgstr "kódolású"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "iRiver iFP meghajtó támogatás\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f MB / %.1f MB"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d fájl"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d könyvtár"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr "A kiválasztott könyvtárba nem lehet írni, válassz egy másikat."
+
+#~ msgid "Done"
+#~ msgstr "Kész"
+
+#~ msgid "Aborted..."
+#~ msgstr "Megszakítva..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Add meg a könyvtár nevét."
+
+#~ msgid "Create directory"
+#~ msgstr "Könyvtár létrehozása"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Adj meg egy új nevet."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Biztosan el akarod távolítani a '%s' könyvtárat\n"
+#~ "és teljes tartalmát?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr "Biztosan el akarod távolítani a '%s' fájl?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f MB)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (kapacitás = %.1f MB)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " Szabad hely (%.1f MB)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Nem található megfelelő iRiver iFP eszköz.\n"
+#~ "Lehet, hogy nincs csatlakoztatva, vagy ki van kapcsolva."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Az eszköz foglalt.\n"
+#~ "(Nem sikerült hozzáférni az interfészhez.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "Az eszköz nem válaszol.\n"
+#~ "Próbáld mozgatni a fogantyúját."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Válassz egy helyi elérési utat."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "Válassz ki legalább egy érvényes számot a lejátszólistából."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A lejátszód nem támogatja az egyik szám formátumát.\n"
+#~ "\n"
+#~ "Akarod folytatni?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A lejátszód %d szám formátumát nem támogatja a megadott %d közül.\n"
+#~ "\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A lejátszód nem támogatja a kiválasztott szám formátumát.\n"
+#~ "\n"
+#~ "Akarod folytatni?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "A lejátszód egyik kiválasztott szám formátumát sem támogatja.\n"
+#~ "\n"
+#~ "Akarod folytatni?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "iFP eszközkezelő (feltöltés mód)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "iFP eszközkezelő (letöltés mód)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Kiválasztott fájlok:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Szám info</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Elem"
+
+#~ msgid "Free space"
+#~ msgstr "Szabad hely"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>Eszköz állapota</b>"
+
+#~ msgid "Size"
+#~ msgstr "Méret"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Új könyvtár létrehozása"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Távoli könyvtár</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Helyi könyvtár</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Fájlnév:"
+
+#~ msgid "Current file: "
+#~ msgstr "Aktuális fájl: "
+
+#~ msgid "Overall: "
+#~ msgstr "Összesen: "
+
+#~ msgid "Idle"
+#~ msgstr "Tétlen"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Másolási folyamat</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Ablak bezárása, ha kész"
+
+#~ msgid "_Upload"
+#~ msgstr "_Feltöltés"
+
+#~ msgid "_Download"
+#~ msgstr "_Letöltés"
+
+#~ msgid "_Abort"
+#~ msgstr "_Megszakítás"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "Sorok vonalazása"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Küldés iFP eszközre"
 
 #~ msgid "Output:"
 #~ msgstr "Kimenet:"

@@ -1547,7 +1547,8 @@ alsa_init(thread_info_t * info, int verbose) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: cannot configure this PCM device.\n");
 		}
-		return -3;
+		ret = -3;
+		goto fail;
 	}
 
 	if (snd_pcm_hw_params_set_periods_integer(info->pcm_handle, info->hwparams) < 0) {
@@ -1573,7 +1574,8 @@ alsa_init(thread_info_t * info, int verbose) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error setting access to SND_PCM_ACCESS_RW_INTERLEAVED.\n");
 		}
-		return -4;
+		ret = -4;
+		goto fail;
 	}
 
 	info->is_output_32bit = 1;
@@ -1585,7 +1587,8 @@ alsa_init(thread_info_t * info, int verbose) {
 			if (verbose) {
 				fprintf(stderr, "alsa_init: unable to open 16 bit output, exiting.\n");
 			}
-			return -5;
+			ret = -5;
+			goto fail;
 		}
 		info->is_output_32bit = 0;
 	}
@@ -1596,7 +1599,8 @@ alsa_init(thread_info_t * info, int verbose) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: can't set sample rate to %u.\n", rate);
 		}
-		return -6;
+		ret = -6;
+		goto fail;
 	}
 	
 	if (rate != info->out_SR) {
@@ -1611,7 +1615,8 @@ alsa_init(thread_info_t * info, int verbose) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error setting channels.\n");
 		}
-		return -7;
+		ret = -7;
+		goto fail;
 	}
 
 	info->n_frames = 512;
@@ -1626,10 +1631,16 @@ alsa_init(thread_info_t * info, int verbose) {
 		if (verbose) {
 			fprintf(stderr, "alsa_init: error setting HW params.\n");
 		}
-		return -8;
+		ret = -8;
+		goto fail;
 	}
 
 	return 0;
+
+ fail:
+	snd_pcm_close(info->pcm_handle);
+	info->pcm_handle = NULL;
+	return ret;
 }
 #endif /* HAVE_ALSA */
 
@@ -3405,6 +3416,10 @@ main(int argc, char ** argv) {
 			printf("cannot open device %s: %s\n", thread_info.pcm_name, snd_strerror(alsa_open_error));
 		} else if (ret < 0) {
 			printf("unable to start with default params\n");
+		}
+		if (ret < 0) {
+			free(thread_info.pcm_name);
+			thread_info.pcm_name = NULL;
 		} else {
 			output = ALSA_DRIVER;
 			auto_driver_found = 1;

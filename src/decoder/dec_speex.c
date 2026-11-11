@@ -45,21 +45,11 @@ read_ogg_packet(OGGZ * oggz, oggz_packet * zp, long serialno, void * user_data) 
 	if (pd->exploring && (pd->packetno == 0)) {
 		/* Speex header */
 
-		int i;
-                int ptr = 0;
-                char speex_string[9];
 		int enh = 1;
-
                 SpeexHeader * header;
 
-
-                for (i = 0; i < 8; i++) {
-                        speex_string[i] = op->packet[ptr++];
-                }
-                speex_string[i] = '\0';
-
-                if (strcmp(speex_string, "Speex   ") != 0) {
-			printf("read_ogg_packet(): Not a Speex stream\n");
+		if (op->bytes < 8 || memcmp(op->packet, "Speex   ", 8) != 0) {
+			/* Not a Speex stream */
                         pd->error = 1;
 			return 0;
                 }

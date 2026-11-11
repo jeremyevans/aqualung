@@ -229,8 +229,11 @@ speex_dec_open(decoder_t * dec, char * filename) {
 	pd->packetno = 0;
 	pd->exploring = 1;
 	pd->error = 0;
-	while (pd->packetno < 2) { /* process Speex header and comments */
-		oggz_read(pd->oggz, 1024);
+
+	/* process Speex header and comments */
+	while (pd->packetno < 2 && pd->error == 0) {
+		if (oggz_read(pd->oggz, 1024) <= 0)
+			break;
 	}
 
 	if (pd->error != 0) {

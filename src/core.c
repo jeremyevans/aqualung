@@ -2017,12 +2017,12 @@ pipewire_init(thread_info_t * info, int verbose) {
 			      PW_STREAM_FLAG_MAP_BUFFERS |
 			      PW_STREAM_FLAG_RT_PROCESS,
 			      params, 1) < 0) {
-		arr_snprintf(pipewire_error, "cannot connect stream: %s", strerror(errno));
+		arr_strlcpy(pipewire_error, "cannot connect stream");
 		goto fail;
 	}
 
 	if (pw_thread_loop_start(info->pw_loop) < 0) {
-		arr_snprintf(pipewire_error, "cannot start thread loop: %s", strerror(errno));
+		arr_strlcpy(pipewire_error, "cannot start thread loop");
 		goto fail;
 	}
 
@@ -2042,9 +2042,11 @@ pipewire_init(thread_info_t * info, int verbose) {
 	if (state == PW_STREAM_STATE_PAUSED || state == PW_STREAM_STATE_STREAMING) {
 		return 0;
 	}
-	if (state != PW_STREAM_STATE_ERROR || !pipewire_error[0]) {
+	if (state != PW_STREAM_STATE_ERROR) {
 		arr_snprintf(pipewire_error, "no answer within 2 s (stream state: %s)",
 			     pw_stream_state_as_string(state));
+	} else if (!pipewire_error[0]) {
+		arr_strlcpy(pipewire_error, "stream failed (no reason given)");
 	}
 
  fail:

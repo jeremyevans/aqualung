@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung 0.9beta10\n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-20 08:46+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2012-08-23 15:59+0300\n"
 "Last-Translator: Vladimir Smolyar <v_2e@ukr.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -31,9 +31,6 @@ msgstr "Підтримка CDDB\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "Підтримка конвертера частоти дискретизації\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "Підтримка драйвера iRiver iFP\n"
 
 msgid "JACK port management support\n"
 msgstr "Підтримка управління портом JACK\n"
@@ -107,6 +104,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "Аудіо сервер JACK\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -115,6 +115,10 @@ msgstr "Win32 Sound API\n"
 
 msgid "About"
 msgstr "Про програму"
+
+#, fuzzy
+msgid "_Close"
+msgstr "Закрити"
 
 msgid "Build version: "
 msgstr "Версія збірки: "
@@ -290,6 +294,12 @@ msgstr "Будь ласка, оберіть кореневий каталог."
 
 msgid "Select build type"
 msgstr "Оберіть тим збірка"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "Відповідно до каталогів"
@@ -715,6 +725,10 @@ msgstr ""
 "Максимальна довжина\n"
 "імені підкаталога:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "Допомога"
+
 msgid "Filename template:"
 msgstr "Шаблон імені файлу:"
 
@@ -833,6 +847,10 @@ msgstr "Додати"
 
 msgid "field:"
 msgstr "поле:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "Зберегти"
 
 msgid "tag:"
 msgstr "тег:"
@@ -1039,204 +1057,6 @@ msgstr "Попередня пісня"
 
 msgid "Next"
 msgstr "Наступна пісня"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f МБ / %.1f МБ"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d файлів"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d каталогів"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr ""
-"Неможливо записани до обраного каталога. Будь ласка, оберіть інший каталог."
-
-msgid "Done"
-msgstr "Зроблено"
-
-msgid "Aborted..."
-msgstr "Скасовано..."
-
-msgid "Please enter directory name."
-msgstr "Уведіть, будь ласка, назву каталога."
-
-msgid "Create directory"
-msgstr "Створити каталог"
-
-msgid "Please enter a new name."
-msgstr "Уведіть, будь ласка, нове ім'я."
-
-msgid "Rename"
-msgstr "Перейменувати"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Кталог '%s' буде видалено разом із усім вмістом.\n"
-"Бажаєте продовжити?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Файл '%s' буде видалено.\n"
-"\n"
-"Бажаєте продовжити?"
-
-msgid "Remove"
-msgstr "Видалити"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f МБ)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (місткість = %.1f МБ)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " ВІльне місце (%.1f МБ)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"Придатного пристрою iRiver iFP не знайдено.\n"
-"Можливо, він від'єднаний або вимкнений."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"Пристрій зайнятий.\n"
-"(Aqualung не зміг встановити свій інтерфейс.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"Пристрій не відповідає.\n"
-"Спробуйте поворушити руків'ям."
-
-msgid "Please select a local path."
-msgstr "Будь ласка, оберіть локальний шлях."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "Будь ласка, оберіть хоча б одну дійсну пісню зі списку програвання."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Одна з пісень має формат, що не підтримується вашим плеєром.\n"
-"\n"
-"Бажаєте продовжити?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d з %d пісень мають формат, що не підтримується вашиим плеєром.\n"
-"\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Обрана пісня має формат, що не підтримується вашим плеєром.\n"
-"\n"
-"Бажаєте продовжити?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"Жодна з обраних пісень не має формату, що підтримується вашим плеєром.\n"
-"\n"
-"Бажаєте продовжити?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "Менеджер пристрою iFP (режим відвантаження)"
-
-msgid "iFP device manager (download mode)"
-msgstr "Менеджер пристрою iFP (режим завантаження)"
-
-msgid "Selected files:"
-msgstr "Обрані файли:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>Інформація про пісні</b>"
-
-msgid "Model:"
-msgstr "Модель:"
-
-msgid "Battery"
-msgstr "Батарея"
-
-msgid "Free space"
-msgstr "Вільне місце"
-
-msgid "<b>Device status</b>"
-msgstr "<b>Стан пристрою</b>"
-
-msgid "Size"
-msgstr "Розмір"
-
-msgid "Create a new directory"
-msgstr "Створити новий каталог"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>Віддалений каталог</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>Локальний каталог</b>"
-
-msgid "Browse"
-msgstr "Оглянути"
-
-msgid "File name: "
-msgstr "Назва файлу:"
-
-msgid "Current file: "
-msgstr "Поточний файл:"
-
-msgid "Overall: "
-msgstr "Разом:"
-
-msgid "Idle"
-msgstr "Бездіяння"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>Прогрес передачі</b>"
-
-msgid "Close window when transfer complete"
-msgstr "Закрити вікно після завершення передачі"
-
-msgid "_Upload"
-msgstr "_Відвантажити"
-
-msgid "_Download"
-msgstr "_Завантажити"
-
-msgid "_Abort"
-msgstr "_Перервати"
 
 msgid "Album"
 msgstr "Альбом"
@@ -1919,6 +1739,9 @@ msgstr "Формат назви"
 msgid "Lua extension file"
 msgstr "Файл розширення Lua"
 
+msgid "Browse"
+msgstr "Оглянути"
+
 msgid "Systray"
 msgstr "Системний лоток"
 
@@ -1942,6 +1765,9 @@ msgstr "Горизонтальне колесо миші:"
 
 msgid "Mouse buttons"
 msgstr "Клавіші миші"
+
+msgid "Remove"
+msgstr "Видалити"
 
 msgid "Miscellaneous"
 msgstr "Різне"
@@ -2043,9 +1869,6 @@ msgstr "Виділяти жирним активну доріжку"
 
 msgid "Automatically roll to active track"
 msgstr "Автоматично переміщатися до активної доріжки"
-
-msgid "Enable rules hint"
-msgstr "Переміжний колір рядків у списку"
 
 msgid "Playlist column order"
 msgstr "Порядок стовпчиків списку пргравання"
@@ -2344,6 +2167,9 @@ msgstr "Ім'я:"
 msgid "New tab"
 msgstr "Нова вкладка"
 
+msgid "Rename"
+msgstr "Перейменувати"
+
 msgid "Close tab"
 msgstr "Закрити вкладку"
 
@@ -2422,9 +2248,6 @@ msgstr "Завантажити список програвання"
 msgid "Enqueue playlist"
 msgstr "Поставити в чергу список програвання"
 
-msgid "Send to iFP device"
-msgstr "Надіслати до пристрою iFP"
-
 msgid "Calculate RVA"
 msgstr "Підрахувати рівень RVA"
 
@@ -2477,6 +2300,9 @@ msgstr "Будівельник патчів LADSPA"
 msgid "Available plugins"
 msgstr "Доступні розширення"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2491,6 +2317,10 @@ msgstr "Виходи"
 
 msgid "Running plugins"
 msgstr "Запущені розширення"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "Видалити"
 
 msgid "_Configure"
 msgstr "_Налаштувати"
@@ -2569,6 +2399,9 @@ msgstr "Шлях до пристрою:"
 
 msgid "Vendor:"
 msgstr "Постачальник:"
+
+msgid "Model:"
+msgstr "Модель:"
 
 msgid "Revision:"
 msgstr "Перегляд:"
@@ -3146,6 +2979,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "LAVC аудіо/відео файли"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "Поновити"
 
@@ -3235,6 +3074,202 @@ msgstr "біт подвійний"
 
 msgid "encoding"
 msgstr "кодування"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "Підтримка драйвера iRiver iFP\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f МБ / %.1f МБ"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d файлів"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d каталогів"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr ""
+#~ "Неможливо записани до обраного каталога. Будь ласка, оберіть інший "
+#~ "каталог."
+
+#~ msgid "Done"
+#~ msgstr "Зроблено"
+
+#~ msgid "Aborted..."
+#~ msgstr "Скасовано..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "Уведіть, будь ласка, назву каталога."
+
+#~ msgid "Create directory"
+#~ msgstr "Створити каталог"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "Уведіть, будь ласка, нове ім'я."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Кталог '%s' буде видалено разом із усім вмістом.\n"
+#~ "Бажаєте продовжити?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Файл '%s' буде видалено.\n"
+#~ "\n"
+#~ "Бажаєте продовжити?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f МБ)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (місткість = %.1f МБ)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " ВІльне місце (%.1f МБ)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "Придатного пристрою iRiver iFP не знайдено.\n"
+#~ "Можливо, він від'єднаний або вимкнений."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "Пристрій зайнятий.\n"
+#~ "(Aqualung не зміг встановити свій інтерфейс.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "Пристрій не відповідає.\n"
+#~ "Спробуйте поворушити руків'ям."
+
+#~ msgid "Please select a local path."
+#~ msgstr "Будь ласка, оберіть локальний шлях."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "Будь ласка, оберіть хоча б одну дійсну пісню зі списку програвання."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Одна з пісень має формат, що не підтримується вашим плеєром.\n"
+#~ "\n"
+#~ "Бажаєте продовжити?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d з %d пісень мають формат, що не підтримується вашиим плеєром.\n"
+#~ "\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Обрана пісня має формат, що не підтримується вашим плеєром.\n"
+#~ "\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "Жодна з обраних пісень не має формату, що підтримується вашим плеєром.\n"
+#~ "\n"
+#~ "Бажаєте продовжити?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "Менеджер пристрою iFP (режим відвантаження)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "Менеджер пристрою iFP (режим завантаження)"
+
+#~ msgid "Selected files:"
+#~ msgstr "Обрані файли:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>Інформація про пісні</b>"
+
+#~ msgid "Battery"
+#~ msgstr "Батарея"
+
+#~ msgid "Free space"
+#~ msgstr "Вільне місце"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>Стан пристрою</b>"
+
+#~ msgid "Size"
+#~ msgstr "Розмір"
+
+#~ msgid "Create a new directory"
+#~ msgstr "Створити новий каталог"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>Віддалений каталог</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>Локальний каталог</b>"
+
+#~ msgid "File name: "
+#~ msgstr "Назва файлу:"
+
+#~ msgid "Current file: "
+#~ msgstr "Поточний файл:"
+
+#~ msgid "Overall: "
+#~ msgstr "Разом:"
+
+#~ msgid "Idle"
+#~ msgstr "Бездіяння"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>Прогрес передачі</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "Закрити вікно після завершення передачі"
+
+#~ msgid "_Upload"
+#~ msgstr "_Відвантажити"
+
+#~ msgid "_Download"
+#~ msgstr "_Завантажити"
+
+#~ msgid "_Abort"
+#~ msgstr "_Перервати"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "Переміжний колір рядків у списку"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "Надіслати до пристрою iFP"
 
 #~ msgid "Output:"
 #~ msgstr "Вихід:"

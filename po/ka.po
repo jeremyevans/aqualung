@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aqualung git\n"
 "Report-Msgid-Bugs-To: https://github.com/jeremyevans/aqualung/issues\n"
-"POT-Creation-Date: 2026-03-21 14:10+0100\n"
+"POT-Creation-Date: 2026-11-10 09:57+0100\n"
 "PO-Revision-Date: 2026-03-19 15:30+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
@@ -31,9 +31,6 @@ msgstr "CDDB-ის მხარდაჭერა\n"
 
 msgid "Sample Rate Converter support\n"
 msgstr "ბიტური სიჩქარის გადამყვანის მხარდაჭერა\n"
-
-msgid "iRiver iFP driver support\n"
-msgstr "iRiver iFP-ის დრაივერის მხარდაჭერა\n"
 
 msgid "JACK port management support\n"
 msgstr "JACK-ის პორტის მართვის მხარდაჭერა\n"
@@ -107,6 +104,9 @@ msgstr "ALSA Audio\n"
 msgid "JACK Audio Server\n"
 msgstr "აუდიოსერვერი JACK\n"
 
+msgid "PipeWire\n"
+msgstr ""
+
 msgid "PulseAudio\n"
 msgstr "PulseAudio\n"
 
@@ -115,6 +115,10 @@ msgstr "Win32-ის ხმის API\n"
 
 msgid "About"
 msgstr "შესახებ"
+
+#, fuzzy
+msgid "_Close"
+msgstr "დახურვა"
 
 msgid "Build version: "
 msgstr "აგების ვერსია: "
@@ -288,6 +292,12 @@ msgstr "აირჩიეთ ძირითადი საქაღალდ�
 
 msgid "Select build type"
 msgstr "აირჩიეთ აგების ტიპი"
+
+msgid "_OK"
+msgstr ""
+
+msgid "_Cancel"
+msgstr ""
 
 msgid "Directory driven"
 msgstr "საქაღალდის მიხედვით"
@@ -697,6 +707,10 @@ msgstr ""
 "ქვესაქაღალდის სახელის\n"
 "სიგრძის ზღვარი:"
 
+#, fuzzy
+msgid "_Help"
+msgstr "დახმარება"
+
 msgid "Filename template:"
 msgstr "ფაილის სახელის შაბლონი:"
 
@@ -816,6 +830,10 @@ msgstr "დამატება"
 
 msgid "field:"
 msgstr "ველი:"
+
+#, fuzzy
+msgid "_Save"
+msgstr "შენახვა"
 
 msgid "tag:"
 msgstr "ჭდე:"
@@ -1025,206 +1043,6 @@ msgstr "წინა"
 
 msgid "Next"
 msgstr "შემდეგი"
-
-#, c-format
-msgid "%.1f MB / %.1f MB"
-msgstr "%.1f მბ / %.1f მბ"
-
-#, c-format
-msgid "%d / %d files"
-msgstr "%d / %d ფაილი"
-
-#, c-format
-msgid "%d / %d directories"
-msgstr "%d / %d საქაღალდე"
-
-msgid "Cannot write to selected directory. Please select another directory."
-msgstr "არჩეულ საქაღალდეში ჩაწერა შეუძლებელია. აირჩიეთ სხვა საქაღალდე."
-
-msgid "Done"
-msgstr "მზადაა"
-
-msgid "Aborted..."
-msgstr "შეწყდა..."
-
-msgid "Please enter directory name."
-msgstr "შეიყვანეთ საქაღალდის სახელი."
-
-msgid "Create directory"
-msgstr "საქაღალდის შექმნა"
-
-msgid "Please enter a new name."
-msgstr "შეიყვანეთ ახალი სახელი."
-
-msgid "Rename"
-msgstr "სახელის გადარქმევა"
-
-#, c-format
-msgid ""
-"Directory '%s' will be removed with its entire contents.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"საქაღალდე '%s' მისი შემცველობიანად წაიშლება.\n"
-"\n"
-"გააგრძელებთ?"
-
-#, c-format
-msgid ""
-"File '%s' will be removed.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"ფაილი '%s' წაიშლება.\n"
-"\n"
-"გააგრძელებთ?"
-
-msgid "Remove"
-msgstr "წაშლა"
-
-#, c-format
-msgid " (%.1f MB)"
-msgstr " (%.1f მბ)"
-
-#, c-format
-msgid " (capacity = %.1f MB)"
-msgstr " (მოცულობა = %.1f მბ)"
-
-#, c-format
-msgid " Free space (%.1f MB)"
-msgstr " თავისუფალი ადგილი (%.1f მბ)"
-
-msgid ""
-"No suitable iRiver iFP device found.\n"
-"Perhaps it is unplugged or turned off."
-msgstr ""
-"შესაბამისი iRiver iFP მოწყობილობა აღმოჩენილი არაა.\n"
-"ის, ალბათ, გამორთულია, ან გამომძვრალი."
-
-msgid ""
-"Device is busy.\n"
-"(Aqualung was unable to claim its interface.)"
-msgstr ""
-"მოწყობილობა დაკავებულია.\n"
-"(Aqualung-მა მისი ინტერფეისი ვერ მიიღო.)"
-
-msgid ""
-"Device is not responding.\n"
-"Try jiggling the handle."
-msgstr ""
-"მოწყობილობა არ პასუხობს.\n"
-"სცადეთ გაანჯღრიოთ."
-
-msgid "Please select a local path."
-msgstr "აირჩიეთ ლოკალური ბილიკი."
-
-msgid "Please select at least one valid song from playlist."
-msgstr "აირჩიეთ, სულ ცოტა, ერთი სწორი სიმღერა დასაკრავი სიიდან."
-
-msgid ""
-"One song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"ერთ სიმღერას აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ მხარდაჭერილი "
-"არაა.\n"
-"\n"
-"გააგრძელებთ?"
-
-#, c-format
-msgid ""
-"%d of %d songs have format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"%d სიმღერას %d-დან აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ მხარდაჭერილი "
-"არა.\n"
-"\n"
-"გააგრძელებთ?"
-
-msgid ""
-"The selected song has format unsupported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"არჩეული სიმღერის ფორმატი თქვენი დამკვრელის მიერ მხარდაჭერილი არაა.\n"
-"\n"
-"გააგრძელებთ?"
-
-msgid ""
-"None of the selected songs has format supported by your player.\n"
-"\n"
-"Do you want to proceed?"
-msgstr ""
-"არჩეული სიმღერებიდან თქვენი დამკვრელის მიერ მხარდაჭერილი არცერთია.\n"
-"\n"
-"გააგრძელებთ?"
-
-msgid "iFP device manager (upload mode)"
-msgstr "iFP მოწყობილობის მმართველი (ატვირთვის რეჟიმი)"
-
-msgid "iFP device manager (download mode)"
-msgstr "iFP მოწყობილობის მმართველი (გადმოწერის რეჟიმი)"
-
-msgid "Selected files:"
-msgstr "მონიშნული ფაილები:"
-
-msgid "<b>Songs info</b>"
-msgstr "<b>ინფორმაცია სიმღერებზე</b>"
-
-msgid "Model:"
-msgstr "მოდელი:"
-
-msgid "Battery"
-msgstr "ელემენტი"
-
-msgid "Free space"
-msgstr "თავისუფალი ადგილი"
-
-msgid "<b>Device status</b>"
-msgstr "<b>მოწყობილობის სტატუსი</b>"
-
-msgid "Size"
-msgstr "ზომა"
-
-msgid "Create a new directory"
-msgstr "ახალი საქაღალდის შექმნა"
-
-msgid "<b>Remote directory</b>"
-msgstr "<b>დაშორებული საქაღალდე</b>"
-
-msgid "<b>Local directory</b>"
-msgstr "<b>ლოკალური საქაღალდე</b>"
-
-msgid "Browse"
-msgstr "პოვნა"
-
-msgid "File name: "
-msgstr "ფაილის სახელი: "
-
-msgid "Current file: "
-msgstr "მიმდინარე ფაილი: "
-
-msgid "Overall: "
-msgstr "საერთო ჯამში: "
-
-msgid "Idle"
-msgstr "უმოქმედო"
-
-msgid "<b>Transfer progress</b>"
-msgstr "<b>გადაცემის მიმდინარეობა</b>"
-
-msgid "Close window when transfer complete"
-msgstr "ფანჯრის დახურვა გადაცემის დასრულების შემდეგ"
-
-msgid "_Upload"
-msgstr "_ატვირთვა"
-
-msgid "_Download"
-msgstr "_გადმოწერა"
-
-msgid "_Abort"
-msgstr "_შეწყვეტა"
 
 msgid "Album"
 msgstr "ალბომი"
@@ -1837,6 +1655,9 @@ msgstr "სათაურის ფორმატი"
 msgid "Lua extension file"
 msgstr "Lua-ის გაფართოების ფაილი"
 
+msgid "Browse"
+msgstr "პოვნა"
+
 msgid "Systray"
 msgstr "ხატულა სისტემურ საათთან"
 
@@ -1860,6 +1681,9 @@ msgstr "თაგუნას ჰორიზონტალური ბორ�
 
 msgid "Mouse buttons"
 msgstr "თაგუნას ღილაკები"
+
+msgid "Remove"
+msgstr "წაშლა"
 
 msgid "Miscellaneous"
 msgstr "სხვადასხვა"
@@ -1960,9 +1784,6 @@ msgstr "აქტიური ბილიკის სახელის სქ
 
 msgid "Automatically roll to active track"
 msgstr "ავტომატური გადახვევა აქტიურ ბილიკზე"
-
-msgid "Enable rules hint"
-msgstr "წესების მინიშნების ჩართვა"
 
 msgid "Playlist column order"
 msgstr "დასაკრავი სიის სვეტების მიმდევრობა"
@@ -2247,6 +2068,9 @@ msgstr "სახელი:"
 msgid "New tab"
 msgstr "ახალი ჩანართი"
 
+msgid "Rename"
+msgstr "სახელის გადარქმევა"
+
 msgid "Close tab"
 msgstr "ჩანართის დახურვა"
 
@@ -2319,9 +2143,6 @@ msgstr "დასაკრავი სიის ჩატვირთვა"
 msgid "Enqueue playlist"
 msgstr "დასაკრავი სიის რიგში ჩასმა"
 
-msgid "Send to iFP device"
-msgstr "გაგზავნა iFP მოწყობილობაზე"
-
 msgid "Calculate RVA"
 msgstr "RVA-ის გამოთვლა"
 
@@ -2370,6 +2191,9 @@ msgstr "LADSPA პაჩის ამგები"
 msgid "Available plugins"
 msgstr "ხელმისაწვდომი დამატებები"
 
+msgid "_Add"
+msgstr ""
+
 msgid "ID"
 msgstr "ID"
 
@@ -2384,6 +2208,10 @@ msgstr "გამოტანები"
 
 msgid "Running plugins"
 msgstr "გაშვებული დამატებები"
+
+#, fuzzy
+msgid "_Remove"
+msgstr "წაშლა"
 
 msgid "_Configure"
 msgstr "_მორგება"
@@ -2462,6 +2290,9 @@ msgstr "მოწყობილობის ბილიკი:"
 
 msgid "Vendor:"
 msgstr "მომწოდებელი:"
+
+msgid "Model:"
+msgstr "მოდელი:"
 
 msgid "Revision:"
 msgstr "რევიზია:"
@@ -3031,6 +2862,12 @@ msgstr "WavPack (*.wv)"
 msgid "LAVC audio/video files"
 msgstr "LAVC აუდიო/ვიდეო ფაილები"
 
+msgid "_Open"
+msgstr ""
+
+msgid "_Apply"
+msgstr ""
+
 msgid "Resume"
 msgstr "გაგრძელება"
 
@@ -3120,3 +2957,200 @@ msgstr "ბიტი ორმაგი"
 
 msgid "encoding"
 msgstr "კოდირება"
+
+#~ msgid "iRiver iFP driver support\n"
+#~ msgstr "iRiver iFP-ის დრაივერის მხარდაჭერა\n"
+
+#, c-format
+#~ msgid "%.1f MB / %.1f MB"
+#~ msgstr "%.1f მბ / %.1f მბ"
+
+#, c-format
+#~ msgid "%d / %d files"
+#~ msgstr "%d / %d ფაილი"
+
+#, c-format
+#~ msgid "%d / %d directories"
+#~ msgstr "%d / %d საქაღალდე"
+
+#~ msgid "Cannot write to selected directory. Please select another directory."
+#~ msgstr "არჩეულ საქაღალდეში ჩაწერა შეუძლებელია. აირჩიეთ სხვა საქაღალდე."
+
+#~ msgid "Done"
+#~ msgstr "მზადაა"
+
+#~ msgid "Aborted..."
+#~ msgstr "შეწყდა..."
+
+#~ msgid "Please enter directory name."
+#~ msgstr "შეიყვანეთ საქაღალდის სახელი."
+
+#~ msgid "Create directory"
+#~ msgstr "საქაღალდის შექმნა"
+
+#~ msgid "Please enter a new name."
+#~ msgstr "შეიყვანეთ ახალი სახელი."
+
+#, c-format
+#~ msgid ""
+#~ "Directory '%s' will be removed with its entire contents.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "საქაღალდე '%s' მისი შემცველობიანად წაიშლება.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#, c-format
+#~ msgid ""
+#~ "File '%s' will be removed.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "ფაილი '%s' წაიშლება.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#, c-format
+#~ msgid " (%.1f MB)"
+#~ msgstr " (%.1f მბ)"
+
+#, c-format
+#~ msgid " (capacity = %.1f MB)"
+#~ msgstr " (მოცულობა = %.1f მბ)"
+
+#, c-format
+#~ msgid " Free space (%.1f MB)"
+#~ msgstr " თავისუფალი ადგილი (%.1f მბ)"
+
+#~ msgid ""
+#~ "No suitable iRiver iFP device found.\n"
+#~ "Perhaps it is unplugged or turned off."
+#~ msgstr ""
+#~ "შესაბამისი iRiver iFP მოწყობილობა აღმოჩენილი არაა.\n"
+#~ "ის, ალბათ, გამორთულია, ან გამომძვრალი."
+
+#~ msgid ""
+#~ "Device is busy.\n"
+#~ "(Aqualung was unable to claim its interface.)"
+#~ msgstr ""
+#~ "მოწყობილობა დაკავებულია.\n"
+#~ "(Aqualung-მა მისი ინტერფეისი ვერ მიიღო.)"
+
+#~ msgid ""
+#~ "Device is not responding.\n"
+#~ "Try jiggling the handle."
+#~ msgstr ""
+#~ "მოწყობილობა არ პასუხობს.\n"
+#~ "სცადეთ გაანჯღრიოთ."
+
+#~ msgid "Please select a local path."
+#~ msgstr "აირჩიეთ ლოკალური ბილიკი."
+
+#~ msgid "Please select at least one valid song from playlist."
+#~ msgstr "აირჩიეთ, სულ ცოტა, ერთი სწორი სიმღერა დასაკრავი სიიდან."
+
+#~ msgid ""
+#~ "One song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "ერთ სიმღერას აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ მხარდაჭერილი "
+#~ "არაა.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#, c-format
+#~ msgid ""
+#~ "%d of %d songs have format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "%d სიმღერას %d-დან აქვს ფორმატი, რომელიც თქვენი დამკვრელის მიერ "
+#~ "მხარდაჭერილი არა.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#~ msgid ""
+#~ "The selected song has format unsupported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "არჩეული სიმღერის ფორმატი თქვენი დამკვრელის მიერ მხარდაჭერილი არაა.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#~ msgid ""
+#~ "None of the selected songs has format supported by your player.\n"
+#~ "\n"
+#~ "Do you want to proceed?"
+#~ msgstr ""
+#~ "არჩეული სიმღერებიდან თქვენი დამკვრელის მიერ მხარდაჭერილი არცერთია.\n"
+#~ "\n"
+#~ "გააგრძელებთ?"
+
+#~ msgid "iFP device manager (upload mode)"
+#~ msgstr "iFP მოწყობილობის მმართველი (ატვირთვის რეჟიმი)"
+
+#~ msgid "iFP device manager (download mode)"
+#~ msgstr "iFP მოწყობილობის მმართველი (გადმოწერის რეჟიმი)"
+
+#~ msgid "Selected files:"
+#~ msgstr "მონიშნული ფაილები:"
+
+#~ msgid "<b>Songs info</b>"
+#~ msgstr "<b>ინფორმაცია სიმღერებზე</b>"
+
+#~ msgid "Battery"
+#~ msgstr "ელემენტი"
+
+#~ msgid "Free space"
+#~ msgstr "თავისუფალი ადგილი"
+
+#~ msgid "<b>Device status</b>"
+#~ msgstr "<b>მოწყობილობის სტატუსი</b>"
+
+#~ msgid "Size"
+#~ msgstr "ზომა"
+
+#~ msgid "Create a new directory"
+#~ msgstr "ახალი საქაღალდის შექმნა"
+
+#~ msgid "<b>Remote directory</b>"
+#~ msgstr "<b>დაშორებული საქაღალდე</b>"
+
+#~ msgid "<b>Local directory</b>"
+#~ msgstr "<b>ლოკალური საქაღალდე</b>"
+
+#~ msgid "File name: "
+#~ msgstr "ფაილის სახელი: "
+
+#~ msgid "Current file: "
+#~ msgstr "მიმდინარე ფაილი: "
+
+#~ msgid "Overall: "
+#~ msgstr "საერთო ჯამში: "
+
+#~ msgid "Idle"
+#~ msgstr "უმოქმედო"
+
+#~ msgid "<b>Transfer progress</b>"
+#~ msgstr "<b>გადაცემის მიმდინარეობა</b>"
+
+#~ msgid "Close window when transfer complete"
+#~ msgstr "ფანჯრის დახურვა გადაცემის დასრულების შემდეგ"
+
+#~ msgid "_Upload"
+#~ msgstr "_ატვირთვა"
+
+#~ msgid "_Download"
+#~ msgstr "_გადმოწერა"
+
+#~ msgid "_Abort"
+#~ msgstr "_შეწყვეტა"
+
+#~ msgid "Enable rules hint"
+#~ msgstr "წესების მინიშნების ჩართვა"
+
+#~ msgid "Send to iFP device"
+#~ msgstr "გაგზავნა iFP მოწყობილობაზე"

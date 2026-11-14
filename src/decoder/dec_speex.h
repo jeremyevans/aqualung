@@ -21,39 +21,64 @@
 #ifndef AQUALUNG_DEC_SPEEX_H
 #define AQUALUNG_DEC_SPEEX_H
 
-#include <stdio.h>
 #include <oggz/oggz.h>
 #include <speex/speex.h>
+#include <speex/speex_stereo.h>
 
 #include "../rb.h"
 #include "file_decoder.h"
 
 
-/* Decoding buffer size for Speex */
-#define SPEEX_BUFSIZE 1280
+/* Largest Speex frame size (ultra-wideband mode), in samples per channel */
+#define SPEEX_MAX_FRAME_SIZE 640
 /* size of ringbuffer for decoded Speex data (in frames) */
 #define RB_SPEEX_SIZE 262144
 
 
+typedef struct _speex_seek_point_t {
+	long long granulepos;
+	oggz_off_t offset;
+} speex_seek_point_t;
+
+
 typedef struct _speex_pdata_t {
         rb_t * rb;
-        FILE * speex_file;
 
 	OGGZ * oggz;
+	long serialno;
 	SpeexBits bits;
-	const SpeexMode * mode;
 	void * decoder;
+	SpeexStereoState * stereo;
 
 	int sample_rate;
 	int channels;
-	int vbr;
 	int nframes;
 	int frame_size;
+	int lookahead;
+	int extra_headers;
 
 	int exploring;
 	int error;
 	long packetno;
-	int granulepos;
+
+	/* collected while exploring the stream in speex_dec_open() */
+	long long raw_samples;
+	long long first_granulepos;
+	long long first_granulepos_raw;
+	long long last_granulepos;
+	/* granulepos and page offset of each page ending an audio packet */
+	speex_seek_point_t * seek_points;
+	size_t n_seek_points;
+	size_t seek_points_size;
+
+	/* number of decoded samples to drop at the start of the stream */
+	long long skip;
+	/* stream position of the next decoded sample, valid if synced */
+	long long pos;
+	int synced;
+	/* decoded samples before this position are dropped */
+	long long discard_until;
+	long long total_samples;
 
         int is_eos;
 } speex_pdata_t;
@@ -70,5 +95,4 @@ void speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos);
 
 #endif /* AQUALUNG_DEC_SPEEX_H */
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :

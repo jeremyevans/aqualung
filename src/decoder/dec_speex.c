@@ -27,6 +27,7 @@
 #include <string.h>
 #include <ogg/ogg.h>
 #include <speex/speex_header.h>
+#include <speex/speex_callbacks.h>
 
 #include "../rb.h"
 #include "dec_speex.h"
@@ -36,108 +37,274 @@ extern size_t sample_size;
 
 
 static int
+parse_speex_header(speex_pdata_t * pd, ogg_packet * op) {
+
+	SpeexHeader * header;
+	const SpeexMode * mode;
+	int enh = 1;
+
+	if ((op->bytes < 8) || (memcmp(op->packet, "Speex   ", 8) != 0)) {
+		return -1;
+	}
+
+	if ((header = speex_packet_to_header((char *)op->packet, op->bytes)) == NULL) {
+		fprintf(stderr, "dec_speex.c: cannot read Speex header\n");
+		return -1;
+	}
+
+	if ((header->mode < 0) || (header->mode >= SPEEX_NB_MODES) ||
+	    ((mode = speex_lib_get_mode(header->mode)) == NULL)) {
+		fprintf(stderr, "dec_speex.c: invalid Speex mode %d\n", header->mode);
+		speex_header_free(header);
+		return -1;
+	}
+
+	if (mode->bitstream_version != header->mode_bitstream_version) {
+		fprintf(stderr, "dec_speex.c: unsupported bitstream version %d (expected %d)\n",
+			header->mode_bitstream_version, mode->bitstream_version);
+		speex_header_free(header);
+		return -1;
+	}
+
+	pd->sample_rate = header->rate;
+	pd->channels = header->nb_channels;
+	pd->nframes = (header->frames_per_packet > 0) ? header->frames_per_packet : 1;
+	pd->extra_headers = (header->extra_headers > 0) ? header->extra_headers : 0;
+	speex_header_free(header);
+
+	if ((pd->channels != 1) && (pd->channels != 2)) {
+		fprintf(stderr, "dec_speex.c: Ogg Speex with %d channels is unsupported\n",
+			pd->channels);
+		return -1;
+	}
+
+	if (pd->sample_rate <= 0) {
+		fprintf(stderr, "dec_speex.c: invalid sample rate %d\n", pd->sample_rate);
+		return -1;
+	}
+
+	pd->decoder = speex_decoder_init(mode);
+	speex_decoder_ctl(pd->decoder, SPEEX_GET_FRAME_SIZE, &pd->frame_size);
+	speex_decoder_ctl(pd->decoder, SPEEX_GET_LOOKAHEAD, &pd->lookahead);
+	speex_decoder_ctl(pd->decoder, SPEEX_SET_ENH, &enh);
+
+	if (pd->frame_size > SPEEX_MAX_FRAME_SIZE) {
+		fprintf(stderr, "dec_speex.c: unsupported frame size %d\n", pd->frame_size);
+		return -1;
+	}
+
+	/* N.B.: Stereo Speex is a mono stream with in-band intensity
+	   stereo parameters, picked up by this handler while decoding and
+	   applied by speex_decode_stereo(). */
+	pd->stereo = speex_stereo_state_init();
+	if (pd->channels == 2) {
+		SpeexCallback callback;
+		callback.callback_id = SPEEX_INBAND_STEREO;
+		callback.func = speex_std_stereo_request_handler;
+		callback.data = pd->stereo;
+		callback.reserved1 = NULL;
+		callback.reserved2 = 0;
+		speex_decoder_ctl(pd->decoder, SPEEX_SET_HANDLER, &callback);
+	}
+
+	return 0;
+}
+
+
+static void
+write_frame(speex_pdata_t * pd, float * frame) {
+
+	long long start = pd->pos;
+	long long end = pd->pos + pd->frame_size;
+	long long i;
+
+	pd->pos = end;
+
+	if (start < pd->discard_until)
+		start = pd->discard_until;
+	if (start < 0)
+		start = 0;
+	if (end > pd->total_samples)
+		end = pd->total_samples;
+	if (start >= end)
+		return;
+
+	frame += (start - (pd->pos - pd->frame_size)) * pd->channels;
+	for (i = 0; i < (end - start) * pd->channels; i++) {
+		frame[i] /= 32768.0f;
+		if (frame[i] > 1.0f) {
+			frame[i] = 1.0f;
+		} else if (frame[i] < -1.0f) {
+			frame[i] = -1.0f;
+		}
+	}
+	rb_write(pd->rb, (char *)frame, (end - start) * pd->channels * sample_size);
+}
+
+
+static void
+decode_packet(speex_pdata_t * pd, ogg_packet * op) {
+
+	float frame[2 * SPEEX_MAX_FRAME_SIZE];
+	int j;
+
+	speex_bits_read_from(&pd->bits, (char *)op->packet, op->bytes);
+
+	for (j = 0; j < pd->nframes; j++) {
+
+		int ret = speex_decode(pd->decoder, &pd->bits, frame);
+
+		if (ret == -1) {
+			break;
+		}
+		if (ret == -2) {
+			fprintf(stderr, "dec_speex.c: decoding error, corrupt stream?\n");
+			break;
+		}
+		if (speex_bits_remaining(&pd->bits) < 0) {
+			fprintf(stderr, "dec_speex.c: decoding overflow, corrupt stream?\n");
+			break;
+		}
+
+		if (pd->channels == 2) {
+			speex_decode_stereo(frame, pd->frame_size, pd->stereo);
+		}
+		if (pd->synced) {
+			write_frame(pd, frame);
+		}
+	}
+}
+
+
+static int
+add_seek_point(speex_pdata_t * pd, long long granulepos, oggz_off_t offset) {
+
+	if (pd->n_seek_points == pd->seek_points_size) {
+		size_t size = pd->seek_points_size ? 2 * pd->seek_points_size : 1024;
+		speex_seek_point_t * p = realloc(pd->seek_points, size * sizeof(speex_seek_point_t));
+		if (p == NULL) {
+			fprintf(stderr, "dec_speex.c: add_seek_point(): realloc error\n");
+			return -1;
+		}
+		pd->seek_points = p;
+		pd->seek_points_size = size;
+	}
+	pd->seek_points[pd->n_seek_points].granulepos = granulepos;
+	pd->seek_points[pd->n_seek_points].offset = offset;
+	++pd->n_seek_points;
+	return 0;
+}
+
+
+static int
 read_ogg_packet(OGGZ * oggz, oggz_packet * zp, long serialno, void * user_data) {
 
 	ogg_packet * op = &zp->op;
-	decoder_t * dec = (decoder_t *)user_data;
-	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
+	speex_pdata_t * pd = (speex_pdata_t *)user_data;
 
 	if (pd->exploring && (pd->packetno == 0)) {
-		/* Speex header */
-
-		int enh = 1;
-                SpeexHeader * header;
-
-		if (op->bytes < 8 || memcmp(op->packet, "Speex   ", 8) != 0) {
-			/* Not a Speex stream */
-                        pd->error = 1;
-			return 0;
-                }
-
-                speex_bits_init(&(pd->bits));
-
-                header = speex_packet_to_header((char *)op->packet, op->bytes);
-                if (!header) {
-                        printf("Cannot read Speex header\n");
+		pd->serialno = serialno;
+		if (!op->b_o_s || (parse_speex_header(pd, op) != 0)) {
 			pd->error = 1;
-                        return 0;
-                }
+			return OGGZ_STOP_ERR;
+		}
+		++pd->packetno;
+		return OGGZ_CONTINUE;
+	}
 
-                pd->mode = speex_mode_list[header->mode];
+	if (serialno != pd->serialno) {
+		return OGGZ_CONTINUE;
+	}
 
-                if (pd->mode->bitstream_version > header->mode_bitstream_version) {
-                        fprintf(stderr, "Unknown bitstream version! The file was encoded with an older version of Speex.\n"
-                                "You need to downgrade Speex in order to play it.\n");
-			pd->error = 1;
-                        return 0;
-                }
+	if (op->b_o_s) {
+		pd->packetno = 0;
+	}
 
-                if (pd->mode->bitstream_version < header->mode_bitstream_version) {
-                        fprintf(stderr, "Unknown bitstream version! The file was encoded with a newer version of Speex.\n"
-                                "You need to upgrade Speex in order to play it.\n");
-			pd->error = 1;
-                        return 0;
-                }
+	if (pd->packetno++ < 2 + pd->extra_headers) {
+		return OGGZ_CONTINUE;
+	}
 
-		pd->sample_rate = header->rate;
-		pd->channels = header->nb_channels;
-		pd->vbr = header->vbr;
-
-                if (header->frames_per_packet != 0)
-                        pd->nframes = header->frames_per_packet;
-
-                pd->decoder = speex_decoder_init(pd->mode);
-                speex_decoder_ctl(pd->decoder, SPEEX_GET_FRAME_SIZE, &(pd->frame_size));
-                speex_decoder_ctl(pd->decoder, SPEEX_SET_ENH, &enh);
-
-	} else if (pd->packetno >= 2) {
-
-		int j;
-		float output_frame[SPEEX_BUFSIZE];
-
-		pd->granulepos = op->granulepos;
-
-		if (!pd->exploring) {
-			speex_bits_read_from(&(pd->bits), (char *)op->packet, op->bytes);
-			
-			for (j = 0; j < pd->nframes; j++) {
-				
-				int k;
-				
-				speex_decode(pd->decoder, &(pd->bits), output_frame);
-				
-				for (k = 0; k < pd->frame_size * pd->channels; k++) {
-					output_frame[k] /= 32768.0f;
-					if (output_frame[k] > 1.0f) {
-						output_frame[k] = 1.0f;
-					} else if (output_frame[k] < -1.0f) {
-						output_frame[k] = -1.0f;
-					}
-				}
-				
-				rb_write(pd->rb, (char *)output_frame,
-						      pd->channels * pd->frame_size * sample_size);
+	if (pd->exploring) {
+		pd->raw_samples += pd->nframes * pd->frame_size;
+		if (op->granulepos != -1) {
+			if (pd->first_granulepos < 0) {
+				pd->first_granulepos = op->granulepos;
+				pd->first_granulepos_raw = pd->raw_samples;
+			}
+			pd->last_granulepos = op->granulepos;
+			if (add_seek_point(pd, op->granulepos, oggz_tell(oggz)) != 0) {
+				pd->error = 1;
+				return OGGZ_STOP_ERR;
 			}
 		}
+		return OGGZ_CONTINUE;
 	}
-	
-	++pd->packetno;
+
+	decode_packet(pd, op);
+
+	/* N.B.: The granulepos of a packet is the stream position of its
+	   last sample. Decoder output lags by the decoder lookahead. */
+	if (!pd->synced && (op->granulepos != -1)) {
+		pd->synced = 1;
+		pd->pos = op->granulepos - pd->lookahead;
+		if (pd->pos > pd->discard_until) {
+			/* seeked past the target, need to start over */
+			pd->synced = 0;
+			return OGGZ_STOP_OK;
+		}
+	}
+
+	return OGGZ_CONTINUE;
+}
+
+
+static void
+flush_rb(speex_pdata_t * pd) {
+
+	rb_read_advance(pd->rb, rb_read_space(pd->rb));
+}
+
+
+static void
+reset_decoder(speex_pdata_t * pd) {
+
+	speex_decoder_ctl(pd->decoder, SPEEX_RESET_STATE, NULL);
+	speex_stereo_state_reset(pd->stereo);
+	pd->is_eos = 0;
+	flush_rb(pd);
+}
+
+
+/* Rewind to the start of the stream. Returns 0 on success. */
+static int
+restart_stream(speex_pdata_t * pd) {
+
+	if (oggz_seek(pd->oggz, 0, SEEK_SET) != 0) {
+		return -1;
+	}
+	reset_decoder(pd);
+	pd->packetno = 0;
+	pd->pos = -pd->skip;
+	pd->synced = 1;
 	return 0;
 }
 
 
 /* return 1 if reached end of stream, 0 else */
-int
+static int
 decode_speex(decoder_t * dec) {
 
 	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
+	long ret = oggz_read(pd->oggz, 4096);
 
-
-	if (oggz_read(pd->oggz, 1024) > 0) {
+	if (!pd->synced && (pd->pos > pd->discard_until)) {
+		if (restart_stream(pd) != 0) {
+			return 1;
+		}
 		return 0;
-	} else {
-		return 1;
 	}
+
+	return (ret > 0) ? 0 : 1;
 }
 
 
@@ -155,6 +322,7 @@ speex_dec_init(file_decoder_t * fdec) {
 
         if ((dec->pdata = calloc(1, sizeof(speex_pdata_t))) == NULL) {
                 fprintf(stderr, "dec_speex.c: speex_decoder_new() failed: calloc error\n");
+		free(dec);
                 return NULL;
         }
 
@@ -178,91 +346,111 @@ speex_dec_destroy(decoder_t * dec) {
 }
 
 
+static void
+free_pdata_members(speex_pdata_t * pd) {
+
+	if (pd->oggz != NULL) {
+		oggz_close(pd->oggz);
+		pd->oggz = NULL;
+	}
+	if (pd->decoder != NULL) {
+		speex_decoder_destroy(pd->decoder);
+		pd->decoder = NULL;
+	}
+	if (pd->stereo != NULL) {
+		speex_stereo_state_destroy(pd->stereo);
+		pd->stereo = NULL;
+	}
+	speex_bits_destroy(&pd->bits);
+	if (pd->rb != NULL) {
+		rb_free(pd->rb);
+		pd->rb = NULL;
+	}
+	free(pd->seek_points);
+	pd->seek_points = NULL;
+	pd->n_seek_points = pd->seek_points_size = 0;
+}
+
+
 int
 speex_dec_open(decoder_t * dec, char * filename) {
 
 	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
 
-	int enh = 1;
+	FILE * f;
 	char ogg_sig[4];
-	long length_in_bytes = 0;
-	long length_in_samples = 0;
+	long length_in_bytes;
+	long ret;
 
 
-	if ((pd->speex_file = fopen(filename, "rb")) == NULL) {
+	if ((f = fopen(filename, "rb")) == NULL) {
 		fprintf(stderr, "speex_decoder_open: fopen() failed\n");
 		return DECODER_OPEN_FERROR;
 	}
-
-	if (fread(ogg_sig, 1, 4, pd->speex_file) != 4) {
-		fprintf(stderr, "couldn't read OGG signature from %s\n", filename);
-		return DECODER_OPEN_FERROR;
+	if (fread(ogg_sig, 1, 4, f) != 4) {
+		fclose(f);
+		return DECODER_OPEN_BADLIB;
 	}
-
-	if ((ogg_sig[0] != 'O') ||
-	    (ogg_sig[1] != 'g') ||
-	    (ogg_sig[2] != 'g') ||
-	    (ogg_sig[3] != 'S')) {
-		/* not an OGG stream */
-		fclose(pd->speex_file);
+	fclose(f);
+	if (memcmp(ogg_sig, "OggS", 4) != 0) {
 		return DECODER_OPEN_BADLIB;
 	}
 
-        if ((pd->oggz = oggz_open(filename, OGGZ_READ | OGGZ_AUTO)) == NULL) {
-                printf("nonexistent or unaccessible file %s\n", filename);
+        if ((pd->oggz = oggz_open(filename, OGGZ_READ)) == NULL) {
+                fprintf(stderr, "dec_speex.c: nonexistent or unaccessible file %s\n", filename);
                 return DECODER_OPEN_FERROR;
         }
+        oggz_set_read_callback(pd->oggz, -1, read_ogg_packet, pd);
+	speex_bits_init(&pd->bits);
 
-        oggz_set_read_callback(pd->oggz, -1, read_ogg_packet, dec);
-
-	pd->packetno = 0;
+	/* parse the whole stream to get its length */
 	pd->exploring = 1;
+	pd->packetno = 0;
 	pd->error = 0;
+	pd->first_granulepos = -1;
+	pd->last_granulepos = -1;
+	do {
+		ret = oggz_read(pd->oggz, 65536);
+	} while ((ret > 0) && !pd->error);
 
-	/* process Speex header and comments */
-	while (pd->packetno < 2 && pd->error == 0) {
-		if (oggz_read(pd->oggz, 1024) <= 0)
-			break;
-	}
-
-	if (pd->error != 0) {
-		printf("Error opening Speex\n");
-		oggz_close(pd->oggz);
+	if (pd->error || (pd->decoder == NULL)) {
+		free_pdata_members(pd);
 		return DECODER_OPEN_BADLIB;
 	}
-
-	/* parse ogg packets till eof to get the last granulepos */
-	while (oggz_read(pd->oggz, 1024) > 0)
-		;
 
 	length_in_bytes = oggz_tell(pd->oggz);
 
-	oggz_close(pd->oggz);
-	speex_bits_destroy(&(pd->bits));
-        speex_decoder_destroy(pd->decoder);
-	
-	if ((pd->channels != 1) && (pd->channels != 2)) {
-		printf("Sorry, Ogg Speex with %d channels is unsupported\n", pd->channels);
+	if (pd->first_granulepos >= 0) {
+		pd->skip = pd->first_granulepos_raw - pd->first_granulepos + pd->lookahead;
+		if (pd->skip < 0)
+			pd->skip = 0;
+		pd->total_samples = pd->last_granulepos;
+	} else {
+		pd->skip = pd->lookahead;
+		pd->total_samples = pd->raw_samples;
+	}
+	if (pd->total_samples > pd->raw_samples - pd->skip)
+		pd->total_samples = pd->raw_samples - pd->skip;
+	if (pd->total_samples <= 0) {
+		fprintf(stderr, "dec_speex.c: no audio in %s\n", filename);
+		free_pdata_members(pd);
 		return DECODER_OPEN_FERROR;
 	}
-	
-	pd->packetno = 0;
-	pd->exploring = 0;
-	pd->error = 0;
-        pd->oggz = oggz_open(filename, OGGZ_READ | OGGZ_AUTO);
-	oggz_set_read_callback(pd->oggz, -1, read_ogg_packet, dec);
-	speex_bits_init(&(pd->bits));
-	pd->decoder = speex_decoder_init(pd->mode);
-	speex_decoder_ctl(pd->decoder, SPEEX_SET_ENH, &enh);
 
-	pd->is_eos = 0;
+	pd->exploring = 0;
 	pd->rb = rb_create(pd->channels * sample_size * RB_SPEEX_SIZE);
+	pd->discard_until = 0;
+	if (restart_stream(pd) != 0) {
+		fprintf(stderr, "dec_speex.c: cannot rewind %s\n", filename);
+		free_pdata_members(pd);
+		return DECODER_OPEN_FERROR;
+	}
+
 	fdec->fileinfo.channels = pd->channels;
 	fdec->fileinfo.sample_rate = pd->sample_rate;
-	length_in_samples = pd->granulepos + pd->nframes - 1;
-	fdec->fileinfo.total_samples = length_in_samples;
-	fdec->fileinfo.bps = 8 * length_in_bytes / (length_in_samples / pd->sample_rate);
+	fdec->fileinfo.total_samples = pd->total_samples;
+	fdec->fileinfo.bps = 8.0 * length_in_bytes * pd->sample_rate / pd->total_samples;
 
 	fdec->file_lib = SPEEX_LIB;
 	arr_strlcpy(dec->format_str, "Ogg Speex");
@@ -279,12 +467,7 @@ speex_dec_send_metadata(decoder_t * dec) {
 void
 speex_dec_close(decoder_t * dec) {
 
-	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
-
-	oggz_close(pd->oggz);
-	speex_bits_destroy(&(pd->bits));
-        speex_decoder_destroy(pd->decoder);
-	rb_free(pd->rb);
+	free_pdata_members((speex_pdata_t *)dec->pdata);
 }
 
 
@@ -319,30 +502,45 @@ speex_dec_read(decoder_t * dec, float * dest, int num) {
 
 void
 speex_dec_seek(decoder_t * dec, unsigned long long seek_to_pos) {
-	
+
 	speex_pdata_t * pd = (speex_pdata_t *)dec->pdata;
 	file_decoder_t * fdec = dec->fdec;
-	char flush_dest;
+	long long target;
+	size_t lo, hi;
 
-	if (seek_to_pos == fdec->fileinfo.total_samples)
-		--seek_to_pos;
+	if (seek_to_pos > (unsigned long long)pd->total_samples)
+		seek_to_pos = pd->total_samples;
+	target = seek_to_pos;
 
-	if (oggz_seek_units(pd->oggz, seek_to_pos / (float)pd->sample_rate * 1000.0f, SEEK_SET) != -1) {
+	fdec->samples_left = pd->total_samples - target;
+	pd->discard_until = target;
 
-		if (seek_to_pos == 0) {
-			pd->packetno = 0;
-		}
+	/* find the last page ending at or before the target */
+	lo = 0;
+	hi = pd->n_seek_points;
+	while (lo < hi) {
+		size_t mid = lo + (hi - lo) / 2;
+		if (pd->seek_points[mid].granulepos - pd->lookahead <= target)
+			lo = mid + 1;
+		else
+			hi = mid;
+	}
 
-		fdec->samples_left = fdec->fileinfo.total_samples - seek_to_pos;
-		/* empty speex decoder ringbuffer */
-		while (rb_read_space(pd->rb))
-			rb_read(pd->rb, &flush_dest, sizeof(char));
-	} else {
-		fprintf(stderr, "speex_dec_seek(): warning: oggz_seek_units() returned -1\n");
+	/* N.B.: Decoding resumes from the page before that one. Its
+	   packets warm up the decoder, and the stream position is known
+	   once its last packet (carrying a granulepos) is decoded. */
+	if ((lo >= 2) &&
+	    (oggz_seek(pd->oggz, pd->seek_points[lo - 2].offset, SEEK_SET) >= 0)) {
+		reset_decoder(pd);
+		pd->packetno = 2 + pd->extra_headers;
+		pd->synced = 0;
+		pd->pos = 0;
+	} else if (restart_stream(pd) != 0) {
+		fprintf(stderr, "speex_dec_seek(): seeking failed\n");
+		pd->is_eos = 1;
 	}
 }
 
 
 
-// vim: shiftwidth=8:tabstop=8:softtabstop=8 :  
-
+// vim: shiftwidth=8:tabstop=8:softtabstop=8 :

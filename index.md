@@ -47,8 +47,8 @@ no gaps</b></i> between adjacent tracks.
   separate files. Now convert the sample rate of some pieces to random
   values (the example program shipped with the <a href="http://www.mega-nerd.com/SRC/">libsamplerate</a> library will
   let you do this in very good quality). Pick some pieces and convert
-  them to <a href="http://www.xiph.org/ogg/vorbis">Ogg Vorbis</a>
-  format. Pick some others and encode them to <a href="http://flac.sourceforge.net/">FLAC</a>. Pick a few and convert
+  them to <a href="https://xiph.org/vorbis/">Ogg Vorbis</a>
+  format. Pick some others and encode them to <a href="https://xiph.org/flac/">FLAC</a>. Pick a few and convert
   them to MONO. Now open up the Playlist editor of the music player in
   question and add the files in order. <b>Push play, and
   listen.</b></p>
@@ -89,14 +89,14 @@ no gaps</b></i> between adjacent tracks.
 
   <li>Almost all sample-based, uncompressed formats (e.g. WAV, AIFF,
   AU etc.) are supported. For the full list of these formats, visit
-  the <a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a>
+  the <a href="https://www.mega-nerd.com/libsndfile/">libsndfile</a>
   homepage.</li>
 
-  <li>Files encoded with <a href="http://flac.sourceforge.net/">FLAC</a> (the Free Lossless Audio
+  <li>Files encoded with <a href="https://xiph.org/flac/">FLAC</a> (the Free Lossless Audio
   Codec) are supported.</li>
 
-  <li><a href="http://www.vorbis.com/">Ogg Vorbis</a> and Ogg
-  <a href="http://speex.org/">Speex</a> audio files are supported.</li>
+  <li><a href="https://xiph.org/vorbis/">Ogg Vorbis</a> and Ogg
+  <a href="https://www.speex.org/">Speex</a> audio files are supported.</li>
 
   <li>MPEG Audio files are supported. This includes MPEG 1-2-2.5,
   Layer I-II-III encoded audio, including the infamous MPEG-1 Layer
@@ -114,7 +114,7 @@ no gaps</b></i> between adjacent tracks.
 
   <li>WavPack files are supported via a native decoder.</li>
 
-  <li>Numerous formats and codecs are supported via the <a href="http://ffmpeg.mplayerhq.hu/">FFmpeg</a> project, including AC3,
+  <li>Numerous formats and codecs are supported via the <a href="https://ffmpeg.org/">FFmpeg</a> project, including AC3,
   AAC, WMA, WavPack and the soundtrack of many video formats.</li>
 
   <li>Naturally, any of these files can be mono or stereo.</li>
@@ -129,10 +129,12 @@ no gaps</b></i> between adjacent tracks.
 
   <li>ALSA driver support</li>
 
-  <li><a href="http://jackaudio.org/">JACK</a> Audio Server
+  <li><a href="https://jackaudio.org/">JACK</a> Audio Server
   support</li>
 
-  <li><a href="http://pulseaudio.org/">PulseAudio</a> support</li>
+  <li><a href="https://www.pipewire.org/">PipeWire</a> support</li>
+
+  <li><a href="https://wiki.freedesktop.org/Software/PulseAudio/">PulseAudio</a> support</li>
 
   <li>sndio output (presently available on OpenBSD only)</li>
 
@@ -159,11 +161,11 @@ no gaps</b></i> between adjacent tracks.
   theoretical best bandwidth for a given pair of input and output
   sample rates.</li>
 
-  <li><a href="http://www.ladspa.org/">LADSPA</a> plugin support
+  <li><a href="https://www.ladspa.org/">LADSPA</a> plugin support
   – you can use any suitable LADSPA plugin to enhance the music
   you are listening to. There are many different equalizer, spatial
   enhancer, tube preamp simulator etc. plugins out there. If you don't
-  have any, <a href="http://tap-plugins.sf.net/">grab these</a>.</li>
+  have any, <a href="https://tomscii.sig7.se/tap-plugins/">grab these</a>.</li>
 
 </ul>
 

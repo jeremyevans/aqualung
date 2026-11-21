@@ -18,7 +18,7 @@ private mail.</p>
 
 <h1>Legal stuff</h1>
 
-<p>Aqualung is Copyright © 2004-2015, 2025 by Tom Szilagyi.</p>
+<p>Aqualung is Copyright © 2004-2015, 2025-2026 by Tom Szilagyi.</p>
 
 <p>This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -43,7 +43,7 @@ repository.</p>
 <table rules="all" class="indent" width="100%" border="1" cellpadding="5" cellspacing="0">
   <tbody><tr>
     <td style="width: 40%">Core design, engineering &amp; programming:</td>
-    <td>Tom Szilagyi (<a href="https://tomscii.sig7.se">homepage</a>)</td>
+    <td>Tom Szilagyi (<a href="https://tomscii.sig7.se/id">homepage</a>)</td>
   </tr>
   <tr>
     <td>Skin support, look &amp; feel, GUI hacks:</td>
@@ -86,8 +86,8 @@ repository.</p>
 <p>We are happy to give due credit and recognition to everyone who
 contributed significantly to Aqualung's ideas, features, stability, or
 has found, reported &amp; fixed existing bugs. If you think you (or
-someone else) should be mentioned in the above list, please contact
-Tom privately in email.</p>
+someone else) should be mentioned in the above list, please open an
+issue on GitHub.</p>
 
 <h1>Translators</h1>
 
@@ -110,6 +110,10 @@ Tom privately in email.</p>
     <td>French:</td>
     <td>Julien Lavergne &lt;gilir AT ubuntu.com&gt;<br>
       Louis Opter &lt;kalessin at kalessin dot fr&gt;</td>
+  </tr>
+  <tr>
+    <td>Georgian:</td>
+    <td>Ekaterine Papava &lt;papava.e at gtu dot ge&gt;</td>
   </tr>
   <tr>
     <td>German:</td>

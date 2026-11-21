@@ -13,7 +13,7 @@ the right way before attempting to compile Aqualung is an earnest of
 success.</p>
 
 <p>Aqualung uses the GNU autotools (autoconf, automake, autoheader),
-make, and relies on <a href="http://pkg-config.freedesktop.org/wiki/">pkg-config</a> to
+make, and relies on <a href="https://wiki.freedesktop.org/Software/pkg-config/">pkg-config</a> to
 gain information about your system and installed libraries needed to
 setup a working build environment. So, it is the usual <tt>
 ./configure</tt>,<tt> make</tt>,<tt> make install </tt>stuff, with a
@@ -58,7 +58,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
       <td>GTK+-3.0</td>
       <td>Graphical user interface, requires version 3.24</td>
       <td>
-	    <a href="http://www.gtk.org/">http://www.gtk.org</a>
+	    <a href="https://www.gtk.org/">www.gtk.org</a>
       </td>
       <td>
     </td></tr>
@@ -66,7 +66,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
       <td>libXML2</td>
       <td>XML parser library</td>
       <td>
-	<a href="http://xmlsoft.org/">http://xmlsoft.org</a>
+	<a href="https://download.gnome.org/sources/libxml2/">download.gnome.org/sources/libxml2/</a>
       </td>
       <td>
     </td></tr>
@@ -87,32 +87,26 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
     <tr>
       <td>liblrdf</td>
       <td>A library for manipulating RDF files about LADSPA plugins</td>
-      <td><a href="http://sourceforge.net/projects/lrdf">http://sourceforge.net/projects/lrdf</a></td>
+      <td><a href="https://sourceforge.net/projects/lrdf">sourceforge.net/projects/lrdf</a></td>
       <td><tt>--without-ladspa</tt></td>
     </tr>
     <tr>
       <td>libcdio</td>
       <td>Library to read Audio CD</td>
-      <td><a href="http://www.gnu.org/software/libcdio">http://www.gnu.org/software/libcdio</a></td>
+      <td><a href="https://libcdio.github.io/">libcdio.github.io/</a></td>
       <td><tt>--without-cdda</tt></td>
     </tr>
     <tr>
       <td>libcddb</td>
       <td>Library to access CDDB/FreeDB server</td>
-      <td><a href="https://libcddb.sf.net">https://libcddb.sf.net</a></td>
+      <td><a href="https://libcddb.sf.net">libcddb.sf.net</a></td>
       <td><tt>--without-cddb</tt></td>
     </tr>
     <tr>
       <td>libsamplerate</td>
       <td>Library for high quality Sample Rate Conversion</td>
-      <td><a href="http://www.mega-nerd.com/SRC">http://www.mega-nerd.com/SRC</a></td>
+      <td><a href="https://www.mega-nerd.com/SRC/">www.mega-nerd.com/SRC</a></td>
       <td><tt>--without-src</tt></td>
-    </tr>
-    <tr>
-      <td>libifp</td>
-      <td>Library to support iRiver iFP driver</td>
-      <td><a href="http://sourceforge.net/projects/ifp-driver">http://sourceforge.net/projects/ifp-driver</a></td>
-      <td><tt>--without-ifp</tt></td>
     </tr>
     <tr>
       <td></td>
@@ -123,7 +117,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
     <tr>
       <td>Lua ≥ 5.1</td>
       <td>Lua (scripting extensions) support</td>
-      <td><a href="http://www.lua.org/">http://www.lua.org</a></td>
+      <td><a href="https://www.lua.org/">www.lua.org</a></td>
       <td><tt>--without-lua</tt></td>
     </tr>
     <tr>
@@ -144,67 +138,67 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
       <td>libsndfile</td>
       <td>Library to decode uncompressed file formats (WAV, AIFF, AU, etc.)
       and encode WAV audio files</td>
-      <td><a href="http://www.mega-nerd.com/libsndfile">http://www.mega-nerd.com/libsndfile</a></td>
+      <td><a href="https://www.mega-nerd.com/libsndfile/">www.mega-nerd.com/libsndfile/</a></td>
       <td><tt>--without-sndfile</tt></td>
     </tr>
     <tr>
       <td>libFLAC</td>
       <td>Library to decode and encode FLAC audio files</td>
-      <td><a href="https://xiph.org/flac/">https://xiph.org/flac</a></td>
+      <td><a href="https://xiph.org/flac/">xiph.org/flac</a></td>
       <td><tt>--without-flac</tt></td>
     </tr>
     <tr>
       <td>libvorbis<br>libvorbisfile</td>
       <td>Library to decode Ogg Vorbis audio files</td>
-      <td><a href="https://xiph.org/vorbis/">https://xiph.org/vorbis</a></td>
+      <td><a href="https://xiph.org/vorbis/">xiph.org/vorbis</a></td>
       <td><tt>--without-ogg</tt></td>
     </tr>
     <tr>
       <td>libvorbis<br>libvorbisenc</td>
       <td>Library to encode Ogg Vorbis audio files</td>
-      <td><a href="https://xiph.org/vorbis/">https://xiph.org/vorbis</a></td>
+      <td><a href="https://xiph.org/vorbis/">xiph.org/vorbis</a></td>
       <td><code>--without-vorbisenc</code></td>
     </tr>
     <tr>
       <td>liboggz<br>libspeex</td>
       <td>Library to decode Ogg Speex audio files</td>
-      <td><a href="http://speex.org/">http://speex.org</a></td>
+      <td><a href="https://speex.org/">speex.org</a></td>
       <td><tt>--without-speex</tt></td>
     </tr>
     <tr>
       <td>libmad</td>
       <td>Library to decode MPEG Audio files (MP3 and friends)</td>
-      <td><a href="http://www.underbit.com/products/mad">http://www.underbit.com/products/mad</a></td>
+      <td><a href="https://www.underbit.com/products/mad">www.underbit.com/products/mad</a></td>
       <td><tt>--without-mpeg</tt></td>
     </tr>
     <tr>
       <td>libmp3lame</td>
       <td>Library to encode MP3 audio files</td>
-      <td><a href="http://lame.sourceforge.net/">http://lame.sourceforge.net</a></td>
+      <td><a href="https://lame.sourceforge.io/">lame.sourceforge.io/</a></td>
       <td><tt>--without-lame</tt></td>
     </tr>
     <tr>
       <td>libmodplug</td>
       <td>Library to decode MOD files (MOD, S3M, XM, IT, etc.)</td>
-      <td><a href="http://modplug-xmms.sourceforge.net/">http://modplug-xmms.sourceforge.net</a></td>
+      <td><a href="https://modplug-xmms.sourceforge.net/">modplug-xmms.sourceforge.net</a></td>
       <td><tt>--without-mod</tt></td>
     </tr>
     <tr>
       <td>libmpcdec</td>
       <td>Library to decode Musepack files</td>
-      <td><a href="http://www.musepack.net/">http://www.musepack.net</a></td>
+      <td><a href="https://www.musepack.net/">www.musepack.net</a></td>
       <td><tt>--without-mpc</tt></td>
     </tr>
     <tr>
       <td>libmac</td>
       <td>Library to decode Monkey's Audio files</td>
-      <td><a href="https://www.monkeysaudio.com/">https://www.monkeysaudio.com</a></td>
+      <td><a href="https://www.monkeysaudio.com/">www.monkeysaudio.com</a></td>
       <td><tt>--without-MAC</tt></td>
     </tr>
     <tr>
       <td>libwavpack</td>
       <td>Library to decode WavPack files</td>
-      <td><a href="http://www.wavpack.com/">http://www.wavpack.com</a></td>
+      <td><a href="https://www.wavpack.com/">www.wavpack.com</a></td>
       <td><tt>--without-wavpack</tt></td>
     </tr>
     <tr>
@@ -213,7 +207,7 @@ looking in the About box or typing<tt> aqualung --version</tt>.</p>
 and movie formats.
       If you don't want to compile this from source, recent distro 
 packages of libavcodec, libavformat and libavutil should be OK.</td>
-      <td><a href="http://ffmpeg.mplayerhq.hu/">http://ffmpeg.mplayerhq.hu</a></td>
+      <td><a href="https://ffmpeg.org/">ffmpeg.org/</a></td>
       <td><tt>--without-lavc</tt></td>
     </tr>
     <tr>
@@ -251,7 +245,7 @@ packages of libavcodec, libavformat and libavutil should be OK.</td>
     <tr>
       <td>JACK</td>
       <td>JACK Audio Connection Kit</td>
-      <td><a href="https://jackaudio.org/">https://jackaudio.org</a></td>
+      <td><a href="https://jackaudio.org/">jackaudio.org</a></td>
       <td><tt>--without-jack</tt></td>
     </tr>
     <tr>
@@ -274,9 +268,10 @@ debugging support enabled (<tt>gcc -rdynamic -ggdb -g -O0</tt>).
 Furthermore, a signal handler is installed which runs when the program
 receives a SEGV, FPE, ILL, BUS or ABRT signal, and prints useful debug
 info (most notably a stack trace). If you get such a report, please
-email it to the mailing list along with a short description of what
-you were doing when the program crashed. Please also send the output
-of `<tt>aqualung -v</tt>'.</p>
+[open an issue](https://github.com/jeremyevans/aqualung/issues) and
+include it along with a short description of what you were doing when
+the program crashed. Please also send the output of `<tt>aqualung
+-v</tt>'.</p>
 
 <h2>Platform-specific notes</h2>
 
@@ -298,10 +293,9 @@ environment variable has to be set in the shell before running <tt>
 <h3>Microsoft Windows</h3>
 
 <p>Aqualung compiles and runs on Microsoft Windows natively or using
-the <a href="http://cygwin.com/">Cygwin</a> UNIX emulation layer. If
-you use the native version (strongly recommended), all you have to do
-is download the installer and proceed through the steps of the setup
-wizard.</p>
+the <a href="https://cygwin.com/">Cygwin</a> UNIX emulation
+layer. (There used to be a native installer, but that is no longer
+maintained.)</p>
 
 <p>Aqualung builds out of the box in a standard Cygwin
 shell. Naturally, you have to install relevant dependency libs (with

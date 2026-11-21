@@ -8,8 +8,10 @@
 <body><table style="width: 100%"><tr><td align="left" style="width: 40%">Prev: 3.2. <a href="aqualung-doc-part_3_2.html">General options</a></td><td align="center" style="width: 20%">[ <a href="index.html">home</a> ]</td><td align="right" style="width: 40%">Next: 3.4. <a href="aqualung-doc-part_3_4.html">Options relevant to the Sample Rate Converter</a></td></tr></table><hr /><h2>3.3. Output specific options</h2><div class="toc1">3.3.1. <a href="#id1">Options relevant to ALSA output</a></div>
 <div class="toc1">3.3.2. <a href="#id2">Options relevant to OSS output</a></div>
 <div class="toc1">3.3.3. <a href="#id3">Options relevant to JACK output</a></div>
-<div class="toc1">3.3.4. <a href="#id4">Options relevant to PulseAudio and sndio output</a></div>
-<div class="toc1">3.3.5. <a href="#id5">Options relevant to Win32 output</a></div>
+<div class="toc1">3.3.4. <a href="#id4">Options relevant to PipeWire output</a></div>
+<div class="toc1">3.3.5. <a href="#id5">Options relevant to PulseAudio output</a></div>
+<div class="toc1">3.3.6. <a href="#id6">Options relevant to sndio output</a></div>
+<div class="toc1">3.3.7. <a href="#id7">Options relevant to Win32 output</a></div>
 
 
 <h3 id="id1">3.3.1. Options relevant to ALSA output</h3>
@@ -32,7 +34,8 @@
 <code>-b, --buffer-size &lt;int&gt;</code>
 </b></dt>
 
-<dd>Set the ALSA output buffer size (in frames).</dd>
+<dd>Set the ALSA output buffer size (in frames). By default, the
+buffer holds at most 0.2 seconds of audio.</dd>
 
 <dt><b>
 <code>-R, --realtime</code>
@@ -115,7 +118,66 @@ as part of the automatic output device detection, the
 
 
 
-<h3 id="id4">3.3.4. Options relevant to PulseAudio and sndio output</h3>
+<h3 id="id4">3.3.4. Options relevant to PipeWire output</h3>
+
+<dl>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+<dt><b>
+<code>-b, --buffer-size &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the PipeWire output buffer size (in frames). This is
+requested from the server as the quantum (processing block size)
+of the stream, which the server limits to its
+<code>clock.max-quantum</code> setting. By default, the server's
+default quantum is used.</dd>
+
+</dl>
+
+
+
+<h3 id="id5">3.3.5. Options relevant to PulseAudio output</h3>
+
+<dl>
+
+<dt><b>
+<code>-r, --rate &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the output sample rate.</dd>
+
+<dt><b>
+<code>-b, --buffer-size &lt;int&gt;</code>
+</b></dt>
+
+<dd>Set the PulseAudio output buffer size (in frames). By default, the
+buffer holds at most 0.2 seconds of audio.</dd>
+
+<dt><b>
+<code>-R, --realtime</code>
+</b></dt>
+
+<dd>Try to use realtime (<code>SCHED_FIFO</code>) scheduling
+for PulseAudio output thread.</dd>
+
+<dt><b>
+<code>-P, --priority &lt;int&gt;</code>
+</b></dt>
+
+<dd>When running <code>--realtime</code>, set scheduler
+priority to &lt;int&gt; (default is 1 when -R is used).</dd>
+
+</dl>
+
+
+
+<h3 id="id6">3.3.6. Options relevant to sndio output</h3>
 
 <dl>
 
@@ -143,7 +205,7 @@ priority to &lt;int&gt; (default is 1 when -R is used).</dd>
 
 
 
-<h3 id="id5">3.3.5. Options relevant to Win32 output</h3>
+<h3 id="id7">3.3.7. Options relevant to Win32 output</h3>
 
 <dl>
 

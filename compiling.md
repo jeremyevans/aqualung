@@ -9,8 +9,8 @@ weight: 30
 instructions it shouldn't be a big problem. However, if you have never
 built packages from source before, this is probably not the time to
 learn. Aqualung depends on quite a few libraries and installing them
-the right way before attempting to compile Aqualung is an earnest of
-success.</p>
+the right way before attempting to compile Aqualung is a prerequisite
+for success.</p>
 
 <p>Aqualung uses the GNU autotools (autoconf, automake, autoheader),
 make, and relies on <a href="https://wiki.freedesktop.org/Software/pkg-config/">pkg-config</a> to
@@ -249,6 +249,12 @@ packages of libavcodec, libavformat and libavutil should be OK.</td>
       <td><tt>--without-jack</tt></td>
     </tr>
     <tr>
+      <td>libpipewire-0.3</td>
+      <td>PipeWire</td>
+      <td></td>
+      <td><tt>--without-pipewire</tt></td>
+    </tr>
+    <tr>
       <td>libpulse-simple</td>
       <td>PulseAudio</td>
       <td></td>
@@ -260,6 +266,33 @@ packages of libavcodec, libavformat and libavutil should be OK.</td>
 libraries – naturally, you should not turn them off at once, or
 the program will be completely useless. The same applies for output
 drivers.</p>
+
+<h3>Notes for Debian users</h3>
+
+<p>If you run Debian, or a distribution based on Debian, you can
+install most dependencies easily via the package manager:</p>
+
+<div class="indent">
+<div class="codebox">
+<pre>
+sudo apt-get install \
+  build-essential autoconf automake autopoint gettext pkgconf \
+  libgtk-3-dev libxml2-dev zlib1g-dev libbz2-dev \
+  liblrdf0-dev libcdio-dev libcdio-paranoia-dev libcddb2-dev \
+  libsamplerate0-dev liblua5.2-dev \
+  libsndfile1-dev libflac-dev libvorbis-dev libogg-dev \
+  liboggz2-dev libspeex-dev libmad0-dev libmp3lame-dev \
+  libmodplug-dev libmpcdec-dev libwavpack-dev \
+  libavcodec-dev libavformat-dev libavutil-dev \
+  libasound2-dev libjack-jackd2-dev libpulse-dev \
+  libpipewire-0.3-dev libsndio-dev
+</pre>
+</div>
+</div>
+
+Note: Monkey's Audio (libmac) isn't packaged in Debian main, so that
+decoder can't be installed with apt. Configure will skip it, or you
+can build the library from source if you want it.
 
 <h2>Debug build</h2>
 
